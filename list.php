@@ -5,7 +5,12 @@ switch ($t) {
     case 'ag' :
         echo "<table>";
         echo "<tr>";
-        echo "<th>Agency id</th><th>Agency name</th><th>Agency url</th><th>Agency timezone</th><th>Agency lang</th><th>Agency phone</th><th></th>";
+        echo "<th>ID</th>
+		<th>Název</th>
+		<th>URL</th>
+		<th>Telefon</th>
+		<th>E-mail</th>
+		<th></th>";
         echo "</tr>";
         echo "<tr>";
         $query = "SELECT * FROM agency ORDER BY agency_id";
@@ -17,23 +22,34 @@ switch ($t) {
                 $agency_timezone = $row[3];
                 $agency_lang = $row[4];
                 $agency_phone = $row[5];
+		$agency_fare_url = $row[6];
+		$agency_email = $row[7];
+		$agency_active = $row[8];
 
-                echo "<td>$agency_id</td><td>$agency_name</td><td>$agency_url</td><td>$agency_timezone</td><td>$agency_lang</td><td>$agency_phone</td><td><a href=\"edit.php?t=agency&id=$agency_id\">Editovat</a></td>";                
+                echo "<tr><td>$agency_id</td>
+			<td>$agency_name</td>
+			<td>$agency_url</td>
+			<td>$agency_phone</td>
+			<td>$agency_email</td>
+			<td><a href=\"edit.php?t=agency&id=$agency_id\">Editovat</a></td>
+		</tr>";                
             }
             mysqli_free_result($result);
         }
-        echo "</tr>";
         echo "<table>";
-        echo "LIST AGENCY";
     break;
 
 
     case 'ro' :
         echo "<table>";
         echo "<tr>";
-        echo "<th>Route id</th><th>Agency ID</th><th>Route short</th><th>Route long</th><th>Route desc</th><th>Route type</th><th>Route url</th><th>Route color</th><th>Route text color</th><th></th>";
+        echo "<th>ID</th>
+		<th>Přepravce</th>
+		<th>Linka</th>
+		<th>Trasa</th>
+		<th>Typ</th>
+		<th></th>";
         echo "</tr>";
-        echo "<tr>";
         $query = "SELECT * FROM route ORDER BY route_id";
         if ($result = mysqli_query($link, $query)) {
             while ($row = mysqli_fetch_row($result)) {
@@ -46,14 +62,34 @@ switch ($t) {
                 $route_url = $row[6];
                 $route_color = $row[7];
                 $route_text_color = $row[8];
+		$route_active = $row[9];
 
-                echo "<td>$route_id</td><td>$agency_id</td><td>$route_short</td><td>$route_long</td><td>$route_desc</td><td>$route_type</td><td>$route_url</td><td>$route_color</td><td>$route_text_color</td><td><a href=\"edit.php?t=route&id=$route_id\">Editovat</a></td>";                
+                echo "<tr><td>$route_id</td>";
+
+	     	$ro_ag_pom = mysqli_fetch_row(mysqli_query($link, "SELECT agency_name FROM agency WHERE (agency_id = $agency_id);"));
+		$ro_ag = $ro_ag_pom['0'];
+		echo "<td>$ro_ag</td>";
+
+		echo "<td style=\"background-color: #$route_color;\"><span style=\"color: #$route_text_color;\">$route_short</td>";
+		echo "<td>$route_long</td>";
+
+		switch ($route_type) {
+			case 0: echo "<td>tramvaj</td>"; break;
+			case 1: echo "<td>metro</td>"; break;
+			case 2: echo "<td>vlak</td>"; break;
+			case 3: echo "<td>autobus</td>"; break;
+			case 4: echo "<td>přívoz</td>"; break;
+			case 5: echo "<td>trolejbus</td>"; break;
+			case 6: echo "<td>kabinová lanovka</td>"; break;
+			case 7: echo "<td>kolejová lanovka</td>"; break;
+			default : echo "<td></td>"; break;
+		}
+		echo "<td><a href=\"edit.php?t=route&id=$route_id\">Editovat</a></td>
+		</tr>";                
             }
             mysqli_free_result($result);
         }
-        echo "</tr>";
         echo "<table>";
-        echo "LIST AGENCY";
     break;
 }
 include 'footer.php';

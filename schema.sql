@@ -12,6 +12,7 @@ CREATE TABLE `agency` (
 	`agency_phone` VARCHAR(30),
 	`agency_fare_url` VARCHAR(255),
 	`agency_email` VARCHAR(100),
+	`active` TINYINT(1) UNSIGNED NOT NULL,
 	PRIMARY KEY (`agency_id`)
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 
@@ -26,6 +27,7 @@ CREATE TABLE `calendar` (
 	`sunday` TINYINT(1) UNSIGNED NOT NULL,
 	`start_date` INT(8) UNSIGNED NOT NULL,
 	`end_date` INT(8) UNSIGNED NOT NULL,
+	`active` TINYINT(1) UNSIGNED NOT NULL,
 	PRIMARY KEY (`service_id`)
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 
@@ -39,6 +41,7 @@ CREATE TABLE `route` (
 	`route_url` VARCHAR(255),
 	`route_color` VARCHAR(6),
 	`route_text_color` VARCHAR(6),
+	`active` TINYINT(1) UNSIGNED NOT NULL,
 	PRIMARY KEY (`route_id`)
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 
@@ -55,6 +58,7 @@ CREATE TABLE `stop` (
 	`parent_station` VARCHAR(10),
 	`stop_timezone` VARCHAR(50),
 	`wheelchair_boarding` TINYINT(1) UNSIGNED,
+	`active` TINYINT(1) UNSIGNED NOT NULL,
 	PRIMARY KEY (`stop_id`)
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 
@@ -83,6 +87,7 @@ CREATE TABLE `trip` (
 	`shape_id` INT(10) UNSIGNED,
 	`wheelchair_accessible` TINYINT(1) UNSIGNED,
 	`bikes_allowed` TINYINT(1) UNSIGNED,
+	`active` TINYINT(1) UNSIGNED NOT NULL,
 	PRIMARY KEY (`trip_id`)
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 
@@ -104,15 +109,6 @@ CREATE TABLE `fare_attribute` (
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 
 CREATE TABLE `fare_rule` ( 
-	`fare_id` VARCHAR(5) NOT NULL,
-	`route_id` VARCHAR(10) NOT NULL,
-	`origin_id` VARCHAR(5),
-	`destination_id` VARCHAR(5),
-	`contains_id` VARCHAR(5),
-	PRIMARY KEY (`fare_id`)
-) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
-
-CREATE TABLE `feed_info` ( 
 	`fare_id` VARCHAR(5) NOT NULL,
 	`route_id` VARCHAR(10) NOT NULL,
 	`origin_id` VARCHAR(5),
@@ -146,3 +142,4 @@ CREATE TABLE `transfer` (
 	`min_transfer_time` INT(10) UNSIGNED,
 	PRIMARY KEY (`from_stop_id`)
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+
