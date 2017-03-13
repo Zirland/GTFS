@@ -21,12 +21,14 @@ if (!$link) {
 </td>
 <td style="height:5px; background-color:#cccccc;">
 </td></tr>
-<tr><td style="width:100px; background-color:yellow;">
+<tr><td style="width:100px; background-color:yellow; vertical-align:top;">
 <a href="list.php?t=ag">Přepravci</a><br />
 <a href="add.php?t=ag">- Přidat</a><br />
 <br />
 <a href="list.php?t=ro">Linky</a><br />
 <a href="add.php?t=ro">- Přidat</a><br />
+<br />
+<a href="kango.php">Kango vlaky PID</a><br />
 <br />
 </td>
 <td>
