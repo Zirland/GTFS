@@ -208,7 +208,7 @@ if ($result = mysqli_query($link, $query)) {
 		echo ">Odchozí</option><option value=\"1\"";
 		if ($direction=='1') {echo " SELECTED";}
 		echo ">Příchozí</td>";
-		echo "<td></td>";
+		echo"</td><td><a href=\"detail.php?vl=$cislo\">Detaily</a></td>";
 		$x = $x+1;
 		echo "</tr>";
 }
