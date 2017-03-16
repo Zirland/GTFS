@@ -119,7 +119,7 @@ switch ($t) {
 		<th></th>";
 		echo "</tr>";
 		echo "<tr>";
-		echo "<td><input name=\"route_id\" value=\"".$ro_max."\" type=\"text\"></td>";
+		echo "<td><input name=\"route_id\" type=\"text\" value=\"$ro_max\"></td>";
 		echo "<td><select name=\"agency_id\">";
 
 		$query0 = "SELECT agency_id, agency_name FROM agency ORDER BY agency_id;";
@@ -135,7 +135,7 @@ switch ($t) {
 			mysqli_free_result($result0);
 		} else echo("Error description: " . mysqli_error($link));
 		echo "</select>";
-
+		
 		echo "<td><input name=\"route_short\" value=\"\" type=\"text\"></td>";
 		echo "<td><input name=\"route_long\" value=\"\" type=\"text\"></td></tr>";
 		echo "<tr><td><input name=\"route_desc\" value=\"\" type=\"text\"></td>";
@@ -152,8 +152,16 @@ switch ($t) {
 		</td>";
 
 		echo "<td><input name=\"route_url\" value=\"\" type=\"text\"></td></tr>";
-		echo "<tr><td><input name=\"route_color\" value=\"\" type=\"text\"></td>";
-		echo "<td><input name=\"route_text_color\" value=\"\" type=\"text\"></td>";
+		
+		echo "<tr><td><select name=\"route_color\">";
+		echo "<option value=\"0094DE\">Linky S</option>";
+		echo "<option value=\"B51741\">Linky R</option>";
+		echo "<option value=\"008983\">Arriva vlaky</option>";
+		echo "<option value=\"ECAE01\">RegioJet</option>";
+		echo "<option value=\"000000\">LEO Express</option>";
+		echo "</select></td>";
+		
+		echo "<td><input name=\"route_text_color\" value=\"FFFFFF\" type=\"text\"></td>";
         echo "<td><input type=\"submit\"></td>";
         echo "</tr></table></form>";
 	break;
