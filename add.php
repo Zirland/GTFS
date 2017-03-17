@@ -154,11 +154,17 @@ switch ($t) {
 		echo "<td><input name=\"route_url\" value=\"\" type=\"text\"></td></tr>";
 		
 		echo "<tr><td><select name=\"route_color\">";
-		echo "<option value=\"0094DE\">Linky S</option>";
-		echo "<option value=\"B51741\">Linky R</option>";
-		echo "<option value=\"008983\">Arriva vlaky</option>";
-		echo "<option value=\"ECAE01\">RegioJet</option>";
-		echo "<option value=\"000000\">LEO Express</option>";
+		$query157 = "SELECT color, popis FROM kango.colors;";
+		if ($result157 = mysqli_query($link, $query157)) {
+			while ($row157 = mysqli_fetch_row($result157)) {
+				$rtclr = $row157[0];
+				$clrnm = $row157[1];
+			
+				echo "<option value=\"$rtclr\"";
+				if ($rtclr == $route_color) {echo " SELECTED";}
+				echo ">$clrnm</option>";
+			}
+		}
 		echo "</select></td>";
 		
 		echo "<td><input name=\"route_text_color\" value=\"FFFFFF\" type=\"text\"></td>";
