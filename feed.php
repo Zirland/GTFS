@@ -1,44 +1,44 @@
 <?php
-$link = mysqli_connect('localhost', 'root', 'root', 'GTFS');
-if (!$link) {
-    echo "Error: Unable to connect to MySQL." . PHP_EOL;
-    echo "Debugging errno: " . mysqli_connect_errno() . PHP_EOL;
-    exit;
-}
 
-$file = '1agency.txt';
+include 'header.php';
+
+$file = 'agency.txt';
 $current = "agency_id,agency_name,agency_url,agency_timezone,agency_phone,agency_email\n";
 file_put_contents($file, $current);
 
-$file = '1routes.txt';
+$file = 'routes.txt';
 $current = "route_id,agency_id,route_short_name,route_long_name,route_type,route_color,route_text_color\n";
 file_put_contents($file, $current);
 
-$file = '1trips.txt';
+$file = 'trips.txt';
 $current = "route_id,service_id,trip_id,trip_headsign,direction_id,shape_id,wheelchair_accessible,bikes_allowed\n";
 file_put_contents($file, $current);
 
-$file = '1stop_times.txt';
+$file = 'stop_times.txt';
 $current = "
 trip_id,arrival_time,departure_time,stop_id,stop_sequence,pickup_type,drop_off_type\n";
 file_put_contents($file, $current);
 
-$file = '1calendar.txt';
+$file = 'calendar.txt';
 $current = "
 service_id,monday,tuesday,wednesday,thursday,friday,saturday,sunday,start_date,end_date\n";
 file_put_contents($file, $current);
 
-$file = '1stops.txt';
+$file = 'stops.txt';
 $current = "stop_id,stop_name,stop_lat,stop_lon,location_type,parent_station,wheelchair_boarding\n";
 file_put_contents($file, $current);
 
-$file = '1shapes.txt';
-$current = "
-shape_id,shape_pt_lat,shape_pt_lon,shape_pt_sequence\n";
+$file = 'shapes.txt';
+$current = "shape_id,shape_pt_lat,shape_pt_lon,shape_pt_sequence\n";
 file_put_contents($file, $current);
 
 $shape_trunc = mysqli_query($link, "TRUNCATE TABLE shape;");
 $calendar_trunc = mysqli_query($link, "TRUNCATE TABLE calendar");
+
+$agencynums = 0;
+$routenums = 0;
+$tripnums = 0;
+$stopnums = 0;
 
 $current = "";
 
@@ -46,7 +46,8 @@ $act_agency = "SELECT agency_id FROM route WHERE (active='1') GROUP BY agency_id
 if ($result42 = mysqli_query($link, $act_agency)) {
     while ($row42 = mysqli_fetch_row($result42)) {
         $agency_id_42 = $row42[0];
-
+		$agencynums = mysqli_num_rows($result42);
+		
 	$query46 = "SELECT agency_id,agency_name,agency_url,agency_timezone,agency_phone,agency_email FROM agency WHERE (agency_id = '$agency_id_42');";
 
         if ($result46 = mysqli_query($link, $query46)) {
@@ -64,8 +65,10 @@ if ($result42 = mysqli_query($link, $act_agency)) {
     }
 }	
     
-$file = '1agency.txt';
+$file = 'agency.txt';
 file_put_contents($file, $current, FILE_APPEND);
+
+echo "Exported agencies: $agencynums<br />";
 
 $akt_route = "SELECT route_id,agency_id,route_short_name,route_long_name,route_type,route_color,route_text_color FROM route WHERE (active='1');";
 
@@ -78,10 +81,11 @@ if ($result69 = mysqli_query($link, $akt_route)) {
 	$route_type = $row69[4];
 	$route_color = $row69[5];
 	$route_text_color = $row69[6];
-
+	$routenums = mysqli_num_rows($result69);
+	
 	$current = "$route_id,$agency_id,\"$route_short_name\",\"$route_long_name\",$route_type,$route_color,$route_text_color\n";
 
-	$file = '1routes.txt';
+	$file = 'routes.txt';
 	file_put_contents($file, $current, FILE_APPEND);
 // zapsána aktivní linka
 
@@ -96,6 +100,7 @@ if ($result69 = mysqli_query($link, $akt_route)) {
 		$shape_id = $row[5];
 		$wheelchair_accessible = $row[6];
 		$bikes_allowed = $row[7];
+		$tripcount = mysqli_num_rows($result85);
 
 		$matice_start = mktime(0,0,0,12,11,2016);
 		$zitra_den = date("d", time()+86400);
@@ -124,8 +129,9 @@ if ($result69 = mysqli_query($link, $akt_route)) {
 // zápis kalendáře trasy pro tento týden do databáze
 			
 		$current = "route_id,service_id,trip_id,\"trip_headsign\",direction_id,shape_id,wheelchair_accessible,bikes_allowed\n";
-		$file = '1trips.txt';
+		$file = 'trips.txt';
 		file_put_contents($file, $current, FILE_APPEND);
+		$tripnums = $tripnums + $tripcount;
 // zapsána aktivní trasa
 				
 		$pom125 = mysqli_fetch_row(mysqli_query($link, "SELECT max(stop_sequence) FROM stoptime WHERE (trip_id = '$trip_id');"));
@@ -176,15 +182,21 @@ if ($result69 = mysqli_query($link, $akt_route)) {
 			$drop_off_type = $row166[6];
 				
 			$current = "$trip_id,$arrival_time,$departure_time,$stop_id,$stop_sequence,$pickup_type,$drop_off_type\n";
-			$file = '1stop_times.txt';
+			$file = 'stop_times.txt';
 			file_put_contents($file, $current, FILE_APPEND);
-// zapsán jízdní řád trasy
+			
+			$mark_stop = mysqli_query($link, "INSERT INTO kango.stop_use (trip_id, stop_id) VALUES ('$trip_id', '$stop_id');");
+// zapsán jízdní řád trasy a stanice do pomocné databáze
                     }					
  		}
             }
 	}
     }
 }
+
+echo "Exported lines: $routenums<br />";
+echo "Exported trips: $tripnums<br />";
+
 $current = "";
 
 $act_calendar = "SELECT kalendar FROM kango.cal_use GROUP BY kalendar;";
@@ -192,7 +204,7 @@ if ($result189 = mysqli_query($link, $act_calendar)) {
     while ($row189 = mysqli_fetch_row($result189)) {
         $service_id_189 = $row189[0];
 
-        $query193 = "SELECT service_id,monday,tuesday,wednesday,thursday,friday,saturday,sunday,start_date,end_date FROM calendar WHERE (service_id = '$service_id_189');";
+        $query193 = "SELECT stop_id,stop_name,stop_lat,stop_lon,location_type,parent_station,wheelchair_boarding FROM stop WHERE (stop_id = '$stop_id_189');";
         if ($result193 = mysqli_query($link, $query193)) {
             while ($row193 = mysqli_fetch_row($result193)) {
                 $service_id = $row193[0];
@@ -210,16 +222,59 @@ if ($result189 = mysqli_query($link, $act_calendar)) {
     }
 }	
 
-$file = '1calendar.txt';
+$file = 'calendar.txt';
 file_put_contents($file, $current, FILE_APPEND);
 //zapsány použité kalendáře
 
-$file = '1stop.txt';
+$current = "";
+
+$act_stop = "SELECT stop_id FROM kango.stop_use WHERE GROUP BY stop_id;";
+if ($result228 = mysqli_query($link, $act_stop)) {
+    while ($row228 = mysqli_fetch_row($result228)) {
+        $stop_id_228 = $row228[0];
+		$stopnums = mysqli_num_rows($result228);
+		
+		$query233 = "SELECT stop_id,stop_name,stop_lat,stop_lon,location_type,parent_station,wheelchair_boarding FROM stop WHERE (stop_id = '$stop_id_228');";
+        if ($result233 = mysqli_query($link, $query233)) {
+            while ($row233 = mysqli_fetch_row($result233)) {
+                $stop_id = $row233[0];
+                $stop_name = $row233[0];
+                $stop_lat = $row233[0];
+                $stop_lon = $row233[0];
+                $location_type = $row233[0];
+                $parent_station = $row233[0];
+                $wheelchair_boarding = $row233[0];
+
+				$current .= "$stop_id,\"$stop_name\",$stop_lat,$stop_lon,$location_type,$parent_station,$wheelchair_boarding\n";
+			}
+		}
+	}
+}
+
+$file = 'stops.txt';
 file_put_contents($file, $current, FILE_APPEND);
 //zapsány použité zastávky
 
-$file = '1shape.txt';
+echo "Exported stops: $stopnums<br />";
+
+$current = "";
+
+$query260 = "SELECT shape_id,shape_pt_lat,shape_pt_lon,shape_pt_sequence FROM shape;";
+if ($result260 = mysqli_query($link, $query260)) {
+	while ($row260 = mysqli_fetch_row($result260)) {
+		$shape_id = $row260[0];
+        $shape_pt_lat = $row260[0];
+        $shape_pt_lon = $row260[1];
+        $shape_pt_sequence = $row260[2];
+        
+		$current .= "$shape_id,$shape_pt_lat,$shape_pt_lon,$shape_pt_sequence\n";
+	}
+}
+
+$file = 'shapes.txt';
 file_put_contents($file, $current, FILE_APPEND);
 //zapsány použité tvary tras
-mysqli_close ($link);
+
+
+include 'footer.php';
 ?>

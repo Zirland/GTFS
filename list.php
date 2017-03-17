@@ -22,21 +22,21 @@ switch ($t) {
                 $agency_timezone = $row[3];
                 $agency_lang = $row[4];
                 $agency_phone = $row[5];
-		$agency_fare_url = $row[6];
-		$agency_email = $row[7];
-		$agency_active = $row[8];
+				$agency_fare_url = $row[6];
+				$agency_email = $row[7];
+				$agency_active = $row[8];
 
                 echo "<tr><td>$agency_id</td>
-			<td>$agency_name</td>
-			<td>$agency_url</td>
-			<td>$agency_phone</td>
-			<td>$agency_email</td>
-			<td><a href=\"edit.php?t=agency&id=$agency_id\">Editovat</a></td>
-		</tr>";                
-            }
-            mysqli_free_result($result);
-        }
-        echo "<table>";
+					<td>$agency_name</td>
+					<td>$agency_url</td>
+					<td>$agency_phone</td>
+					<td>$agency_email</td>
+					<td><a href=\"edit.php?t=agency&id=$agency_id\">Editovat</a></td>
+					</tr>";                
+			}
+			mysqli_free_result($result);
+		}
+		echo "<table>";
     break;
 
 
@@ -84,7 +84,7 @@ switch ($t) {
 			case 7: echo "<td>kolejová lanovka</td>"; break;
 			default : echo "<td></td>"; break;
 		}
-		echo "<td><a href=\"edit.php?t=route&id=$route_id\">Editovat</a></td>
+		echo "<td><a href=\"routeedit.php?id=$route_id\">Detaily</a></td>
 		</tr>";                
             }
             mysqli_free_result($result);
