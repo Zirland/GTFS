@@ -18,17 +18,21 @@ if (!$link) {
 <table style="width:100%; height:100%;">
 <tr>
 <td style="background-color:#cccccc;">
+<a href="list.php?t=ro">&nbsp; &nbsp;</a>
 </td>
 <td style="height:5px; background-color:#cccccc;">
 </td></tr>
 <tr><td style="width:100px; background-color:yellow; vertical-align:top;">
-<a href="list.php?t=ag">Přepravci</a><br />
-<a href="add.php?t=ag">- Přidat</a><br />
-<br />
-<a href="list.php?t=ro">Linky</a><br />
-<a href="add.php?t=ro">- Přidat</a><br />
-<br />
-<a href="kango.php">Kango vlaky PID</a><br />
-<br />
+<?php
+//<a href="list.php?t=ag">Přepravci</a><br />
+//<a href="add.php?t=ag">- Přidat</a><br />
+//<br />
+//<a href="list.php?t=ro">Linky</a><br />
+//<a href="add.php?t=ro">- Přidat</a><br />
+//<br />
+//<a href="kango.php">Kango vlaky PID</a><br />
+//<br />
+?>
+<a href="pairing.php">Stop pairing</a><br />
 </td>
 <td>
