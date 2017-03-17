@@ -43,8 +43,7 @@ switch ($t) {
     case 'ro' :
         echo "<table>";
         echo "<tr>";
-        echo "<th>ID</th>
-		<th>Přepravce</th>
+        echo "<th>Přepravce</th>
 		<th>Linka</th>
 		<th>Trasa</th>
 		<th>Typ</th>
@@ -64,14 +63,16 @@ switch ($t) {
                 $route_text_color = $row[8];
 		$route_active = $row[9];
 
-                echo "<tr><td>$route_id</td>";
+                echo "<tr>";
 
 	     	$ro_ag_pom = mysqli_fetch_row(mysqli_query($link, "SELECT agency_name FROM agency WHERE (agency_id = $agency_id);"));
 		$ro_ag = $ro_ag_pom['0'];
 		echo "<td>$ro_ag</td>";
 
-		echo "<td style=\"background-color: #$route_color;\"><span style=\"color: #$route_text_color;\">$route_short</td>";
-		echo "<td>$route_long</td>";
+		echo "<td style=\"background-color: #$route_color; text-align: center;\"><span style=\"color: #$route_text_color;\">$route_short</td>";
+		echo "<td";
+		if ($route_active == "1") {echo " style=\"background-color: green;\"";}
+		echo ">$route_long</td>";
 
 		switch ($route_type) {
 			case 0: echo "<td>tramvaj</td>"; break;
