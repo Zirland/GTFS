@@ -1,7 +1,7 @@
 <?php
 include 'header.php';
 
-$query = "SELECT * FROM kango.vlaktrips WHERE (trips=1) LIMIT 100;";
+$query = "SELECT * FROM kango.vlaktrips WHERE (trips=2) LIMIT 100;";
 if ($result = mysqli_query($link, $query)) {
 	while ($row = mysqli_fetch_row($result)) {
 		$cislo7 = $row[0];
@@ -38,7 +38,7 @@ if ($result = mysqli_query($link, $query)) {
 			'$trip_id',
 			'0',
 			'0',
-			'0'
+			'2'
 		);";
 		$command = mysqli_query($link, $query1) or die("Trip Error description: " . mysqli_error($link));
 
@@ -68,6 +68,7 @@ if ($result = mysqli_query($link, $query)) {
 					default : 
 						if ($PICK == '1') {$vyst = 1;}
 						if ($DROP == '1') {$nast = 1;}
+					break;
 				}
 				
 				$hdp = ($DP*24)+$HP;

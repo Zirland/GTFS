@@ -186,10 +186,8 @@ switch ($calpom) {
 
 echo "</td></tr></table>";
 
-echo $matice."<br />";
-
 // Matice začíná 11.12.2016 
-$matice_start = mktime(0,0,0,$mm1,$dd1,$rr1);
+$matice_start = mktime(0,0,0,12,11,2016);
 $zitra_den = date("d", time()+86400);
 $zitra_mesic = date("m", time()+86400);
 $zitra_rok = date("Y", time()+86400);
@@ -211,15 +209,20 @@ $hod=$hod%24;
 
 $aktual = substr($matice,$dni,7);
 
-echo "Aktuálně začíná $vtydnu ".$calendar_start_format." do ".$calendar_stop_format." matice ". $aktual .".\n";
+$grafikon = str_split($matice);
 
-$adjust = substr($aktual,-$vtydnu).substr($aktual,0,-$vtydnu);
+echo "<table border=\"1\"><tr><td>";
+// 11.12.2016 je 0;
+for ($u = 0; $u < 553; $u++) {
+    
+    $datum=$matice_start+($u*86400);
+    $datum_format = date("dm", $datum);
+    $denvtydnu = date('w',$datum);
+    echo "$datum_format <input type=\"text\" name=\"grafikon$u\" value=\"$grafikon[$u]\" size=\"1\"><br />";
 
-$dec=bindec($adjust)+1;
-
-echo "Kalendář je ".$adjust." = ".$dec;
-
-
-
+    if ($denvtydnu == "0") {echo "</td><td>";}
+}
+echo "</td></tr></table>";
+				
 include 'footer.php';
 ?>
