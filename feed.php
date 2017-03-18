@@ -124,13 +124,13 @@ if ($result69 = mysqli_query($link, $akt_route)) {
 		$service_id = $dec;
 				
 		$mark_cal = mysqli_query($link, "INSERT INTO kango.cal_use (trip_id, kalendar) VALUES ('$trip_id', '$service_id');");
-// zápis kalendáře trasy pro tento týden do databáze
+// zápis kalendáře spoje pro tento týden do databáze
 			
 		$current = "$route_id,$service_id,$trip_id,\"$trip_headsign\",$direction_id,$shape_id,$wheelchair_accessible,$bikes_allowed\n";
 		$file = 'trips.txt';
 		file_put_contents($file, $current, FILE_APPEND);
 		$tripnums = $tripnums + $tripcount;
-// zapsána aktivní trasa
+// zapsán aktivní spoj
 				
 		$pom125 = mysqli_fetch_row(mysqli_query($link, "SELECT max(stop_sequence) FROM stoptime WHERE (trip_id = '$trip_id');"));
 		$max_trip = $pom125[0];
