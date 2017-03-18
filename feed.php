@@ -144,6 +144,9 @@ if ($result69 = mysqli_query($link, $akt_route)) {
 		$cislo7 = $vlak."/".$lomeni;
 
 		$i = 0;
+		$prevzst = "";
+		$vzdal = 0;
+
 		$query131 = "SELECT * FROM kango.DTV WHERE (CISLO7='$cislo7');";
 		if ($result131 = mysqli_query($link, $query131)) {
                     while ($row131 = mysqli_fetch_row($result131))  {
@@ -152,15 +155,28 @@ if ($result69 = mysqli_query($link, $akt_route)) {
 		
 			$pom139 = mysqli_fetch_row(mysqli_query($link, "SELECT stop_lat,stop_lon FROM stop WHERE (stop_id='$ZST');"));
 			$lat = $pom139[0];
-			$lon = $pom139[0];
+			$lon = $pom139[1];
 
+			$result235 = mysqli_query($link, "SELECT DELKA FROM kango.DU WHERE ((ZST1 = '$prevzst') AND (ZST2 = '$ZST'));");
+			$pom235 = mysqli_fetch_row($result235);
+			$ujeto = $pom235[0];
+			$radky = mysqli_num_rows($result235);
+			if ($radky == 0) {
+		            $result240 = mysqli_query($link, "SELECT DELKA FROM kango.DU WHERE ((ZST1 = '$ZST') AND (ZST2 = '$prevzst'));");
+		            $pom240 = mysqli_fetch_row($result240);
+		            $ujeto = $pom240[0];
+			} 
+			$vzdal = $vzdal + $ujeto;
+			$prevzst = $ZST;
+			
 			if ($lat != '' && $lon != '' && $i <= $max_trip && $i >= $min_trip) {
-			$query144 = "INSERT INTO shape VALUES (
+			    if ($i == $min_trip) {$vzdal = 0;} 
+			    $query144 = "INSERT INTO shape VALUES (
                             '$trip_id',
                             '$lat',
                             '$lon',
                             '$i',
-                            ''
+                            '$vzdal'
                             );";
 			$command = mysqli_query($link, $query144);
 // zápis nové trasy do databáze
