@@ -86,8 +86,9 @@ if ($result37 = mysqli_query($link, $query37)) {
 				
 				$vlak = substr($trip_id,0,-2);
 
-				if ($trip_aktif == '0') {echo "X ";}
+				if ($trip_aktif == '1') {echo "<span style=\"background-color:green;\">";}
 				echo "$vlak - $trip_headsign - <a href=\"tripedit.php?id=$trip_id\">Upravit</a><br />";
+				if ($trip_aktif == '1') {echo "</span>";}
 			}
 		}
 		echo "</td><td>";
@@ -100,8 +101,9 @@ if ($result37 = mysqli_query($link, $query37)) {
 				$trip_aktif = $row96[10];
 				
 				$vlak = substr($trip_id,0,-2);
-				if ($trip_aktif == '0') {echo "X ";}				
+				if ($trip_aktif == '1') {echo "<span style=\"background-color:green;\">";}				
 				echo "$vlak - $trip_headsign - <a href=\"tripedit.php?id=$trip_id\">Upravit</a><br />";
+				if ($trip_aktif == '1') {echo "</span>";}
 			}
 		}	
 		echo "</td></tr></table>";

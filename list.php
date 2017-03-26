@@ -49,7 +49,7 @@ switch ($t) {
 		<th>Typ</th>
 		<th></th>";
         echo "</tr>";
-        $query = "SELECT * FROM route ORDER BY route_id";
+        $query = "SELECT * FROM route ORDER BY route_short_name";
         if ($result = mysqli_query($link, $query)) {
             while ($row = mysqli_fetch_row($result)) {
                 $route_id = $row[0];

@@ -98,15 +98,14 @@ if ($result69 = mysqli_query($link, $akt_route)) {
 		$shape_id = $row85[5];
 		$wheelchair_accessible = $row85[6];
 		$bikes_allowed = $row85[7];
-		$tripcount = mysqli_num_rows($result85);
 
 		$matice_start = mktime(0,0,0,12,11,2016);
 		$zitra_den = date("d", time()+86400);
 		$zitra_mesic = date("m", time()+86400);
 		$zitra_rok = date("Y", time()+86400);
 		$calendar_start = mktime(0,0,0,$zitra_mesic,$zitra_den,$zitra_rok);
-		$calendar_start_format = date("dmY", time()+86400);
-		$calendar_stop_format = date("dmY", time()+8*86400);
+		$calendar_start_format = date("Ymd", time()+86400);
+		$calendar_stop_format = date("Ymd", time()+8*86400);
 		$vtydnu = date('w',$calendar_start);
 
 		$sek=$calendar_start-$matice_start;
@@ -129,7 +128,7 @@ if ($result69 = mysqli_query($link, $akt_route)) {
 		$current = "$route_id,$service_id,$trip_id,\"$trip_headsign\",$direction_id,$shape_id,$wheelchair_accessible,$bikes_allowed\n";
 		$file = 'trips.txt';
 		file_put_contents($file, $current, FILE_APPEND);
-		$tripnums = $tripnums + $tripcount;
+		$tripnums = $tripnums + 1;
 // zapsána aktivní trasa
 				
 		$pom125 = mysqli_fetch_row(mysqli_query($link, "SELECT max(stop_sequence) FROM stoptime WHERE (trip_id = '$trip_id');"));
@@ -147,12 +146,15 @@ if ($result69 = mysqli_query($link, $akt_route)) {
 		$query131 = "SELECT * FROM kango.DTV WHERE (CISLO7='$cislo7');";
 		if ($result131 = mysqli_query($link, $query131)) {
                     while ($row131 = mysqli_fetch_row($result131))  {
+			$ZELEZN = $row131[1];
 			$ZST = $row131[2];
+			$OB = $row131[3];
 			$i = $i + 1;
+			$stop_id = substr($ZELEZN,-2).$ZST.substr($OB,-1);
 		
-			$pom139 = mysqli_fetch_row(mysqli_query($link, "SELECT stop_lat,stop_lon FROM stop WHERE (stop_id='$ZST');"));
+			$pom139 = mysqli_fetch_row(mysqli_query($link, "SELECT stop_lat,stop_lon FROM stop WHERE (stop_id='$stop_id');"));
 			$lat = $pom139[0];
-			$lon = $pom139[0];
+			$lon = $pom139[1];
 
 			if ($lat != '' && $lon != '' && $i <= $max_trip && $i >= $min_trip) {
 			$query144 = "INSERT INTO shape VALUES (

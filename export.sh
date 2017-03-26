@@ -4,4 +4,6 @@ curl http://localhost/gtfs/feed.php
 
 zip trains *.txt
 
+rm *.txt
+
 exit;

@@ -4,15 +4,39 @@ include 'header.php';
 $action = @$_POST['action'];
 $a = $_GET['a'];
 
-if ($a == 'skip') {
-	$stpid = $_GET['z'];
-	$prikaz0 = mysqli_query($link, "UPDATE kango.loads SET pocet = pocet * -1 WHERE (ZST = $stpid);");
+switch ($a) {
+	case 'skip' :
+		$ZELEZN = $_GET['s'];
+		$ZST = $_GET['z'];
+		$OB = $_GET['o'];
+		$prikaz0 = mysqli_query($link, "UPDATE kango.loads SET pocet = pocet * -1 WHERE ((ZELEZN = '$ZELEZN') AND (ZST='$ZST') AND (OB = '$OB'));");
+		break;
+		
+	case 'unlink' :
+		$stpid = $_GET['z'];
+		$prikaz0 = "UPDATE stop SET stop_id = '0000' WHERE stop_id = '$stpid';";
+		$proved0 = mysqli_query($link, $prikaz0);
 }	
 
 switch ($action) {
+	case 'potvrd' :
+		$linked = $_POST['linked'];
+		$stopzst = $_POST['stopzst'];
+		$stopstat = $_POST['stopstat'];
+		$stopob = $_POST['stopob'];
+		$stopid = substr($stopstat,-2).$stopzst.substr($stopob,-1);
+
+		$query80 = mysqli_fetch_row(mysqli_query($link, "UPDATE stop SET stop_id='$stopid' WHERE stop_id = '$linked';"));
+		$prikaz5 = mysqli_query($link, "DELETE FROM kango.loads WHERE ((ZELEZN = '$stopstat') AND (ZST='$stopzst') AND (OB = '$stopob'));");
+	break;
+	
 	case 'paruj' :
 		$linked = $_POST['linked'];
-		$stopid = $_POST['stopid'];
+		$stopzst = $_POST['stopzst'];
+		$stopstat = $_POST['stopstat'];
+		$stopob = $_POST['stopob'];
+		$stopid = substr($stopstat,-2).$stopzst.substr($stopob,-1);
+		
 		$query2 = "SELECT * FROM kango.zastavky WHERE (stop_id = '$linked');";
 		if ($result2 = mysqli_query($link, $query2)) {
 			while ($row2 = mysqli_fetch_row($result2)) {
@@ -25,21 +49,12 @@ switch ($action) {
 
 				$prikaz1 = mysqli_query($link, "INSERT INTO stop (stop_id, stop_code, stop_name, stop_desc, stop_lat, stop_lon, zone_id, stop_url, location_type, parent_station, stop_timezone, wheelchair_boarding, active) VALUES ('$stopid','','$stop_name','$stop_desc','$stop_lat','$stop_lon','','','$location_type','','','$wheelchair_boarding','0');");
 				$prikaz2 = mysqli_query($link, "DELETE FROM kango.zastavky WHERE (stop_id = '$linked');");
-				$prikaz3 = mysqli_query($link, "DELETE FROM kango.loads WHERE (ZST = '$stopid');");
+				$prikaz3 = mysqli_query($link, "DELETE FROM kango.loads WHERE ((ZELEZN = '$stopstat') AND (ZST='$stopzst') AND (OB = '$stopob'));");
 			}
 		mysqli_free_result($result2);
 		}
 	break;
-	
-	/*case 'nova' :
-		$stopid = $_POST['stopid'];
-		$stopname = $_POST['stopname'];
-		$stoplat = $_POST['stoplat'];
-		$stoplon = $_POST['stoplon'];
-		
-		$prikaz4 = mysqli_query($link, "INSERT INTO stop (stop_id, stop_code, stop_name, stop_desc, stop_lat, stop_lon, zone_id, stop_url, location_type, parent_station, stop_timezone, wheelchair_boarding, active)  VALUES ('$stopid','','$stopname','','$stoplat','$stoplon','','','0','','','0','0');");
-		$prikaz5 = mysqli_query($link, "DELETE FROM kango.loads WHERE (ZST = '$stopid');");
-		break;*/
+
 }
 
 echo "<table>";
@@ -50,24 +65,49 @@ echo "</tr>";
 $query = "SELECT * FROM kango.loads ORDER BY pocet DESC LIMIT 1;";
 if ($result = mysqli_query($link, $query)) {
 	while ($row = mysqli_fetch_row($result)) {
-		$ZST = $row[0];
-		$pocet = $row[1];
+		$ZELEZN = $row[0];
+		$ZST = $row[1];
+		$OB = $row[2];
+		$pocet = $row[3];
 
-		$pom2 = mysqli_fetch_row(mysqli_query($link, "SELECT NAZEVDB FROM kango.DB WHERE (ZST='$ZST');"));
+		$pom2 = mysqli_fetch_row(mysqli_query($link, "SELECT NAZEVDB FROM kango.DB WHERE ((ZELEZN = '$ZELEZN') AND (ZST='$ZST') AND (OB = $OB));"));
 		$stanice = $pom2[0];
 		
 		echo "<tr>";
-		echo "<td>$ZST</td>";
+		echo "<td>$ZELEZN $ZST $OB</td>";
 		echo "<td>$stanice</td>";
 		echo "<td>$pocet</td>";
-		echo "<td><a href=\"pairing.php?a=skip&z=$ZST\">Skip this stop</a></td>";
+		echo "<td><a href=\"pairing.php?a=skip&s=$ZELEZN&z=$ZST&o=$OB\">Skip this stop</a></td>";
 		echo "</tr>";
 	
+echo "<form method=\"post\" action=\"pairing.php\" name=\"potvrd\">
+		<input name=\"action\" value=\"potvrd\" type=\"hidden\">
+		<input name=\"stopzst\" value=\"$ZST\" type=\"hidden\">
+		<input name=\"stopstat\" value=\"$ZELEZN\" type=\"hidden\">
+		<input name=\"stopob\" value=\"$OB\" type=\"hidden\">";
+		
+		echo "<tr><td colspan=\"4\">1. PLEASE CONFIRM THE PAIRING: ";
+
+		$query80 = mysqli_fetch_row(mysqli_query($link, "SELECT stop_id, stop_name FROM stop WHERE stop_id = '$ZST';"));
+		$stop_id = $query80[0];
+		$stop_name = $query80[1];
+		
+		echo "<INPUT name=\"linked\" type=\"hidden\" value=\"$stop_id\"> <b>$stop_name</b>";
+	}
+}
+		echo "</select><input type=\"submit\" value=\"The same stop\"></form>
+		<a href=\"pairing.php?a=unlink&z=$stop_id\">Pairing is incorrect</a></td></tr>";
+
+
+
+
 echo "<form method=\"post\" action=\"pairing.php\" name=\"paruj\">
 		<input name=\"action\" value=\"paruj\" type=\"hidden\">
-		<input name=\"stopid\" value=\"$ZST\" type=\"hidden\">";
+		<input name=\"stopzst\" value=\"$ZST\" type=\"hidden\">
+		<input name=\"stopstat\" value=\"$ZELEZN\" type=\"hidden\">
+		<input name=\"stopob\" value=\"$OB\" type=\"hidden\">";
 		
-		echo "<tr><td colspan=\"4\">PLEASE FIND THE STATION WITH SAME NAME: ";
+		echo "<tr><td colspan=\"4\">2. OR FIND THE STATION WITH SAME NAME: ";
 		echo "<select name=\"linked\"><option value=\"\">---</option>";
 
 $query1 = "SELECT * FROM kango.zastavky ORDER BY stop_name;";
@@ -82,22 +122,9 @@ if ($result1 = mysqli_query($link, $query1)) {
 }
 		echo "</select><input type=\"submit\" value=\"Submit\"></form></td></tr>";
 
-}
-/*
-echo "<tr><td colspan=\"4\">------------------------------</td></tr>";
-echo "<tr><td colspan=\"4\">Insert new stop</td></tr>";
-
-echo "<form method=\"post\" action=\"pairing.php\" name=\"nova\">
-		<input name=\"action\" value=\"nova\" type=\"hidden\">
-		<input name=\"stopid\" value=\"$ZST\" type=\"hidden\">";
-
-echo "<tr><td>Stop ID</td><td>Stop name</td><td>Latitude ~50.123456</td><td>Longitude ~16.987654</td></tr>";
-echo "<tr><td>$ZST</td><td><input name=\"stopname\" value=\"$stanice\" type=\"text\"></td><td><input name=\"stoplat\" type=\"text\"></td><td><input name=\"stoplon\" type=\"text\"></td></tr>";
-echo "<tr><td colspan=\"4\"><input type=\"submit\" value=\"Insert\"></td></tr>";*/
 echo "<table>";
 
 	mysqli_free_result($result);
-}
 
 include 'footer.php';
 ?>
