@@ -19,11 +19,19 @@ switch ($lasttrip) {
     case "H" : $nexttrip = "I"; break;
     case "I" : $nexttrip = "J"; break;
     case "J" : $nexttrip = "K"; break;
+    case "K" : $nexttrip = "L"; break;
+    case "L" : $nexttrip = "M"; break;
+    case "M" : $nexttrip = "N"; break;
+    case "N" : $nexttrip = "O"; break;
+    case "O" : $nexttrip = "P"; break;
+    case "P" : $nexttrip = "Q"; break;
+    case "Q" : $nexttrip = "R"; break;
+    case "R" : $nexttrip = "S"; break;
+    case "S" : $nexttrip = "T"; break;
+    case "T" : $nexttrip = "U"; break;
 }
 
 $new_trip_id = $vlak.$lomeni.$nexttrip;
-
-echo "Last $lasttrip > New $nexttrip = $new_trip_id";
 
 $hlavicka = mysqli_fetch_row(mysqli_query($link, "SELECT JMENVL FROM kango.HLV WHERE (CISLO7='$cislo7');"));
 $jmeno = $hlavicka[0];
@@ -67,6 +75,33 @@ switch ($calpom) {
 	$matice = $pom6[7];
     break;
 }
+
+$cyklo = 0;
+$invalida= 0;
+
+$query86 = "SELECT POZNAM,KODZNAC FROM kango.OBP WHERE (CISLO7='$cislo7');";
+if ($result86 = mysqli_query($link, $query86)) {
+    while ($row86 = mysqli_fetch_row($result86)) {
+	$poznamka = $row86[0];
+	$znacka = $row86[1];
+	
+	switch($znacka) {
+	    case 8 :
+	    case 9 : $cyklo = 1;
+		break;
+	    
+	    case 7 : $invalida = 1;
+		break;
+	}
+	
+	if (strpos($poznamka, "jízdní kolo") !== false) {$cyklo = 1;}
+	if (strpos($poznamka, "jízdních kol") !== false) {$cyklo = 2;}
+	if (strpos($poznamka, "vozík") !== false) {$invalida = 1;}
+    }
+}   
+
+
+
 
 $query1 = "INSERT INTO trip VALUES (
     '0',

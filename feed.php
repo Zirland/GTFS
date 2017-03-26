@@ -27,7 +27,7 @@ $current = "stop_id,stop_name,stop_lat,stop_lon,location_type,parent_station,whe
 file_put_contents($file, $current);
 
 $file = 'shapes.txt';
-$current = "shape_id,shape_pt_lat,shape_pt_lon,shape_pt_sequence\n";
+$current = "shape_id,shape_pt_lat,shape_pt_lon,shape_pt_sequence,shape_dist_traveled\n";
 file_put_contents($file, $current);
 
 $shape_trunc = mysqli_query($link, "TRUNCATE TABLE shape;");
@@ -123,13 +123,13 @@ if ($result69 = mysqli_query($link, $akt_route)) {
 		$service_id = $dec;
 				
 		$mark_cal = mysqli_query($link, "INSERT INTO kango.cal_use (trip_id, kalendar) VALUES ('$trip_id', '$service_id');");
-// zápis kalendáře trasy pro tento týden do databáze
+// zápis kalendáře spoje pro tento týden do databáze
 			
 		$current = "$route_id,$service_id,$trip_id,\"$trip_headsign\",$direction_id,$shape_id,$wheelchair_accessible,$bikes_allowed\n";
 		$file = 'trips.txt';
 		file_put_contents($file, $current, FILE_APPEND);
 		$tripnums = $tripnums + 1;
-// zapsána aktivní trasa
+// zapsán aktivní spoj
 				
 		$pom125 = mysqli_fetch_row(mysqli_query($link, "SELECT max(stop_sequence) FROM stoptime WHERE (trip_id = '$trip_id');"));
 		$max_trip = $pom125[0];
@@ -143,6 +143,11 @@ if ($result69 = mysqli_query($link, $akt_route)) {
 		$cislo7 = $vlak."/".$lomeni;
 
 		$i = 0;
+		$prevstat= "";
+		$prevzst = "";
+		$prevob = "";
+		$vzdal = 0;
+
 		$query131 = "SELECT * FROM kango.DTV WHERE (CISLO7='$cislo7');";
 		if ($result131 = mysqli_query($link, $query131)) {
                     while ($row131 = mysqli_fetch_row($result131))  {
@@ -156,19 +161,33 @@ if ($result69 = mysqli_query($link, $akt_route)) {
 			$lat = $pom139[0];
 			$lon = $pom139[1];
 
+			$result235 = mysqli_query($link, "SELECT DELKA FROM kango.DU WHERE ((ZELEZN1 = '$prevstat') AND (ZST1 = '$prevzst') AND (OB1 = '$prevob') AND (ZELEZN2 = '$stopstat') AND (ZST2 = '$stopzst') AND (OB2 = '$stopob'));");
+			$pom235 = mysqli_fetch_row($result235);
+			$ujeto = $pom235[0];
+			$radky = mysqli_num_rows($result235);
+			if ($radky == 0) {
+				$result240 = mysqli_query($link, "SELECT DELKA FROM kango.DU WHERE ((ZELEZN2 = '$prevstat') AND (ZST2 = '$prevzst') AND (OB2 = '$prevob') AND (ZELEZN1 = '$stopstat') AND (ZST1 = '$stopzst') AND (OB1 = '$stopob'));");
+				$pom240 = mysqli_fetch_row($result240);
+				$ujeto = $pom240[0];
+			} 
+			$vzdal = $vzdal + $ujeto;
+			$prevstat = $ZELEZN;
+			$prevzst = $ZST;
+			$prevob = $OB;
 			if ($lat != '' && $lon != '' && $i <= $max_trip && $i >= $min_trip) {
-			$query144 = "INSERT INTO shape VALUES (
+				if ($i == $min_trip) {$vzdal = 0;} 
+			    $query144 = "INSERT INTO shape VALUES (
                             '$trip_id',
                             '$lat',
                             '$lon',
                             '$i',
-                            ''
+                            '$vzdal'
                             );";
-			$command = mysqli_query($link, $query144);
+				$command = mysqli_query($link, $query144);
 // zápis nové trasy do databáze
 			}
-                    }
-		}				
+		}
+	}				
 				
 		$tripstops = "SELECT trip_id,arrival_time,departure_time,stop_id,stop_sequence,pickup_type,drop_off_type FROM stoptime WHERE (trip_id = '$trip_id');";
 		if ($result166 = mysqli_query($link, $tripstops)) {
@@ -259,15 +278,16 @@ echo "Exported stops: $stopnums<br />";
 
 $current = "";
 
-$query260 = "SELECT shape_id,shape_pt_lat,shape_pt_lon,shape_pt_sequence FROM shape;";
+$query260 = "SELECT shape_id,shape_pt_lat,shape_pt_lon,shape_pt_sequence,shape_dist_traveled FROM shape;";
 if ($result260 = mysqli_query($link, $query260)) {
 	while ($row260 = mysqli_fetch_row($result260)) {
 		$shape_id = $row260[0];
         $shape_pt_lat = $row260[1];
         $shape_pt_lon = $row260[2];
         $shape_pt_sequence = $row260[3];
+        $shape_dist_traveled = $row260[4];
         
-		$current .= "$shape_id,$shape_pt_lat,$shape_pt_lon,$shape_pt_sequence\n";
+		$current .= "$shape_id,$shape_pt_lat,$shape_pt_lon,$shape_pt_sequence,$shape_dist_traveled\n";
 	}
 }
 

@@ -195,7 +195,7 @@ if ($result86 = mysqli_query($link, $query86)) {
 				
 	echo "$poznamka<br />";
 	}
-    }
+}
 		
 echo "</td></tr>";
 echo "</table>";
@@ -309,6 +309,11 @@ if ($result262 = mysqli_query($link, $query262)) {
 echo "TRASA<br />";
 
 $i = 0;
+$prevstat= "";
+$prevzst = "";
+$prevob = "";
+$vzdal = 0;
+
 $query131 = "SELECT * FROM kango.DTV WHERE (CISLO7='$cislo7');";
 if ($result131 = mysqli_query($link, $query131)) {
     while ($row131 = mysqli_fetch_row($result131))  {
@@ -322,9 +327,23 @@ if ($result131 = mysqli_query($link, $query131)) {
 	$name = $pom139[0];
 	$lat = $pom139[1];
 	$lon = $pom139[2];
-
+	
+	$result235 = mysqli_query($link, "SELECT DELKA FROM kango.DU WHERE ((ZELEZN1 = '$prevstat') AND (ZST1 = '$prevzst') AND (OB1 = '$prevob') AND (ZELEZN2 = '$stopstat') AND (ZST2 = '$stopzst') AND (OB2 = '$stopob'));");
+	$pom235 = mysqli_fetch_row($result235);
+	$ujeto = $pom235[0];
+	$radky = mysqli_num_rows($result235);
+	if ($radky == 0) {
+	    $result240 = mysqli_query($link, "SELECT DELKA FROM kango.DU WHERE ((ZELEZN2 = '$prevstat') AND (ZST2 = '$prevzst') AND (OB2 = '$prevob') AND (ZELEZN1 = '$stopstat') AND (ZST1 = '$stopzst') AND (OB1 = '$stopob'));");
+	    $pom240 = mysqli_fetch_row($result240);
+	    $ujeto = $pom240[0];
+   	} 
+	$vzdal = $vzdal + $ujeto;
+	$prevstat = $stopstat;
+	$prevzst = $stopzst;
+	$prevob = $stopob;
 	if ($lat != '' && $lon != '' && $i <= $max_trip && $i >= $min_trip) {
-	    echo "$name - $lat - $lon - $i<br />";
+	    if ($i == $min_trip) {$vzdal = 0;} 
+	    echo "$name - $lat - $lon - $i - $vzdal<br />";
 	}
     }
 }
