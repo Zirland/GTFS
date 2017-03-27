@@ -3,7 +3,7 @@
 include 'header.php';
 
 $file = 'agency.txt';
-$current = "agency_id,agency_name,agency_url,agency_timezone,agency_phone,agency_email\n";
+$current = "agency_id,agency_name,agency_url,agency_timezone,agency_phone\n";
 file_put_contents($file, $current);
 
 $file = 'routes.txt';
@@ -46,7 +46,7 @@ if ($result42 = mysqli_query($link, $act_agency)) {
         $agency_id_42 = $row42[0];
 		$agencynums = mysqli_num_rows($result42);
 		
-	$query46 = "SELECT agency_id,agency_name,agency_url,agency_timezone,agency_phone,agency_email FROM agency WHERE (agency_id = '$agency_id_42');";
+	$query46 = "SELECT agency_id,agency_name,agency_url,agency_timezone,agency_phone FROM agency WHERE (agency_id = '$agency_id_42');";
 
         if ($result46 = mysqli_query($link, $query46)) {
             while ($row46 = mysqli_fetch_row($result46)) {
@@ -55,9 +55,8 @@ if ($result42 = mysqli_query($link, $act_agency)) {
 		$agency_url = $row46[2];
 		$agency_timezone = $row46[3];
 		$agency_phone = $row46[4];
-		$agency_email = $row46[5];
 		
-		$current .= "$agency_id,\"$agency_name\",$agency_url,$agency_timezone,\"$agency_phone\",$agency_email\n";
+		$current .= "$agency_id,\"$agency_name\",$agency_url,$agency_timezone,\"$agency_phone\"\n";
             }
 	}
     }
@@ -143,7 +142,7 @@ if ($result69 = mysqli_query($link, $akt_route)) {
 		$cislo7 = $vlak."/".$lomeni;
 
 		$i = 0;
-		$prevstat= "";
+		$prevstat = "";
 		$prevzst = "";
 		$prevob = "";
 		$vzdal = 0;
@@ -161,12 +160,12 @@ if ($result69 = mysqli_query($link, $akt_route)) {
 			$lat = $pom139[0];
 			$lon = $pom139[1];
 
-			$result235 = mysqli_query($link, "SELECT DELKA FROM kango.DU WHERE ((ZELEZN1 = '$prevstat') AND (ZST1 = '$prevzst') AND (OB1 = '$prevob') AND (ZELEZN2 = '$stopstat') AND (ZST2 = '$stopzst') AND (OB2 = '$stopob'));");
+			$result235 = mysqli_query($link, "SELECT DELKA FROM kango.DU WHERE ((ZELEZN1 = '$prevstat') AND (ZST1 = '$prevzst') AND (OB1 = '$prevob') AND (ZELEZN2 = '$ZELEZN') AND (ZST2 = '$ZST') AND (OB2 = '$OB'));");
 			$pom235 = mysqli_fetch_row($result235);
 			$ujeto = $pom235[0];
 			$radky = mysqli_num_rows($result235);
 			if ($radky == 0) {
-				$result240 = mysqli_query($link, "SELECT DELKA FROM kango.DU WHERE ((ZELEZN2 = '$prevstat') AND (ZST2 = '$prevzst') AND (OB2 = '$prevob') AND (ZELEZN1 = '$stopstat') AND (ZST1 = '$stopzst') AND (OB1 = '$stopob'));");
+				$result240 = mysqli_query($link, "SELECT DELKA FROM kango.DU WHERE ((ZELEZN2 = '$prevstat') AND (ZST2 = '$prevzst') AND (OB2 = '$prevob') AND (ZELEZN1 = '$ZELEZN') AND (ZST1 = '$ZST') AND (OB1 = '$OB'));");
 				$pom240 = mysqli_fetch_row($result240);
 				$ujeto = $pom240[0];
 			} 
