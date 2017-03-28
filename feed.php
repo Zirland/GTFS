@@ -31,6 +31,8 @@ $current = "shape_id,shape_pt_lat,shape_pt_lon,shape_pt_sequence,shape_dist_trav
 file_put_contents($file, $current);
 
 $shape_trunc = mysqli_query($link, "TRUNCATE TABLE shape;");
+$napln = mysqli_query($link, "INSERT INTO shape SELECT * FROM force_shape;");
+
 $calendar_trunc = mysqli_query($link, "TRUNCATE TABLE kango.cal_use;");
 
 $agencynums = 0;
@@ -99,12 +101,16 @@ if ($result69 = mysqli_query($link, $akt_route)) {
 		$bikes_allowed = $row85[7];
 
 		$matice_start = mktime(0,0,0,12,11,2016);
-		$zitra_den = date("d", time()+86400);
-		$zitra_mesic = date("m", time()+86400);
-		$zitra_rok = date("Y", time()+86400);
-		$calendar_start = mktime(0,0,0,$zitra_mesic,$zitra_den,$zitra_rok);
-		$calendar_start_format = date("Ymd", time()+86400);
-		$calendar_stop_format = date("Ymd", time()+8*86400);
+//		$zitra_den = date("d", time()+86400);
+//		$zitra_mesic = date("m", time()+86400);
+//		$zitra_rok = date("Y", time()+86400);
+		$dnes_den = date("d", time());
+		$dnes_mesic = date("m", time());
+		$dnes_rok = date("Y", time());
+
+		$calendar_start = mktime(0,0,0,$dnes_mesic,$dnes_den,$dnes_rok);
+		$calendar_start_format = date("Ymd", time());
+		$calendar_stop_format = date("Ymd", time()+7*86400);
 		$vtydnu = date('w',$calendar_start);
 
 		$sek=$calendar_start-$matice_start;
@@ -116,7 +122,7 @@ if ($result69 = mysqli_query($link, $akt_route)) {
 		$hod=$hod%24;
 		$aktual = substr($matice,$dni,7);
 
-        $adjust = substr($aktual,-$vtydnu).substr($aktual,0,-$vtydnu);
+ 	       	$adjust = substr($aktual,-$vtydnu).substr($aktual,0,-$vtydnu);
 		$dec=bindec($adjust)+1;
 
 		$service_id = $dec;

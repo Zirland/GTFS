@@ -84,7 +84,8 @@ if ($result37 = mysqli_query($link, $query37)) {
 				$trip_headsign = $row80[3];
 				$trip_aktif = $row80[10];
 				
-				$vlak = substr($trip_id,0,-2);
+//				$vlak = substr($trip_id,0,-2);
+				$vlak = $trip_id;
 
 				if ($trip_aktif == '1') {echo "<span style=\"background-color:green;\">";}
 				echo "$vlak - $trip_headsign - <a href=\"tripedit.php?id=$trip_id\">Upravit</a><br />";
