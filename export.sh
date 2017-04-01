@@ -4,6 +4,6 @@ curl http://localhost/gtfs/feed.php
 
 zip trains *.txt
 
-rm *.txt
+feedvalidator.py trains.zip 
 
 exit;
