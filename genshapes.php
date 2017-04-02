@@ -6,35 +6,39 @@ if ($result = mysqli_query($link, $query)) {
 	while ($row = mysqli_fetch_row($result)) {
 		$trip_id = $row[2];
 		
-		$lomeni = substr($trip_id,-2,1);
-		$vlak = substr($trip_id, 0, -2);
+		$vlak = substr($trip_id,0,-2);
+		$lomeni = substr($vlak,-1);
 		$cislo7 = $vlak."/".$lomeni;
 
+		$tvartrasy = "";
 		$i = 0;
-		$query4 = "SELECT * FROM kango.DTV WHERE (CISLO7='$cislo7');";
-		if ($result4 = mysqli_query($link, $query4)) {
-			while ($row4 = mysqli_fetch_row($result4)) {
-				$ZST = $row4[2];
-				$i = $i + 1;
-		
-				$pom4 = mysqli_fetch_row(mysqli_query($link, "SELECT stop_lat,stop_lon FROM stop WHERE (stop_id='$ZST');"));
-				$lat = $pom4[0];
-				$lon = $pom4[0];
 
-				if ($lat != '' && $lon != '') {
-					$query5 = "INSERT INTO shape VALUES (
-					'$trip_id',
-					'$lat',
-					'$lon',
-					'$i',
-					''
-					);";
-				echo $query5."<br/>";
-				$command = mysqli_query($link, $query5)  or die("Shape Error description: " . mysqli_error($link));;
+		$pom125 = mysqli_fetch_row(mysqli_query($link, "SELECT max(stop_sequence) FROM stoptime WHERE (trip_id = '$trip_id');"));
+		$max_trip = $pom125[0];
+
+		$pom129 = mysqli_fetch_row(mysqli_query($link, "SELECT min(stop_sequence) FROM stoptime WHERE (trip_id = '$trip_id');"));
+		$min_trip = $pom129[0];
+
+
+		$query131 = "SELECT * FROM kango.DTV WHERE (CISLO7='$cislo7');";
+		if ($result131 = mysqli_query($link, $query131)) {
+			while ($row131 = mysqli_fetch_row($result131))  {
+				$stopstat = $row131[1];
+				$stopzst = $row131[2];
+				$stopob = $row131[3];
+				$ZST = substr($stopstat,-2).$stopzst.substr($stopob,-1);
+				$i = $i + 1;
+	
+				if ($i <= $max_trip && $i >= $min_trip) {
+					$tvartrasy .= $ZST;
 				}
 			}
 		}
 
+		$dotaz = "UPDATE trip SET shape_id = '$tvartrasy' WHERE trip_id = '$trip_id';";
+		echo $dotaz;
+		$prikaz = mysqli_query($link, $dotaz);
+		echo "$trip_id<br />";
 	}
 }
 

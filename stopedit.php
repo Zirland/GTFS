@@ -13,7 +13,7 @@ switch ($action) {
 		$query14 = "UPDATE stop SET stop_lat = '$stoplat', stop_lon = '$stoplon' WHERE stop_id = '$stop_id';";
 		$prikaz4 = mysqli_query($link, $query14);
 
-		$deaktivace = "UPDATE kango.shapecheck SET complete = '0' WHERE (shape_id IN (SELECT trip_id FROM stoptime WHERE stop_id = '$stop_id'));";
+		$deaktivace = "UPDATE shapetvary SET complete = '0' WHERE (tvartrasy LIKE '%$stop_id%'));";
 		$prikaz19 = mysqli_query($link, $deaktivace);
 	break;
 }

@@ -39,6 +39,7 @@ file_put_contents($file, $current);
 
 $calendar_trunc = mysqli_query($link, "TRUNCATE TABLE kango.cal_use;");
 $stop_trunc = mysqli_query($link, "TRUNCATE TABLE kango.stop_use;");
+$shapecheck_trunc = mysqli_query($link, "TRUNCATE TABLE kango.shapecheck;");
 
 $agencynums = 0;
 $routenums = 0;
@@ -110,7 +111,7 @@ $prevnow = $now;
 		$trip_id = $row85[2];
 		$trip_headsign = $row85[3];
 		$direction_id = $row85[4];
-		$shape_id = $row85[5];
+		$shape_tvar = $row85[5];
 		$wheelchair_accessible = $row85[6];
 		$bikes_allowed = $row85[7];
 
@@ -133,7 +134,7 @@ $prevnow = $now;
 		$hod=$hod%24;
 		$aktual = substr($matice,$dni,7);
 
-      	$adjust = substr($aktual,-$vtydnu).substr($aktual,0,-$vtydnu);
+      	$adjust = substr($aktual,-$vtydnu+1).substr($aktual,0,-$vtydnu+1);
 		$dec=bindec($adjust)+1;
 
 $now = microtime(true);
@@ -147,81 +148,81 @@ $prevnow = $now;
 				
 		$mark_cal = mysqli_query($link, "INSERT INTO kango.cal_use (trip_id, kalendar) VALUES ('$trip_id', '$service_id');");
 // zápis kalendáře spoje pro tento týden do databáze
-			
+
+		$query152 = "SELECT shape_id FROM shapetvary WHERE tvartrasy = '$shape_tvar';";
+		if ($result152 = mysqli_query($link, $query152)) {
+			$radku = mysqli_num_rows($result152);
+			if ($radku == 0) {
+				$vloztrasu = mysqli_query($link, "INSERT INTO shapetvary (tvartrasy, complete) VALUES ('$shape_tvar', '0');");
+				$shape_id = mysqli_insert_id($link);
+			} else
+			while ($row152 = mysqli_fetch_row($result152)) {
+				$shape_id = $row152[0];
+			}
+		}
+
 		$current = "$route_id,$service_id,$trip_id,\"$trip_headsign\",$direction_id,$shape_id,$wheelchair_accessible,$bikes_allowed\n";
 		$file = 'trips.txt';
 		file_put_contents($file, $current, FILE_APPEND);
 		$tripnums = $tripnums + 1;
 // zapsán aktivní spoj
 
+$query171 = "INSERT INTO kango.shapecheck (trip_id, shape_id) VALUES ('$trip_id', '$shape_id');";
+$zapistrasy = mysqli_query($link, $query171);
+
 $now = microtime(true);
 $dlouho = $now-$prevnow;
 // echo "Trip $trip_id: $dlouho<br />";
 $prevnow = $now;
 
-$query162 = "SELECT complete FROM kango.shapecheck WHERE shape_id = '$trip_id';";
+$query162 = "SELECT tvartrasy, complete FROM shapetvary WHERE shape_id = '$shape_id';";
 if ($result162 = mysqli_query($link, $query162)) {
 	while ($row162 = mysqli_fetch_row($result162)) {
-		$kompltrasa = $row162[0];
-		
+		$tvartrasy = $row162[0];
+		$kompltrasa = $row162[1];
 		if ($kompltrasa != 1) {
-			$smazanitrasy = mysqli_query($link, "DELETE FROM shape WHERE shape_id = '$trip_id';");
-			$pom125 = mysqli_fetch_row(mysqli_query($link, "SELECT max(stop_sequence) FROM stoptime WHERE (trip_id = '$trip_id');"));
-			$max_trip = $pom125[0];
-
-			$pom129 = mysqli_fetch_row(mysqli_query($link, "SELECT min(stop_sequence) FROM stoptime WHERE (trip_id = '$trip_id');"));
-			$min_trip = $pom129[0];
-//vymezení výchozího a konečného bodu
+			$smaz182 = "DELETE FROM shape WHERE shape_id = '$shape_id';";
+			$smazanitrasy = mysqli_query($link,$smaz182);
 				
-			$lomeni = substr($trip_id,-2,1);
-			$vlak = substr($trip_id, 0, -2);
-			$cislo7 = $vlak."/".$lomeni;
-
 			$i = 0;
 			$prevstop = "";
 			$vzdal = 0;
 			$komplet = 1;
-		
-			$query131 = "SELECT * FROM kango.DTV WHERE (CISLO7='$cislo7');";
-			if ($result131 = mysqli_query($link, $query131)) {
-			while ($row131 = mysqli_fetch_row($result131))  {
-				$ZELEZN = $row131[1];
-				$ZST = $row131[2];
-				$OB = $row131[3];
-				$i = $i + 1;
-				$stop_id = substr($ZELEZN,-2).$ZST.substr($OB,-1);
-		
-				$pom139 = mysqli_fetch_row(mysqli_query($link, "SELECT stop_lat,stop_lon FROM stop WHERE (stop_id='$stop_id');"));
-				$lat = $pom139[0];
-				$lon = $pom139[1];
 
-				$result235 = mysqli_query($link, "SELECT DELKA FROM kango.DU_pom WHERE (STOP1 = '$prevstop') AND (STOP2 = '$stop_id');");
+			$output = str_split($tvartrasy,9);
+
+			foreach ($output as $prujbod) {
+				$pom139 = mysqli_fetch_row(mysqli_query($link, "SELECT stop_name,stop_lat,stop_lon FROM stop WHERE (stop_id='$prujbod');"));
+				$name = $pom139[0];
+				$lat = $pom139[1];
+				$lon = $pom139[2];
+				$i = $i + 1;
+						
+				$result235 = mysqli_query($link, "SELECT DELKA FROM kango.DU_pom WHERE (STOP1 = '$prevstop') AND (STOP2 = '$prujbod');");
 				$pom235 = mysqli_fetch_row($result235);
 				$ujeto = $pom235[0];
 				$radky = mysqli_num_rows($result235);
 				$vzdal = $vzdal + $ujeto;
-				$prevstop = $stop_id;
+				$prevstop = $prujbod;
 						
-				if ($i <= $max_trip && $i >= $min_trip) {
-					if ($lat != '' && $lon != '') {
-						if ($i == $min_trip) {$vzdal = 0;} 
-							$query144 = "INSERT INTO shape VALUES (
-										'$trip_id',
-										'$lat',
-										'$lon',
-										'$i',
-										'$vzdal'
-									);";
-							$command = mysqli_query($link, $query144);
-					} else {$komplet = 0;}
+				if ($lat != '' && $lon != '') {
+					if ($i == 1) {$vzdal = 0;} 
+						$query144 = "INSERT INTO shape VALUES (
+									'$shape_id',
+									'$lat',
+									'$lon',
+									'$i',
+									'$vzdal'
+								);";
+						$command = mysqli_query($link, $query144);
+				} 
+//				else {$komplet = 0;}
 // zápis nové trasy do databáze
-				}
 			}
 		}				
-$query217 = "UPDATE kango.shapecheck SET complete = '$komplet' WHERE shape_id = '$trip_id';";
+$query217 = "UPDATE shapetvary SET complete = '$komplet' WHERE shape_id = '$shape_id';";
 $command217 = mysqli_query($link, $query217);
 	}
-}
 }
 
 $now = microtime(true);
@@ -323,6 +324,8 @@ $query313 = "SELECT stop_id,stop_name,stop_lat,stop_lon,location_type,parent_sta
                 $stopnums = $stopnums + mysqli_num_rows($result313);
 
 				$current .= "$stop_id,\"$stop_name\",$stop_lat,$stop_lon,$location_type,$parent_station,$wheelchair_boarding\n";
+			}
+		}
 
 
 $file = 'stops.txt';
@@ -338,22 +341,29 @@ echo "Exported stops: $stopnums<br />";
 
 $current = "";
 
-$query260 = "SELECT shape_id,shape_pt_lat,shape_pt_lon,shape_pt_sequence,shape_dist_traveled FROM shape;";
-if ($result260 = mysqli_query($link, $query260)) {
-	while ($row260 = mysqli_fetch_row($result260)) {
-		$shape_id = $row260[0];
-        $shape_pt_lat = $row260[1];
-        $shape_pt_lon = $row260[2];
-        $shape_pt_sequence = $row260[3];
-        $shape_dist_traveled = $row260[4];
+$shps = "SELECT DISTINCT shapecheck.shape_id FROM kango.shapecheck;";
+if ($result349 = mysqli_query($link, $shps)) {
+	while ($row349 = mysqli_fetch_row($result349)) {
+		$shape_id = $row349[0];
+
+		$query260 = "SELECT shape_id,shape_pt_lat,shape_pt_lon,shape_pt_sequence,shape_dist_traveled FROM shape WHERE (shape_id = '$shape_id');";
+		if ($result260 = mysqli_query($link, $query260)) {
+			while ($row260 = mysqli_fetch_row($result260)) {
+				$shape_id = $row260[0];
+				$shape_pt_lat = $row260[1];
+				$shape_pt_lon = $row260[2];
+				$shape_pt_sequence = $row260[3];
+				$shape_dist_traveled = $row260[4];
         
-		$current .= "$shape_id,$shape_pt_lat,$shape_pt_lon,$shape_pt_sequence,$shape_dist_traveled\n";
+				$current .= "$shape_id,$shape_pt_lat,$shape_pt_lon,$shape_pt_sequence,$shape_dist_traveled\n";
+			}
+		}
 	}
 }
 
 $file = 'shapes.txt';
 file_put_contents($file, $current, FILE_APPEND);
-//zapsány použité tvary tras
+//zapsány použité tvary tras */
 
 $now = microtime(true);
 $dlouho = $now-$prevnow;

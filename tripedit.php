@@ -64,6 +64,38 @@ switch ($action) {
 				break;
     		}
    	}
+	
+	$vlak = substr($trip,0,-2);
+	$lomeni = substr($vlak,-1);
+	$cislo7 = $vlak."/".$lomeni;
+
+	$pom163 = mysqli_fetch_row(mysqli_query($link, "SELECT max(stop_sequence) FROM stoptime WHERE (trip_id = '$trip');"));
+	$max_trip = $pom163[0];
+
+	$pom129 = mysqli_fetch_row(mysqli_query($link, "SELECT min(stop_sequence) FROM stoptime WHERE (trip_id = '$trip');"));
+	$min_trip = $pom129[0];
+//vymezení výchozího a konečného bodu
+
+	$tvartrasy = "";
+	$i = 0;
+	
+	$query131 = "SELECT * FROM kango.DTV WHERE (CISLO7='$cislo7');";
+	if ($result131 = mysqli_query($link, $query131)) {
+		while ($row131 = mysqli_fetch_row($result131))  {
+			$stopstat = $row131[1];
+			$stopzst = $row131[2];
+			$stopob = $row131[3];
+			$ZST = substr($stopstat,-2).$stopzst.substr($stopob,-1);
+			$i = $i + 1;
+	
+			if ($i <= $max_trip && $i >= $min_trip) {
+				$tvartrasy .= $ZST;
+			}
+		}
+	}
+	
+	$dotaz86 = "UPDATE trip SET shape_id = '$tvartrasy' WHERE trip_id = '$trip';";
+	$prikaz86 = mysqli_query($link, $dotaz86);
 	break;
     
 	case "grafikon" :
@@ -305,8 +337,48 @@ if ($result262 = mysqli_query($link, $query262)) {
 	}
 }
 
-/*echo "TRASA<br />";
+echo "TRASA<br />";
+$query131 = "SELECT * FROM kango.DTV WHERE (CISLO7='$cislo7');";
+		if ($result131 = mysqli_query($link, $query131)) {
+			while ($row131 = mysqli_fetch_row($result131))  {
+				$stopstat = $row131[1];
+				$stopzst = $row131[2];
+				$stopob = $row131[3];
+				$ZST = substr($stopstat,-2).$stopzst.substr($stopob,-1);
+				$i = $i + 1;
+	
+				if ($i <= $max_trip && $i >= $min_trip) {
+					$tvartrasy .= $ZST;
+				}
+			}
+		}
 
+
+$i = 0;
+$prevstop = "";
+$vzdal = 0;
+$komplet = 1;
+
+$output = str_split($tvartrasy,9);
+
+foreach ($output as $prujbod) {
+	$pom139 = mysqli_fetch_row(mysqli_query($link, "SELECT stop_name,stop_lat,stop_lon FROM stop WHERE (stop_id='$prujbod');"));
+	$name = $pom139[0];
+	$lat = $pom139[1];
+	$lon = $pom139[2];
+	$i = $i + 1;
+		
+	$result235 = mysqli_query($link, "SELECT DELKA FROM kango.DU_pom WHERE (STOP1 = '$prevstop') AND (STOP2 = '$prujbod');");
+	$pom235 = mysqli_fetch_row($result235);
+	$ujeto = $pom235[0];
+	$radky = mysqli_num_rows($result235);
+	$vzdal = $vzdal + $ujeto;
+	$prevstop = $prujbod;
+						
+	if ($i == 1) {$vzdal = 0;} 
+	echo "$shape_id,$name,$lat,$lon,$i,$vzdal<br />";
+}									
+/*
 $i = 0;
 $prevstat= "";
 $prevzst = "";

@@ -50,6 +50,10 @@ switch ($action) {
 				$prikaz1 = mysqli_query($link, "INSERT INTO stop (stop_id, stop_code, stop_name, stop_desc, stop_lat, stop_lon, zone_id, stop_url, location_type, parent_station, stop_timezone, wheelchair_boarding, active) VALUES ('$stopid','','$stop_name','$stop_desc','$stop_lat','$stop_lon','','','$location_type','','','$wheelchair_boarding','0');");
 				$prikaz2 = mysqli_query($link, "DELETE FROM kango.zastavky WHERE (stop_id = '$linked');");
 				$prikaz3 = mysqli_query($link, "DELETE FROM kango.loads WHERE ((ZELEZN = '$stopstat') AND (ZST='$stopzst') AND (OB = '$stopob'));");
+				
+				$deaktivace = "UPDATE shapetvary SET complete = '0' WHERE (tvartrasy LIKE '%$stop_id%'));";
+				$prikaz19 = mysqli_query($link, $deaktivace);
+
 			}
 		mysqli_free_result($result2);
 		}
