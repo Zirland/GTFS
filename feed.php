@@ -213,7 +213,8 @@ if ($result162 = mysqli_query($link, $query162)) {
 										'$vzdal'
 									);";
 							$command = mysqli_query($link, $query144);
-					} else {$komplet = 0;}
+					} 
+//					else {$komplet = 0;}
 // zápis nové trasy do databáze
 				}
 			}
@@ -221,6 +222,25 @@ if ($result162 = mysqli_query($link, $query162)) {
 $query217 = "UPDATE kango.shapecheck SET complete = '$komplet' WHERE shape_id = '$trip_id';";
 $command217 = mysqli_query($link, $query217);
 	}
+	
+	$current = "";
+
+$query260 = "SELECT shape_id,shape_pt_lat,shape_pt_lon,shape_pt_sequence,shape_dist_traveled FROM shape WHERE shape_id = '$trip_id';";
+if ($result260 = mysqli_query($link, $query260)) {
+	while ($row260 = mysqli_fetch_row($result260)) {
+		$shape_id = $row260[0];
+        $shape_pt_lat = $row260[1];
+        $shape_pt_lon = $row260[2];
+        $shape_pt_sequence = $row260[3];
+        $shape_dist_traveled = $row260[4];
+        
+		$current .= "$shape_id,$shape_pt_lat,$shape_pt_lon,$shape_pt_sequence,$shape_dist_traveled\n";
+	}
+}
+
+$file = 'shapes.txt';
+file_put_contents($file, $current, FILE_APPEND);
+//zapsány použité tvary tras
 }
 }
 
@@ -323,6 +343,8 @@ $query313 = "SELECT stop_id,stop_name,stop_lat,stop_lon,location_type,parent_sta
                 $stopnums = $stopnums + mysqli_num_rows($result313);
 
 				$current .= "$stop_id,\"$stop_name\",$stop_lat,$stop_lon,$location_type,$parent_station,$wheelchair_boarding\n";
+			}
+		}
 
 
 $file = 'stops.txt';
@@ -336,7 +358,7 @@ $prevnow = $now;
 
 echo "Exported stops: $stopnums<br />";
 
-$current = "";
+/*$current = "";
 
 $query260 = "SELECT shape_id,shape_pt_lat,shape_pt_lon,shape_pt_sequence,shape_dist_traveled FROM shape;";
 if ($result260 = mysqli_query($link, $query260)) {
@@ -353,7 +375,7 @@ if ($result260 = mysqli_query($link, $query260)) {
 
 $file = 'shapes.txt';
 file_put_contents($file, $current, FILE_APPEND);
-//zapsány použité tvary tras
+//zapsány použité tvary tras */
 
 $now = microtime(true);
 $dlouho = $now-$prevnow;

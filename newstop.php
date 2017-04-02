@@ -14,8 +14,11 @@ switch ($action) {
 		$parent_id = $stopid;
 		
 		$query14 = "INSERT INTO stop (stop_id, stop_code, stop_name, stop_desc, stop_lat, stop_lon, zone_id, stop_url, location_type, parent_station, stop_timezone, wheelchair_boarding, active)  VALUES ('$stopid','','$stopname','','$stoplat','$stoplon','','','$parent','','','0','0');";
-		echo $query14;
 		$prikaz4 = mysqli_query($link, $query14);
+		
+		$deaktivace = "UPDATE kango.shapecheck SET complete = '0' WHERE (shape_id IN (SELECT trip_id FROM stoptime WHERE stop_id = '$stopid'));";
+		$prikaz19 = mysqli_query($link, $deaktivace);
+
 		break;
 		
 	case 'sub' :

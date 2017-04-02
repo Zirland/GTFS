@@ -16,6 +16,10 @@ switch ($action) {
 		
 		$prikaz4 = mysqli_query($link, "INSERT INTO stop (stop_id, stop_code, stop_name, stop_desc, stop_lat, stop_lon, zone_id, stop_url, location_type, parent_station, stop_timezone, wheelchair_boarding, active)  VALUES ('$stopid','','$stopname','','$stoplat','$stoplon','','','0','','','0','0');");
 		$prikaz5 = mysqli_query($link, "DELETE FROM kango.loads WHERE ((ZELEZN = '$stopstat') AND (ZST='$stopzst') AND (OB = '$stopob'));");
+
+		$deaktivace = "UPDATE kango.shapecheck SET complete = '0' WHERE (shape_id IN (SELECT trip_id FROM stoptime WHERE stop_id = '$stopid'));";
+		$prikaz19 = mysqli_query($link, $deaktivace);
+
 		break;
 }
 
