@@ -47,7 +47,7 @@ if ($result = mysqli_query($link, $query)) {
 		$lomeni = substr($cislo7,-1);
 		$trip_id = $vlak.$lomeni."A";
 
-		echo "<a href=\"tripedit.php?id=$trip_id\">Užití</a>"; 			
+		echo "<a href=\"detail.php?vl=$vlak\">Užití</a>"; 			
 
 		echo "</td>";
 		echo "</tr>";

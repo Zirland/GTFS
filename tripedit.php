@@ -210,7 +210,8 @@ echo "<form method=\"post\" action=\"tripedit.php\" name=\"zastavky\">
 		<input name=\"trip_id\" value=\"$trip_id\" type=\"hidden\">";
 $z = 0;
 
-$query108 = "SELECT stop_id,arrival_time,departure_time,pickup_type,drop_off_type,stop_sequence FROM stoptime WHERE (trip_id = '$trip_id');";
+$query108 = "SELECT stoptime.stop_id,stoptime.arrival_time,stoptime.departure_time,stoptime.pickup_type,stoptime.drop_off_type,stoptime.stop_sequence, stop.stop_name FROM stoptime LEFT JOIN stop ON stoptime.stop_id = stop.stop_id WHERE (stoptime.trip_id = '$trip_id');";
+
 if ($result108 = mysqli_query($link, $query108)) {
     while ($row108 = mysqli_fetch_row($result108)) {
 	$stop_id = $row108[0];
@@ -219,9 +220,7 @@ if ($result108 = mysqli_query($link, $query108)) {
 	$pickup_type = $row108[3];
 	$drop_off_type = $row108[4];
 	$stop_sequence = $row108[5];
-
-	$pom118 = mysqli_fetch_row(mysqli_query($link, "SELECT stop_name FROM stop WHERE stop_id = '$stop_id';"));
-	$nazev_stanice = $pom118[0];
+	$nazev_stanice = $row108[6];
 
 	echo "<tr><td><input name=\"stop_id$z\" value=\"$stop_id\" type=\"hidden\">
 		<input name=\"poradi$z\" value=\"$stop_sequence\" type=\"hidden\">
@@ -306,7 +305,7 @@ if ($result262 = mysqli_query($link, $query262)) {
 	}
 }
 
-echo "TRASA<br />";
+/*echo "TRASA<br />";
 
 $i = 0;
 $prevstat= "";
@@ -346,7 +345,7 @@ if ($result131 = mysqli_query($link, $query131)) {
 	    echo "$name - $lat - $lon - $i - $vzdal<br />";
 	}
     }
-}
+}*/
 echo "</td></tr>";
 echo "</table>";
 
