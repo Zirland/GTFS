@@ -193,7 +193,7 @@ if ($result2 = mysqli_query($link, $query2)) {
 	}
 }
 
-$vypoctani_trasy = mysqli_query($link, "INSERT INTO kango.shapecheck (shape_id, complete) VALUES ($new_trip_id, '0');";
+$vypoctani_trasy = mysqli_query($link, "INSERT INTO kango.shapecheck (shape_id, complete) VALUES ($new_trip_id, '0');");
 
 echo "Vytvořena trasa $new_trip_id. <a href=\"tripedit.php?id=$new_trip_id\">Přejít na editaci</a>";
 
