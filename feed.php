@@ -121,8 +121,8 @@ $prevnow = $now;
 		$dnes_rok = date("Y", time());
 
 		$calendar_start = mktime(0,0,0,$dnes_mesic,$dnes_den,$dnes_rok);
-		$calendar_start_format = date("Ymd", time());
-		$calendar_stop_format = date("Ymd", time()+7*86400);
+		$calendar_start_format = date("Ymd", $calendar_start);
+		$calendar_stop_format = date("Ymd", $calendar_start+6*86400);
 		$vtydnu = date('w',$calendar_start);
 
 		$sek=$calendar_start-$matice_start;
@@ -132,7 +132,7 @@ $prevnow = $now;
 		$min=$min%60;
 		$dni=floor($hod/24);
 		$hod=$hod%24;
-		$aktual = substr($matice,$dni,7);
+		$aktual = substr($matice,$dni+1,7);
 
       	$adjust = substr($aktual,-$vtydnu+1).substr($aktual,0,-$vtydnu+1);
 		$dec=bindec($adjust)+1;
