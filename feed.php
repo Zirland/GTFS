@@ -223,6 +223,20 @@ if ($result162 = mysqli_query($link, $query162)) {
 $query217 = "UPDATE shapetvary SET complete = '$komplet' WHERE shape_id = '$shape_id';";
 $command217 = mysqli_query($link, $query217);
 	}
+	
+	$current = "";
+
+$query260 = "SELECT shape_id,shape_pt_lat,shape_pt_lon,shape_pt_sequence,shape_dist_traveled FROM shape WHERE shape_id = '$trip_id';";
+if ($result260 = mysqli_query($link, $query260)) {
+	while ($row260 = mysqli_fetch_row($result260)) {
+		$shape_id = $row260[0];
+        $shape_pt_lat = $row260[1];
+        $shape_pt_lon = $row260[2];
+        $shape_pt_sequence = $row260[3];
+        $shape_dist_traveled = $row260[4];
+        
+		$current .= "$shape_id,$shape_pt_lat,$shape_pt_lon,$shape_pt_sequence,$shape_dist_traveled\n";
+	}
 }
 
 $now = microtime(true);
@@ -339,7 +353,7 @@ $prevnow = $now;
 
 echo "Exported stops: $stopnums<br />";
 
-$current = "";
+/*$current = "";
 
 $shps = "SELECT DISTINCT shapecheck.shape_id FROM kango.shapecheck;";
 if ($result349 = mysqli_query($link, $shps)) {
