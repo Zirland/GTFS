@@ -45,7 +45,7 @@ echo "<tr><td><input type=\"radio\" name=\"parent\" value=\"0\"";
 if ($parent == "0") {echo " CHECKED";}
 echo "><input type=\"radio\" name=\"parent\" value=\"1\"";
 if ($parent == "1") {echo " CHECKED";}
-echo "></td><td colspan=\"3\"><input type=\"submit\" value=\"Insert\"></td></tr>";
+echo "></td><td colspan=\"3\"><input type=\"submit\" value=\"Insert\"></form></td></tr>";
 echo "</table>";
 
 echo "<table>";
