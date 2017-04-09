@@ -15,7 +15,7 @@ switch ($action) {
 		$cyklo = $_POST['cyklo'];
 		$aktif = $_POST['aktif'];
 
-		$ready0 = "INSERT INTO trip (trip_id, shape_id, route_id, trip_headsign, direction_id, block_id, wheelchair_accessible, bikes_allowed, active) VALUES ('$trip', '$trip', '$linka', '$trip_headsign','$smer','$blok','$invalida','$cyklo','$aktif');";
+		$ready0 = "INSERT INTO trip (trip_id, route_id, trip_headsign, direction_id, block_id, wheelchair_accessible, bikes_allowed, active) VALUES ('$trip', '$linka', '$trip_headsign','$smer','$blok','$invalida','$cyklo','$aktif');";
 		$aktualz0 = mysqli_query($link, $ready0);
 	break;
 
@@ -27,18 +27,79 @@ switch ($action) {
 		$rezim = $_POST['rezim'];
 		$pickup_type = substr($rezim,0,1);
 		$drop_off_type = substr($rezim,1,1);
-		$stop_sequence = $_POST['poradi'];
-		$distance = $_POST['distance'];
+		$last_poradi = $_POST['last_poradi'];
+		$last_id = $_POST['last_id'];
+		$last_prubeh = $_POST['last_prubeh'];
 
-		$ready1 = "INSERT INTO stoptime (stop_id, trip_id, arrival_time, departure_time, pickup_type, drop_off_type, stop_sequence) VALUES ('$stop_id','$trip','$arrival','$departure','$pickup_type','$drop_off_type','$stop_sequence');";
+$_distArr = array();
+
+$query = "SELECT STOP1, STOP2, DELKA from kango.DU_pom;";
+if ($result = mysqli_query($link, $query)) {
+    while ($row = mysqli_fetch_row($result)) {
+		$id1 = $row[0];
+		$id2 = $row[1];
+		$delka = $row[2];
+
+	$_distArr[$id1][$id2] = $delka;
+    }
+}
+
+//the start and the end
+$a = $last_id;
+$b = $stop_id;
+$z = $last_poradi;
+$prubeh = $last_prubeh;
+
+//initialize the array for storing
+$S = array();//the nearest path with its parent and weight
+$Q = array();//the left nodes without the nearest path
+foreach(array_keys($_distArr) as $val) $Q[$val] = 9999999;
+$Q[$a] = 0;
+
+//start calculating
+while(!empty($Q)){
+    $min = array_search(min($Q), $Q);//the most min weight
+    if($min == $b) break;
+    foreach($_distArr[$min] as $key=>$val) if(!empty($Q[$key]) && $Q[$min] + $val < $Q[$key]) {
+        $Q[$key] = $Q[$min] + $val;
+        $S[$key] = array($min, $Q[$key]);
+    }
+    unset($Q[$min]);
+}
+
+//list the path
+$path = array();
+$pos = $b;
+
+while($pos != $a){
+    $path[] = $pos;
+    $pos = $S[$pos][0];
+}
+$path = array_reverse($path);
+
+//print result
+echo "<br />From $a to $b";
+echo "<br />The length is ".$S[$b][1];
+echo "<br />Path is ";
+foreach ($path as $prujezd) {
+	echo "$prujezd - $z <br />";
+	$z = $z + 1;
+	$prubeh .= $prujezd;
+}
+
+		$ready1 = "INSERT INTO stoptime (stop_id, trip_id, arrival_time, departure_time, pickup_type, drop_off_type, stop_sequence) VALUES ('$stop_id','$trip','$arrival','$departure','$pickup_type','$drop_off_type','$z');";
 		$aktualz1 = mysqli_query($link, $ready1);
-
-		$pom38 = mysqli_fetch_row(mysqli_query($link, "SELECT stop_lat, stop_lon FROM stop WHERE (stop_id = '$stop_id');"));
-		$lat = $pom38[0];
-		$lon = $pom38[1];
-	
-		$ready2 = "INSERT INTO force_shape (shape_id, shape_pt_lat, shape_pt_lon, shape_pt_sequence, shape_dist_traveled) VALUES ('$trip','$lat','$lon','$stop_sequence', '$distance');";
+		
+		$ready2 = "UPDATE trip SET shape_id = '$prubeh' WHERE trip_id = '$trip';";
 		$aktualz2 = mysqli_query($link, $ready2);
+		
+		$ready3 = "DELETE FROM kango.forceshape WHERE trip_id = '$trip';";
+		echo $ready3;
+		$aktualz3 = mysqli_query($link, $ready3);
+
+		$ready4 = "INSERT INTO kango.forceshape (trip_id, shape_id) VALUES ('$trip', '$prubeh');";
+		echo $ready4;
+		$aktualz4 = mysqli_query($link, $ready4);
 	break;
 
 	case "grafikon" :
@@ -164,7 +225,7 @@ echo "<tr><th>Stanice</th><th>Příjezd</th><th>Odjezd</th><th>Režim</th><th>Vz
 echo "<form method=\"post\" action=\"newtrip.php\" name=\"zastavky\">
 		<input name=\"action\" value=\"zastavky\" type=\"hidden\">
 		<input name=\"trip_id\" value=\"$trip\" type=\"hidden\">";
-$z = 1;
+$posledni_seq = 0;
 
 $query108 = "SELECT stop_id,arrival_time,departure_time,pickup_type,drop_off_type,stop_sequence FROM stoptime WHERE (trip_id = '$trip');";
 if ($result108 = mysqli_query($link, $query108)) {
@@ -176,14 +237,13 @@ if ($result108 = mysqli_query($link, $query108)) {
 	$drop_off_type = $row108[4];
 	$stop_sequence = $row108[5];
 
+	$pom240 = mysqli_fetch_row(mysqli_query($link, "SELECT shape_id FROM trip WHERE trip_id = '$trip';"));
+	$lastprubeh = $pom240[0];
+	
 	$query184 = "SELECT stop_name FROM stop WHERE stop_id = '$stop_id';";
 	$pom118 = mysqli_fetch_row(mysqli_query($link, $query184));
 	$nazev_stanice = $pom118[0];
 	
-	$ready188 = "SELECT shape_dist_traveled FROM force_shape WHERE (shape_id='$trip' AND shape_pt_sequence = '$stop_sequence');";
-	$pom188 = mysqli_fetch_row(mysqli_query($link, $ready188));
-	$kilometry = $pom188[0];
-
 	echo "<tr><td>$nazev_stanice</td>";
 	echo "<td>$arrival_time</td>";
 	echo "<td>$departure_time</td>";
@@ -198,12 +258,14 @@ if ($result108 = mysqli_query($link, $query108)) {
 	if ($drop_off_type == 3) {echo " SELECTED";}
 	echo ">Zastavuje na znamení</option>";
 	echo "<select></td>";
-	echo "<td>$kilometry</td></tr>";
-	$z = $z+1;
     }
+	$posledni_seq = $stop_sequence;
+	$posledni_id = $stop_id;
+	echo "Poslední $posledni_seq - $posledni_id";
 	
-	echo "<tr><td><input name=\"stop_id\" value=\"$stop_id\" type=\"hidden\">
-		<input name=\"poradi\" value=\"$z\" type=\"hidden\">";
+	echo "<tr><td><input name=\"last_id\" value=\"$posledni_id\" type=\"hidden\">
+		<input name=\"last_prubeh\" value=\"$lastprubeh\" type=\"hidden\">
+		<input name=\"last_poradi\" value=\"$posledni_seq\" type=\"hidden\">";
 	echo "<select name=\"stop_id\"><option value=\"\">-----</option>";
 	$query194 = "SELECT stop_id, stop_name FROM stop ORDER BY stop_name;";
 	if ($result194 = mysqli_query($link, $query194)) {
@@ -222,7 +284,7 @@ if ($result108 = mysqli_query($link, $query108)) {
 	echo "<option value=\"10\">Pouze nástup</option>";
 	echo "<option value=\"33\">Zastavuje na znamení</option>";
 	echo "<select></td>";
-	echo "<td><input type=\"text\" name=\"distance\" value=\"\"></td></tr>";
+	echo "</tr>";
 }
 echo "<input type=\"submit\"></form>";
 echo "</table></td><td>";

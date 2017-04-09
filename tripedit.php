@@ -3,6 +3,9 @@ include 'header.php';
 
 $trip = @$_GET['id'];
 $action = @$_POST['action'];
+$nucenatrasa = @$_GET['trasa'];
+
+if ($nucenatrasa) { $vynucena = mysqli_query($link, "UPDATE trip SET shape_id = (SELECT shape_id FROM kango.forceshape WHERE trip_id = '$trip') WHERE trip_id = '$trip';"); }
 
 switch ($action) {
 	case "hlava" :
@@ -162,6 +165,7 @@ $hlavicka = mysqli_fetch_row(mysqli_query($link, "SELECT * FROM trip WHERE (trip
 	$trip_headsign = $hlavicka[3];
 	$smer = $hlavicka[5];
 	$blok = $hlavicka[6];
+	$shape = $hlavicka[7];
 	$invalida = $hlavicka[8];
 	$cyklo = $hlavicka[9];
 	$aktif = $hlavicka[10];
@@ -337,7 +341,8 @@ if ($result262 = mysqli_query($link, $query262)) {
 	}
 }
 
-echo "TRASA<br />";
+echo "TRASA <a href=\"tripedit.php?id=$trip&trasa=1\">VYNUŤ</a><br />";
+echo "$shape <br />";
 $query131 = "SELECT * FROM kango.DTV WHERE (CISLO7='$cislo7');";
 		if ($result131 = mysqli_query($link, $query131)) {
 			while ($row131 = mysqli_fetch_row($result131))  {
