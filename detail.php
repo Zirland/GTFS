@@ -28,7 +28,9 @@ echo "<td>Vlak: $cislo7</td><td>$jmeno</td><td>Dopravce: $dopravce</td><td>Jede 
 $query = "SELECT * FROM kango.DTV WHERE (CISLO7='$cislo7');";
 if ($result = mysqli_query($link, $query)) {
 	while ($row = mysqli_fetch_row($result)) {
+		$ZELEZN = $row[1];
 		$ZST = $row[2];
+		$OB = $row[3];
 		$DP = $row[7];
 		$HP = $row[8];
 		$MP = $row[9];
@@ -39,7 +41,7 @@ if ($result = mysqli_query($link, $query)) {
 		$SO = $row[16];
 		$calendar = $row[37];
 
-		$pom2 = mysqli_fetch_row(mysqli_query($link, "SELECT NAZEVDB FROM kango.DB WHERE (ZST='$ZST');"));
+		$pom2 = mysqli_fetch_row(mysqli_query($link, "SELECT NAZEVDB FROM kango.DB WHERE (ZELEZN='$ZELEZN' AND ZST='$ZST' AND $OB='$OB');"));
 		$stanice = $pom2[0];
 		
 		$hdp = ($DP*24)+$HP;
@@ -53,7 +55,7 @@ if ($result = mysqli_query($link, $query)) {
 		
 		
 		echo "<tr>";
-		echo "<td>$stanice</td>";
+		echo "<td>$ZELEZN $ZST $OB $stanice</td>";
 		echo "<td>";
 		if ($DP == '') {$hdp=$hdo; $mnp=$mno; $SP=$SO; $HP='0';}
 		if ($HP != '') {echo "$hdp:$mnp";}
@@ -98,7 +100,9 @@ $i = 0;
 $query1 = "SELECT * FROM kango.DTV WHERE (CISLO7='$cislo7');";
 if ($result1 = mysqli_query($link, $query1)) {
 	while ($row1 = mysqli_fetch_row($result1)) {
+		$ZELEZN = $row1[1];
 		$ZST = $row1[2];
+		$OB = $row1[3];
 		$DP = $row1[7];
 		$HP = $row1[8];
 		$MP = $row1[9];
@@ -108,8 +112,9 @@ if ($result1 = mysqli_query($link, $query1)) {
 		$MO = $row1[15];
 		$SO = $row1[16];
 		$i = $i + 1;
+		$stop = substr($ZELEZN,-2).$ZST.substr($OB,-1);
 		
-		$pom4 = mysqli_fetch_row(mysqli_query($link, "SELECT stop_name FROM stop WHERE (stop_id='$ZST');"));
+		$pom4 = mysqli_fetch_row(mysqli_query($link, "SELECT stop_name FROM stop WHERE (stop_id='$stop');"));
 		$zastavka = $pom4[0];
 				
 		$hdp = ($DP*24)+$HP;
@@ -137,7 +142,7 @@ if ($result1 = mysqli_query($link, $query1)) {
 				case 0 : echo "00</td>"; break;
 				case 1 : echo "30</td>"; break;
 			}
-			echo "<td>$ZST</td>";
+			echo "<td>$stop</td>";
 			echo "<td>$i</td>";
 			echo "<td>$zastavka</td>";
 			echo "</tr>";
@@ -150,11 +155,13 @@ $i = 0;
 $query2 = "SELECT * FROM kango.DTV WHERE (CISLO7='$cislo7');";
 if ($result2 = mysqli_query($link, $query2)) {
 	while ($row2 = mysqli_fetch_row($result2)) {
+		$ZELEZN = $row2[1];
 		$ZST = $row2[2];
+		$OB = $row2[3];
 		$i = $i + 1;
 		
 		
-		$pom4 = mysqli_fetch_row(mysqli_query($link, "SELECT stop_lat,stop_lon FROM stop WHERE (stop_id='$ZST');"));
+		$pom4 = mysqli_fetch_row(mysqli_query($link, "SELECT stop_lat,stop_lon FROM stop WHERE ($ZELEZN='$ZELEZN' AND ZST='$ZST' AND $OB='$OB');"));
 		$lat = $pom4[0];
 		$lon = $pom4[0];
 				
