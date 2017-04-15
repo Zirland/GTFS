@@ -170,7 +170,8 @@ $hlavicka = mysqli_fetch_row(mysqli_query($link, "SELECT * FROM trip WHERE (trip
 	$cyklo = $hlavicka[9];
 	$aktif = $hlavicka[10];
 
-echo "<td colspan=\"2\"><a href = \"routeedit.php?id=$linka\">Zpět na linku</a><td>";
+echo "<td><a href = \"routeedit.php?id=$linka\">Zpět na linku</a><td>";
+echo "<td><form method=\"get\" action=\"tripedit.php\" name=\"id\"><input type=\"text\" name=\"id\" value=\"\"><input type=\"submit\"></form><td>";
 echo "<td><a href=\"tripedit.php?id=$nexttrip\">Další spoj</a></td>";
 echo "<td colspan=\"2\"><a href = \"routecopy.php?id=$trip_id\">Nový spoj tohoto vlaku</a><td>";
 echo "</tr><tr>";
