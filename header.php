@@ -33,6 +33,6 @@ if (!$link) {
 //<a href="kango.php">Kango vlaky PID</a><br />
 //<br />
 ?>
-<a href="pairing.php">Stop pairing</a><br />
+<a href="/gtfs/pairing.php">Stop pairing</a><br />
 </td>
 <td>

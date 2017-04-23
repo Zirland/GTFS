@@ -42,8 +42,8 @@ if ($result2 = mysqli_query($link, $query2)) {
 		switch ($ZNAM) {
 			case '1' : $nast = 3; $vyst = 3; break;
 			default : 
-				if ($PICK == '1') {$vyst = 1;}
-				if ($DROP == '1') {$nast = 1;}
+				if ($PICK == '1') {$nast = 1;}
+				if ($DROP == '1') {$vyst = 1;}
 		}
 				
 		$hdp = ($DP*24)+$HP;
