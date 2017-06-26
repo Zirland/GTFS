@@ -335,7 +335,7 @@ $query233 = "SELECT stop_id,stop_name,stop_lat,stop_lon,location_type,parent_sta
 		}
 
 $query313 = "SELECT stop_id,stop_name,stop_lat,stop_lon,location_type,parent_station,wheelchair_boarding FROM stop WHERE (stop_id IN (SELECT stop_id FROM kango.parent_use));";
-        if ($result313 = mysqli_query($link, $query313)) {
+/*        if ($result313 = mysqli_query($link, $query313)) {
             while ($row313 = mysqli_fetch_row($result313)) {
                 $stop_id = $row313[0];
                 $stop_name = $row313[1];
@@ -348,7 +348,7 @@ $query313 = "SELECT stop_id,stop_name,stop_lat,stop_lon,location_type,parent_sta
 
 				$current .= "$stop_id,\"$stop_name\",$stop_lat,$stop_lon,$location_type,$parent_station,$wheelchair_boarding\n";
 			}
-		}
+		}*/
 
 
 $file = 'stops.txt';
