@@ -7,7 +7,7 @@
 <body>
 
 <?php
- $link = mysqli_connect('localhost', 'gtfs', 'gtfs', 'GTFS');
+$link = mysqli_connect('localhost', 'gtfs', 'gtfs', 'GTFS2');
 if (!$link) {
     echo "Error: Unable to connect to MySQL." . PHP_EOL;
     echo "Debugging errno: " . mysqli_connect_errno() . PHP_EOL;
@@ -23,16 +23,8 @@ if (!$link) {
 <td style="height:5px; background-color:#cccccc;">
 </td></tr>
 <tr><td style="width:100px; background-color:yellow; vertical-align:top;">
-<?php
-//<a href="list.php?t=ag">Přepravci</a><br />
-//<a href="add.php?t=ag">- Přidat</a><br />
-//<br />
-//<a href="list.php?t=ro">Linky</a><br />
-//<a href="add.php?t=ro">- Přidat</a><br />
-//<br />
-//<a href="kango.php">Kango vlaky PID</a><br />
-//<br />
-?>
-<a href="/gtfs/pairing.php">Stop pairing</a><br />
+<a href="opravy.php">Opravy</a><br />
+<a href="migracestop.php">Migrace Praha</a><br />
+<a href="tripedit.php">Tripedit</a><br />
 </td>
 <td>

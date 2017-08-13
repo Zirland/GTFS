@@ -1,4 +1,4 @@
 sed -i 's/|/;/g' *
 
-sed -i -n -e 'H;${x;s/2017\r\n/2017;/g;s/^;//;p;}' JizdniRad2017_06-11.kvl
+sed -i -n -e 'H;${x;s/2017\r\n/2017;/g;s/^;//;p;}' JizdniRad2017_09-04.kvl
 
