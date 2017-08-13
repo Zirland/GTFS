@@ -49,7 +49,7 @@ switch ($t) {
 		<th>Typ</th>
 		<th></th>";
         echo "</tr>";
-        $query = "SELECT * FROM route ORDER BY route_short_name";
+        $query = "SELECT * FROM route WHERE active = 1 ORDER BY route_short_name;";
         if ($result = mysqli_query($link, $query)) {
             while ($row = mysqli_fetch_row($result)) {
                 $route_id = $row[0];
@@ -71,7 +71,7 @@ switch ($t) {
 
 		echo "<td style=\"background-color: #$route_color; text-align: center;\"><span style=\"color: #$route_text_color;\">$route_short</td>";
 		echo "<td";
-		if ($route_active == "1") {echo " style=\"background-color: green;\"";}
+		if ($route_active == "1") {echo " style=\"background-color: #54FF00;\"";}
 		echo ">$route_long</td>";
 
 		switch ($route_type) {
@@ -85,8 +85,7 @@ switch ($t) {
 			case 7: echo "<td>kolejová lanovka</td>"; break;
 			default : echo "<td></td>"; break;
 		}
-		echo "<td><a href=\"routeedit.php?id=$route_id\">Detaily</a></td>
-		</tr>";                
+		echo "<td><a href=\"routeedit.php?id=$route_id\">Detaily</a></td></tr>";                
             }
             mysqli_free_result($result);
         }
