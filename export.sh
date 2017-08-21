@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd /home/zirland/git/gtfs/
+cd /home/zirland/git/gtfs/v2/
 
 curl http://localhost/gtfs/opravy.php
 curl http://localhost/gtfs/migracestop.php
