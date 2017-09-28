@@ -8,28 +8,7 @@ $vlak = substr($trip_id,0,-2);
 $lomeni = substr($vlak,-1);
 $cislo7 = $vlak."/".$lomeni;
 
-switch ($lasttrip) {
-    case "A" : $nexttrip = "B"; break;
-    case "B" : $nexttrip = "C"; break;
-    case "C" : $nexttrip = "D"; break;
-    case "D" : $nexttrip = "E"; break;
-    case "E" : $nexttrip = "F"; break;
-    case "F" : $nexttrip = "G"; break;
-    case "G" : $nexttrip = "H"; break;
-    case "H" : $nexttrip = "I"; break;
-    case "I" : $nexttrip = "J"; break;
-    case "J" : $nexttrip = "K"; break;
-    case "K" : $nexttrip = "L"; break;
-    case "L" : $nexttrip = "M"; break;
-    case "M" : $nexttrip = "N"; break;
-    case "N" : $nexttrip = "O"; break;
-    case "O" : $nexttrip = "P"; break;
-    case "P" : $nexttrip = "Q"; break;
-    case "Q" : $nexttrip = "R"; break;
-    case "R" : $nexttrip = "S"; break;
-    case "S" : $nexttrip = "T"; break;
-    case "T" : $nexttrip = "U"; break;
-}
+$nexttrip=$lasttrip+1;
 
 $new_trip_id = $vlak.$lomeni.$nexttrip;
 
@@ -114,7 +93,7 @@ $query1 = "INSERT INTO trip VALUES (
     '$new_trip_id',
     '$invalida',
     '$cyklo',
-    '0'
+    '1'
 );";
 $command = mysqli_query($link, $query1) or die("Trip Error description: " . mysqli_error($link));
 

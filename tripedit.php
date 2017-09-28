@@ -207,6 +207,7 @@ $hlavicka = mysqli_fetch_row(mysqli_query($link, "SELECT * FROM trip WHERE (trip
 echo "<td><a href = \"routeedit.php?id=$linka\">Zpět na linku</a><td>";
 echo "<td><form method=\"get\" action=\"tripedit.php\" name=\"id\"><input type=\"text\" name=\"id\" value=\"\"><input type=\"submit\"></form><td>";
 echo "<td><a href=\"zajebal.php?err=$trip_id\" target=\"_blank\">Zajebal</a></td>";
+echo "<td><a href=\"routecopy.php?id=$trip_id\" target=\"_blank\">Duplicate</a></td>";
 echo "<td><a href=\"tripdelete.php?trip=$trip_id\" target=\"_blank\">Smazat trip</a></td>";
 echo "<td><td>";
 echo "</tr><tr>";
@@ -392,7 +393,7 @@ if ($result262 = mysqli_query($link, $query262)) {
 
 echo "TRASA <a href=\"tripedit.php?id=$trip&trasa=1\">VYNUŤ</a><br />";
 echo "$shape <br />";
-$query131 = "SELECT * FROM kango.DTV WHERE (CISLO7='$cislo7');";
+//$query131 = "SELECT * FROM kango.DTV WHERE (CISLO7='$cislo7');";
 		if ($result131 = mysqli_query($link, $query131)) {
 			while ($row131 = mysqli_fetch_row($result131))  {
 				$stopstat = $row131[1];

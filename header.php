@@ -26,5 +26,6 @@ if (!$link) {
 <a href="opravy.php">Opravy</a><br />
 <a href="migracestop.php">Migrace Praha</a><br />
 <a href="tripedit.php">Tripedit</a><br />
+<a href="newtrip.php">Newtrip</a><br />
 </td>
 <td>

@@ -140,4 +140,99 @@ $dlouho = $now-$prevnow;
 echo "Shape flush: $dlouho<br />";
 
 mysqli_close($link);
+
+$link = mysqli_connect('localhost', 'gtfs', 'gtfs', 'JDF');
+if (!$link) {
+    echo "Error: Unable to connect to MySQL." . PHP_EOL;
+    echo "Debugging errno: " . mysqli_connect_errno() . PHP_EOL;
+    exit;
+}
+
+$now = microtime(true);
+$timestart = $now;
+echo "Start: $now<br />";
+$prevnow = $now;
+
+$stopnums = 0;
+
+$current = "";
+
+$query233 = "SELECT stop_id,stop_name,stop_lat,stop_lon,location_type,parent_station,wheelchair_boarding FROM stop WHERE (stop_id IN (SELECT stop_id FROM stop_use));";
+        if ($result233 = mysqli_query($link, $query233)) {
+            while ($row233 = mysqli_fetch_row($result233)) {
+                $stop_id = $row233[0];
+                $stop_name = $row233[1];
+                $stop_lat = $row233[2];
+                $stop_lon = $row233[3];
+                $location_type = $row233[4];
+                $parent_station = $row233[5];
+                $wheelchair_boarding = $row233[6];
+                $stopnums = mysqli_num_rows($result233);
+
+				$current .= "$stop_id,\"$stop_name\",$stop_lat,$stop_lon,$location_type,$parent_station,$wheelchair_boarding\n";
+				if ($parent_station != '') {
+					$mark_parent = mysqli_query($link, "INSERT INTO parent_use (stop_id) VALUES ('$parent_station');");
+				}
+			}
+		}
+
+$query313 = "SELECT stop_id,stop_name,stop_lat,stop_lon,location_type,parent_station,wheelchair_boarding FROM stop WHERE (stop_id IN (SELECT stop_id FROM parent_use));";
+        if ($result313 = mysqli_query($link, $query313)) {
+            while ($row313 = mysqli_fetch_row($result313)) {
+                $stop_id = $row313[0];
+                $stop_name = $row313[1];
+                $stop_lat = $row313[2];
+                $stop_lon = $row313[3];
+                $location_type = $row313[4];
+                $parent_station = $row313[5];
+                $wheelchair_boarding = $row313[6];
+                $stopnums = $stopnums + mysqli_num_rows($result313);
+
+				$current .= "$stop_id,\"$stop_name\",$stop_lat,$stop_lon,$location_type,$parent_station,$wheelchair_boarding\n";
+			}
+		}
+
+
+$file = 'stops.txt';
+file_put_contents($file, $current, FILE_APPEND);
+//zapsány použité zastávky
+
+$now = microtime(true);
+$dlouho = $now-$prevnow;
+echo "Stop flush: $dlouho<br />";
+$prevnow = $now;
+
+echo "Exported stops: $stopnums<br />";
+
+$current = "";
+
+$shps = "SELECT DISTINCT shapecheck.shape_id FROM shapecheck;";
+if ($result349 = mysqli_query($link, $shps)) {
+	while ($row349 = mysqli_fetch_row($result349)) {
+		$shape_id = $row349[0];
+
+		$query260 = "SELECT shape_id,shape_pt_lat,shape_pt_lon,shape_pt_sequence,shape_dist_traveled FROM shape WHERE (shape_id = '$shape_id');";
+		if ($result260 = mysqli_query($link, $query260)) {
+			while ($row260 = mysqli_fetch_row($result260)) {
+				$shape_id = $row260[0];
+				$shape_pt_lat = $row260[1];
+				$shape_pt_lon = $row260[2];
+				$shape_pt_sequence = $row260[3];
+				$shape_dist_traveled = $row260[4];
+        
+				$current .= "J$shape_id,$shape_pt_lat,$shape_pt_lon,$shape_pt_sequence,$shape_dist_traveled\n";
+			}
+		}
+	}
+}
+
+$file = 'shapes.txt';
+file_put_contents($file, $current, FILE_APPEND);
+//zapsány použité tvary tras
+
+$now = microtime(true);
+$dlouho = $now-$prevnow;
+echo "Shape flush: $dlouho<br />";
+
+mysqli_close($link);
 ?>
