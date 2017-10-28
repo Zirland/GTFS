@@ -7,8 +7,8 @@ if ($result = mysqli_query($link, $query)) {
 		$matice = $row[0];
 		$trip_id = $row[1];
 		
-		$matice_start = mktime(0,0,0,12,11,2016);
-		$matice_end = mktime(0,0,0,12,9,2017);
+		$matice_start = mktime(0,0,0,12,10,2017);
+		$matice_end = mktime(0,0,0,12,8,2018);
 		
 		$dnes_den = date("d", time());
 		$dnes_mesic = date("m", time());
@@ -44,9 +44,7 @@ if ($result = mysqli_query($link, $query)) {
 		if ($soucet == 0) {
 			echo "<a href=\"tripedit.php?id=$trip_id\">$trip_id</a> = $soucet<br/>";
 			
-			$prikaz = mysqli_query($link, "DELETE FROM trip WHERE trip_id = '$trip_id';");
-			$prikaz2 = mysqli_query($link, "DELETE FROM stoptime WHERE trip_id = '$trip_id';");
-			
+			$prikaz = mysqli_query($link, "UPDATE trip SET aktiv=0 WHERE trip_id = '$trip_id';");
 		}
 	}
 }
