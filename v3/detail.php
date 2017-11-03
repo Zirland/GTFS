@@ -193,8 +193,8 @@ switch ($calpom) {
 
 echo "</td></tr></table>";
 
-// Matice začíná 11.12.2016 
-$matice_start = mktime(0,0,0,12,11,2016);
+// Matice začíná 10.12.2017 
+$matice_start = mktime(0,0,0,12,10,2017);
 $zitra_den = date("d", time()+86400);
 $zitra_mesic = date("m", time()+86400);
 $zitra_rok = date("Y", time()+86400);
@@ -219,7 +219,7 @@ $aktual = substr($matice,$dni,7);
 $grafikon = str_split($matice);
 
 echo "<table border=\"1\"><tr><td>";
-// 11.12.2016 je 0;
+// 10.12.2017 je 0;
 for ($u = 0; $u < 553; $u++) {
     
     $datum=$matice_start+($u*86400);

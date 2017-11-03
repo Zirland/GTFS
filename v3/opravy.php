@@ -1,7 +1,8 @@
 <?php
 include 'header.php';
 
-$query1 = "SELECT trip_id FROM trip WHERE trip_headign='';";
+echo "HEADSIGN<br/>";
+$query1 = "SELECT trip_id FROM trip WHERE trip_headsign='';";
 if ($result1 = mysqli_query ($link, $query1)) {
 	while ($row1 = mysqli_fetch_row ($result1)) {
 		$trip_id = $row1[0];
@@ -10,6 +11,7 @@ if ($result1 = mysqli_query ($link, $query1)) {
 	}
 }
 
+echo "NO STOP<br/>";
 $query2 = "SELECT trip_id FROM trip WHERE trip_id NOT IN (SELECT DISTINCT trip_id FROM stoptime);";
 if ($result2 = mysqli_query ($link, $query2)) {
 	while ($row2 = mysqli_fetch_row ($result2)) {
@@ -19,7 +21,7 @@ if ($result2 = mysqli_query ($link, $query2)) {
 	}
 }
 
-
+echo "ONE STOP<br/>";
 $query3 = "SELECT trip_id FROM (SELECT trip_id, count(*) AS pocet FROM stoptime) WHERE pocet=1;";
 if ($result3 = mysqli_query ($link, $query3)) {
 	while ($row3 = mysqli_fetch_row ($result3)) {
@@ -29,6 +31,7 @@ if ($result3 = mysqli_query ($link, $query3)) {
 	}
 }
 
+echo "NO TRIP<br/>";
 $query4 = "SELECT route_id FROM route WHERE active=1 AND route_id NOT IN (SELECT DISTINCT route_id FROM trip);";
 if ($result4 = mysqli_query ($link, $query4)) {
 	while ($row4 = mysqli_fetch_row ($result4)) {
@@ -40,6 +43,7 @@ if ($result4 = mysqli_query ($link, $query4)) {
 	}	
 }	
 
+echo "INACTIVE<br/>";
 $query5 = "SELECT route_id FROM route WHERE active=0 AND route_id IN (SELECT DISTINCT route_id FROM trip);";
 if ($result5 = mysqli_query ($link, $query5)) {
 	while ($row5 = mysqli_fetch_row ($result5)) {

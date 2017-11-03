@@ -132,7 +132,11 @@ foreach ($path as $prujezd) {
 		}
 		
 		$denne = $_POST['denne'];
-		if ($denne == 1) {$grafi = "1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111";}
+		if ($denne == 1) {
+			for ($i = 0; $i < 553; $i++) {
+				$grafi.="1";
+			}
+		}
 
 		if ($altern == "1") {
 			$pom84 = mysqli_fetch_row(mysqli_query($link, "SELECT matice FROM trip WHERE (trip_id = '$proti');"));
@@ -149,7 +153,7 @@ foreach ($path as $prujezd) {
 			}
 		}
 
-		$maticestart = mktime(0,0,0,12,11,2016);
+		$maticestart = mktime(0,0,0,12,10,2017);
 		$typkodu = @$_POST['typkodu'];
 		$datumod = @$_POST['datumod'];
 		$datumdo = @$_POST['datumdo'];
@@ -332,11 +336,11 @@ echo "<select name=\"typkodu\"><option value=\"1\">Jede</option><option value=\"
 
 
 
-// Matice začíná 11.12.2016 
-$matice_start = mktime(0,0,0,12,11,2016);
+// Matice začíná 10.12.2017 
+$matice_start = mktime(0,0,0,12,10,2017);
 $grafikon = str_split($matice);
 echo "<table border=\"1\"><tr><td>";
-// 11.12.2016 je 0;
+// 10.12.2017 je 0;
 for ($u = 0; $u < 553; $u++) {
     
     $datum=$matice_start+($u*86400);

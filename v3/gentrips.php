@@ -122,8 +122,10 @@ if ($result = mysqli_query($link, $query)) {
 				switch ($calpom) {
 					case '': $novamatice=''; break;
 					case '1':
-						$novamatice="1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111";
-						$suffix = $suffix + 1;
+						for ($i = 0; $i < 553; $i++) {
+				      $novamatice.="1";
+            }
+            $suffix = $suffix + 1;
 						break;
 					default : 
 						$pom6 = mysqli_fetch_row(mysqli_query($link, "SELECT * FROM kango.KVL WHERE (KALENDAR ='$calpom');"));
@@ -202,32 +204,22 @@ if ($result = mysqli_query($link, $query)) {
 						case 1 : $depart=$depart.":30"; break;
 					}
 
-					if ($ignore==1) {
-						$pomignstopname = mysqli_fetch_row(mysqli_query($link, "SELECT stop_name FROM stop WHERE (stop_id = '$stop_id');"));
-						$ignstopname = $pomignstopname[0];
+//					if ($ignore==1) {
+//						$pomignstopname = mysqli_fetch_row(mysqli_query($link, "SELECT stop_name FROM stop WHERE (stop_id = '$stop_id');"));
+//						$ignstopname = $pomignstopname[0];
 //						file_put_contents($file, "Stop ID $stop_id - $ignstopname was ignored for trip $trip_id\n" , FILE_APPEND);
-					}
+//					}
 
-					$pom_stop_id = substr($ZELEZN,-2).$ZST.substr($OB,-1).$STKOLODJ;
-					$stop_id = $pom_stop_id;
-					$query88 = "SELECT stop_name FROM stop WHERE stop_id = '$pom_stop_id' AND active=1;";
+					$stop_id = substr($ZELEZN,-2).$ZST.substr($OB,-1);
+					$query88 = "SELECT stop_name FROM stop WHERE stop_id = '$stop_id' AND active=1;";
 					if ($result88 = mysqli_query($link, $query88)) {
 						$radky=mysqli_num_rows($result88);
 
-						if ($radky==0) {
-							$pom_stop_id2 = substr($ZELEZN,-2).$ZST.substr($OB,-1);
-							$query93 = "SELECT stop_name FROM stop WHERE stop_id = '$pom_stop_id2' AND active=1;";
-							if ($result93= mysqli_query($link, $query93)) {
-								$radky2=mysqli_num_rows($result93);
-
-								if ($radky2==0 && ignore==0 && $ZELEZN = '0054') {
-									$miss = 1; 
-									$pomdbname = mysqli_fetch_row(mysqli_query($link, "SELECT NAZEVDB FROM kango.DB WHERE (ZELEZN='$ZELEZN' AND ZST='$ZST' AND OB='$OB');"));
-									$dbname = $pomdbname[0];
-									file_put_contents($file, "Missing stop $pom_stop_id2 - $dbname for trip $trip_id\n" , FILE_APPEND);
-								}
-								$stop_id = $pom_stop_id2;
-							}
+						if ($radky==0 && ignore==0 && $ZELEZN = '0054') {
+//						  $miss = 1; 
+							$pomdbname = mysqli_fetch_row(mysqli_query($link, "SELECT NAZEVDB FROM kango.DB WHERE (ZELEZN='$ZELEZN' AND ZST='$ZST' AND OB='$OB');"));
+							$dbname = $pomdbname[0];
+							file_put_contents($file, "Missing stop $stop_id - $dbname for trip $trip_id\n" , FILE_APPEND);
 						}
 					}
 					
