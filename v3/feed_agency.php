@@ -27,9 +27,6 @@ $file = 'stop_times.txt';
 $current = "trip_id,arrival_time,departure_time,stop_id,stop_sequence,pickup_type,drop_off_type\n";
 file_put_contents($file, $current);
 
-//$shape_trunc = mysqli_query($link, "TRUNCATE TABLE shape;");
-//$napln = mysqli_query($link, "INSERT INTO shape SELECT * FROM force_shape;");
-
 $calendar_trunc = mysqli_query($link, "TRUNCATE TABLE kango.cal_use;");
 $stop_trunc = mysqli_query($link, "TRUNCATE TABLE kango.stop_use;");
 $shapecheck_trunc = mysqli_query($link, "TRUNCATE TABLE kango.shapecheck;");

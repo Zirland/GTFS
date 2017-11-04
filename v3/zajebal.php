@@ -184,7 +184,7 @@ if ($result131 = mysqli_query($link, $query131)) {
 		$ii = $ii + 1;
 
 		if ($ii <= $max_trip && $ii >= $min_trip) {
-			$tvartrasy .= $ZST;
+			$tvartrasy .= $ZST."|";
 		}
 	}
 }

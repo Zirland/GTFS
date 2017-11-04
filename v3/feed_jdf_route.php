@@ -1,7 +1,5 @@
 <?php
-$barva=@$_GET["color"];
-
-$link = mysqli_connect('localhost', 'gtfs', 'gtfs', 'GTFS2');
+$link = mysqli_connect('localhost', 'gtfs', 'gtfs', 'JDF');
 if (!$link) {
     echo "Error: Unable to connect to MySQL." . PHP_EOL;
     echo "Debugging errno: " . mysqli_connect_errno() . PHP_EOL;
@@ -16,7 +14,7 @@ $timestart = $now;
 echo "Start: $now\n";
 $prevnow = $now;
 
-$akt_route = "SELECT route_id,agency_id,route_short_name,route_long_name,route_type,route_color,route_text_color FROM route WHERE (active='1' AND route_color='$barva');";
+$akt_route = "SELECT route_id,agency_id,route_short_name,route_long_name,route_type,route_color,route_text_color FROM route WHERE (active='1');";
 
 if ($result69 = mysqli_query($link, $akt_route)) {
     while ($row69 = mysqli_fetch_row($result69)) {
@@ -53,7 +51,7 @@ $prevnow = $now;
 				$wheelchair_accessible = $row85[6];
 				$bikes_allowed = $row85[7];
 
-				$matice_start = mktime(0,0,0,12,10,2017);
+				$matice_start = mktime(0,0,0,12,11,2016);
 				$dnes_den = date("d", time());
 				$dnes_mesic = date("m", time());
 				$dnes_rok = date("Y", time());
@@ -99,13 +97,13 @@ $prevnow = $now;
 							}
 					}
 
-					$current = "$route_id,$service_id,$trip_id,\"$trip_headsign\",$direction_id,$shape_id,$wheelchair_accessible,$bikes_allowed\n";
+					$current = "$route_id,$service_id,$trip_id,\"$trip_headsign\",$direction_id,J$shape_id,$wheelchair_accessible,$bikes_allowed\n";
 					$file = 'trips.txt';
 					file_put_contents($file, $current, FILE_APPEND);
 					$tripnums = $tripnums + 1;
 // zapsán aktivní spoj
 
-					$query171 = "INSERT INTO kango.shapecheck (trip_id, shape_id) VALUES ('$trip_id', '$shape_id');";
+					$query171 = "INSERT INTO shapecheck (trip_id, shape_id) VALUES ('$trip_id', '$shape_id');";
 					$zapistrasy = mysqli_query($link, $query171);
 
 $now = microtime(true);
@@ -127,7 +125,6 @@ $prevnow = $now;
 							$vzdal = 0;
 							$komplet = 1;
 
-							$output = explode("|", $tvartrasy);
 
 							foreach ($output as $prujbod) {
 								$pom139 = mysqli_fetch_row(mysqli_query($link, "SELECT stop_name,stop_lat,stop_lon FROM stop WHERE (stop_id='$prujbod');"));
@@ -136,7 +133,7 @@ $prevnow = $now;
 								$lon = $pom139[2];
 								$i = $i + 1;
 						
-								$result235 = mysqli_query($link, "SELECT DELKA FROM kango.DU_pom WHERE (STOP1 = '$prevstop') AND (STOP2 = '$prujbod');");
+								$result235 = mysqli_query($link, "SELECT DELKA FROM DU_pom WHERE (STOP1 = '$prevstop') AND (STOP2 = '$prujbod');");
 								$pom235 = mysqli_fetch_row($result235);
 								$ujeto = $pom235[0];
 								$radky = mysqli_num_rows($result235);
@@ -184,7 +181,7 @@ $prevnow = $now;
 							$file = 'stop_times.txt';
 							file_put_contents($file, $current, FILE_APPEND);
 			
-							$mark_stop = mysqli_query($link, "INSERT INTO kango.stop_use (trip_id, stop_id) VALUES ('$trip_id', '$stop_id');");
+							$mark_stop = mysqli_query($link, "INSERT INTO stop_use (trip_id, stop_id) VALUES ('$trip_id', '$stop_id');");
 // zapsán jízdní řád trasy a stanice do pomocné databáze
 						}					
 					}

@@ -85,7 +85,7 @@ $path = array_reverse($path);
 
 foreach ($path as $prujezd) {
 	$z = $z + 1;
-	$prubeh .= $prujezd;
+	$prubeh .= $prujezd."|";
 }
 
 		$ready1 = "INSERT INTO stoptime (stop_id, trip_id, arrival_time, departure_time, pickup_type, drop_off_type, stop_sequence) VALUES ('$stop_id','$trip','$arrival','$departure','$pickup_type','$drop_off_type','$z');";

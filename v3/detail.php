@@ -21,7 +21,7 @@ $datum_do = date("j.n.Y", mktime(0, 0, 0, substr($datdovl,2,2), substr($datdovl,
 $pom1 = mysqli_fetch_row(mysqli_query($link, "SELECT agency_name FROM agency WHERE (agency_id='$iddop');"));
 $dopravce = $pom1[0];
 
-$trip_id = $vlak.$lomeni."A";
+$trip_id = $vlak.$lomeni."1";
 
 echo "<td>Vlak: $cislo7</td><td>$jmeno</td><td>Dopravce: $dopravce</td><td>Jede od: $datum_od</td><td>Jede do: $datum_do</td></tr>";
 
@@ -181,7 +181,10 @@ $pom5 = mysqli_fetch_row(mysqli_query($link, "SELECT KALENDAR FROM kango.DTV WHE
 $calpom = $pom5[0];
 
 switch ($calpom) {
-	case '1': $matice="1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111";
+	case '1': 
+		for ($i = 0; $i < 553; $i++) {
+			$matice.="1";
+		}
 		break;
 	default : $pom6 = mysqli_fetch_row(mysqli_query($link, "SELECT * FROM kango.KVL WHERE (KALENDAR ='$calpom');"));
 		$dd1 = $pom6[0];

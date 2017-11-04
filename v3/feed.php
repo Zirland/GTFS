@@ -34,9 +34,6 @@ $file = 'shapes.txt';
 $current = "shape_id,shape_pt_lat,shape_pt_lon,shape_pt_sequence,shape_dist_traveled\n";
 file_put_contents($file, $current);
 
-//$shape_trunc = mysqli_query($link, "TRUNCATE TABLE shape;");
-//$napln = mysqli_query($link, "INSERT INTO shape SELECT * FROM force_shape;");
-
 $calendar_trunc = mysqli_query($link, "TRUNCATE TABLE kango.cal_use;");
 $stop_trunc = mysqli_query($link, "TRUNCATE TABLE kango.stop_use;");
 $shapecheck_trunc = mysqli_query($link, "TRUNCATE TABLE kango.shapecheck;");
@@ -190,7 +187,7 @@ $prevnow = $now;
 							$vzdal = 0;
 							$komplet = 1;
 
-							$output = str_split($tvartrasy,9);
+							$output = explode("|", $tvartrasy);
 
 							foreach ($output as $prujbod) {
 								$pom139 = mysqli_fetch_row(mysqli_query($link, "SELECT stop_name,stop_lat,stop_lon FROM stop WHERE (stop_id='$prujbod');"));

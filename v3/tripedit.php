@@ -96,7 +96,7 @@ switch ($action) {
 			$i = $i + 1;
 	
 			if ($i <= $max_trip && $i >= $min_trip) {
-				$tvartrasy .= $ZST;
+				$tvartrasy .= $ZST."|";
 			}
 		}
 	}
@@ -406,7 +406,7 @@ $query131 = "SELECT * FROM kango.DTV WHERE (CISLO7='$cislo7');";
 				$i = $i + 1;
 	
 				if ($i <= $max_trip && $i >= $min_trip) {
-					$tvartrasy .= $ZST;
+					$tvartrasy .= $ZST."|";
 				}
 			}
 		}
