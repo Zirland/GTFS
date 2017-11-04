@@ -30,6 +30,7 @@ if ($result = mysqli_query($link, $query)) {
 				$i = $i + 1;
 	
 				if ($i <= $max_trip && $i >= $min_trip) {
+					$tvartrasy .= $ZST."|";
 				}
 			}
 		}

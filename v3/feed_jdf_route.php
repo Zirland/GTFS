@@ -125,6 +125,7 @@ $prevnow = $now;
 							$vzdal = 0;
 							$komplet = 1;
 
+							$output = explode("|", $tvartrasy);
 
 							foreach ($output as $prujbod) {
 								$pom139 = mysqli_fetch_row(mysqli_query($link, "SELECT stop_name,stop_lat,stop_lon FROM stop WHERE (stop_id='$prujbod');"));
