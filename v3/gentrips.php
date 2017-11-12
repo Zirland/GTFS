@@ -122,10 +122,10 @@ if ($result = mysqli_query($link, $query)) {
 				switch ($calpom) {
 					case '': $novamatice=''; break;
 					case '1':
-						for ($i = 0; $i < 553; $i++) {
-				      $novamatice.="1";
-            }
-            $suffix = $suffix + 1;
+						for ($j = 0; $j < 553; $j++) {
+							$novamatice.="1";
+						}
+						$suffix = $suffix + 1;
 						break;
 					default : 
 						$pom6 = mysqli_fetch_row(mysqli_query($link, "SELECT * FROM kango.KVL WHERE (KALENDAR ='$calpom');"));
@@ -164,11 +164,12 @@ if ($result = mysqli_query($link, $query)) {
 				$vyst = 0;
 
 				$aktual = substr($ZELEZN,-2).$ZST.substr($OB,-1);
-				$ignor = 0;
+				$ignore = 0;
 				if ($start==0 && $end==0 && $aktual!=$zststrt) {$ignore = 1;}
 				if ($start==1 && $end==1) {$ignore = 1;}
 				if ($start==0 && $aktual==$zststrt) {$start = 1; $ignore = 0; $DP=$DO; $HP=$HO; $MP=$MO; $SP=$SO;} 
 				if ($start==1 && $aktual==$zststp) {$end = 1; $ignore = 0; $DO=$DP; $HO=$HP; $MO=$MP; $SO=$SP;}
+				if ($ZELEZN != '0054') {$ignore=1;}
 
 
 				switch ($ZNAM) {
@@ -215,7 +216,7 @@ if ($result = mysqli_query($link, $query)) {
 					if ($result88 = mysqli_query($link, $query88)) {
 						$radky=mysqli_num_rows($result88);
 
-						if ($radky==0 && ignore==0 && $ZELEZN = '0054') {
+						if ($radky==0 && $ignore==0) {
 //						  $miss = 1; 
 							$pomdbname = mysqli_fetch_row(mysqli_query($link, "SELECT NAZEVDB FROM kango.DB WHERE (ZELEZN='$ZELEZN' AND ZST='$ZST' AND OB='$OB');"));
 							$dbname = $pomdbname[0];
@@ -337,34 +338,34 @@ if ($result = mysqli_query($link, $query)) {
 //		echo "$query1701<br/>";
 		$prikaz1701=mysqli_query($link, $query1701);
 
-		$query_min = mysqli_fetch_row(mysqli_query($link, "SELECT min(stop_sequence) FROM stoptime WHERE trip_id IN (SELECT trip_id FROM trip WHERE route_id='$route');"));
+		$query_min = mysqli_fetch_row(mysqli_query($link, "SELECT min(stop_sequence) FROM stoptime WHERE trip_id IN (SELECT trip_id FROM trip WHERE route_id='$route_id');"));
 		$min = $query_min[0];
-
-		$query_min_id = mysqli_fetch_row(mysqli_query($link, "SELECT stop_id FROM stoptime WHERE stop_sequence=$min AND trip_id IN (SELECT trip_id FROM trip WHERE route_id='$route');"));
+				
+		$query_min_id = mysqli_fetch_row(mysqli_query($link, "SELECT stop_id FROM stoptime WHERE stop_sequence=$min AND trip_id IN (SELECT trip_id FROM trip WHERE route_id='$route_id');"));
 		$min_id = $query_min_id[0];
 		$pomminstopparent=mysqli_fetch_row(mysqli_query($link, "SELECT parent_station FROM stop WHERE stop_id='$min_id';"));
 		$minstopparent=$pomminstopparent[0];
 		if ($minstopparent == '') {$minstopid = $min_id;} else {$minstopid = $minstopparent;}
 		$query_min_name = mysqli_fetch_row(mysqli_query($link, "SELECT stop_name FROM stop WHERE stop_id='$minstopid';"));
 		$min_name = $query_min_name[0];
-
-		$query_max = mysqli_fetch_row(mysqli_query($link, "SELECT max(stop_sequence) FROM stoptime WHERE trip_id IN (SELECT trip_id FROM trip WHERE route_id='$route');"));
+		
+		$query_max = mysqli_fetch_row(mysqli_query($link, "SELECT max(stop_sequence) FROM stoptime WHERE trip_id IN (SELECT trip_id FROM trip WHERE route_id='$route_id');"));
 		$max = $query_max[0];
-
-		$query_max_id = mysqli_fetch_row(mysqli_query($link, "SELECT stop_id FROM stoptime WHERE stop_sequence=$max AND trip_id IN (SELECT trip_id FROM trip WHERE route_id='$route');"));
+		
+		$query_max_id = mysqli_fetch_row(mysqli_query($link, "SELECT stop_id FROM stoptime WHERE stop_sequence=$max AND trip_id IN (SELECT trip_id FROM trip WHERE route_id='$route_id');"));
 		$max_id = $query_max_id[0];
 		$pommaxstopparent=mysqli_fetch_row(mysqli_query($link, "SELECT parent_station FROM stop WHERE stop_id='$max_id';"));
 		$maxstopparent=$pommaxstopparent[0];
 		if ($maxstopparent == '') {$maxstopid = $max_id;} else {$maxstopid = $maxstopparent;}
 		$query_max_name = mysqli_fetch_row(mysqli_query($link, "SELECT stop_name FROM stop WHERE stop_id='$maxstopid';"));
 		$max_name = $query_max_name[0];
-
+		
 		if ($route_long_name != '') {$wholename = "$route_long_name | $min_name – $max_name";}
 		else {$wholename = "$min_name – $max_name";}
 
-		$query364 = "UPDATE route SET route_long_name='$wholename' WHERE route_id=$route_id";
+		$query364 = "UPDATE route SET route_long_name='$wholename' WHERE route_id='$route_id';";
 		$command364 = mysqli_query($link, $query364);
-		
+
 		$query4 = "DELETE FROM routelist WHERE (cislo7 = '$cislo7');";
 		$command4 = mysqli_query($link, $query4);
 	}
