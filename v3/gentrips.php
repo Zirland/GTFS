@@ -136,7 +136,15 @@ if ($result = mysqli_query($link, $query)) {
 
 				if ($novamatice != '') {
 					$trip_id = $vlak.$lomeni.$suffix;
-					$query60 = "INSERT INTO trip VALUES ('$route_id','$novamatice','$trip_id','','','0','','','$invalida','$cyklo','1');";
+
+					$poradi = substr($trip_id, -3, 1);
+		
+					switch ($poradi % 2) {
+						case "0" : $odd = "1"; break;
+						case "1" : $odd = "0"; break;
+					}
+
+					$query60 = "INSERT INTO trip VALUES ('$route_id','$novamatice','$trip_id','','','$odd','','','$invalida','$cyklo','1');";
 //					echo "$query60<br/>";
 					$prikaz60 = mysqli_query($link, $query60);
 				}
@@ -171,7 +179,6 @@ if ($result = mysqli_query($link, $query)) {
 				if ($start==1 && $aktual==$zststp) {$end = 1; $ignore = 0; $DO=$DP; $HO=$HP; $MO=$MP; $SO=$SP;}
 				if ($ZELEZN != '0054') {$ignore=1;}
 
-
 				switch ($ZNAM) {
 					case '1' : $nast = 3; $vyst = 3; break;
 					default : 
@@ -193,109 +200,112 @@ if ($result = mysqli_query($link, $query)) {
 				if ($DO == '') {$hdo=$hdp; $mno=$mnp; $SO=$SP; $HO='0';}
 		
 				$arrival = $hdp.":".$mnp;
-				if ($arrival != "00:0" && $arrival != "24:0" && $arrival != "48:0" && $arrival !="72:0") {
-					switch ($SP) {
-						case 0 : $arrival=$arrival.":00"; break;
-						case 1 : $arrival=$arrival.":30"; break;
-					}
+
+				if ($arrival == "00:0" || $arrival == "24:0" || $arrival == "48:0" || $arrival =="72:0") {$ignore = 1;}
+
+				switch ($SP) {
+					case 0 : $arrival=$arrival.":00"; break;
+					case 1 : $arrival=$arrival.":30"; break;
+				}
 				
-					$depart = $hdo.":".$mno;
-					switch ($SO) {
-						case 0 : $depart=$depart.":00"; break;
-						case 1 : $depart=$depart.":30"; break;
-					}
+				$depart = $hdo.":".$mno;
+				switch ($SO) {
+					case 0 : $depart=$depart.":00"; break;
+					case 1 : $depart=$depart.":30"; break;
+				}
 
-//					if ($ignore==1) {
-//						$pomignstopname = mysqli_fetch_row(mysqli_query($link, "SELECT stop_name FROM stop WHERE (stop_id = '$stop_id');"));
-//						$ignstopname = $pomignstopname[0];
-//						file_put_contents($file, "Stop ID $stop_id - $ignstopname was ignored for trip $trip_id\n" , FILE_APPEND);
-//					}
 
-					$stop_id = substr($ZELEZN,-2).$ZST.substr($OB,-1);
-					$query88 = "SELECT stop_name FROM stop WHERE stop_id = '$stop_id' AND active=1;";
-					if ($result88 = mysqli_query($link, $query88)) {
-						$radky=mysqli_num_rows($result88);
-
-						if ($radky==0 && $ignore==0) {
-//						  $miss = 1; 
-							$pomdbname = mysqli_fetch_row(mysqli_query($link, "SELECT NAZEVDB FROM kango.DB WHERE (ZELEZN='$ZELEZN' AND ZST='$ZST' AND OB='$OB');"));
-							$dbname = $pomdbname[0];
-							file_put_contents($file, "Missing stop $stop_id - $dbname for trip $trip_id\n" , FILE_APPEND);
-						}
-					}
+				if ($arrival == "24:0:00") {$arrival = "24:00:00";}
+				if ($depart == "24:0:00") {$depart = "24:00:00";}
 					
-					if ($miss==0 && $ignore==0) {
-						if ($novamatice != '') {
-							$pomsfx=$suffix-1;
-							$pom_trip_id = $vlak.$lomeni.$pomsfx;
-							if ($pomsfx>0) {
-								$query60 = "INSERT INTO stoptime VALUES ('$pom_trip_id','$arrival','$arrival','$stop_id','$i','','$nast','$vyst','','');";
-//								echo "$query60<br/>";
-								$prikaz6O = mysqli_query($link, $query60);
-								$arrival = $depart;
-				
-								$pomendstop = mysqli_fetch_row(mysqli_query($link, "SELECT MAX(stop_sequence) FROM stoptime WHERE (trip_id = '$pom_trip_id');"));
-								$endstopno = $pomendstop[0];
+				$stop_id = substr($ZELEZN,-2).$ZST.substr($OB,-1);
+				$query88 = "SELECT stop_name, active FROM stop WHERE stop_id = '$stop_id';";
+				if ($result88 = mysqli_query($link, $query88)) {
+					$radky=mysqli_num_rows($result88);
+					$row88 = mysqli_fetch_row($result88);
+					$jmeno = $row88[0];	
+					$aktivita = $row88[1];
+					
+					if ($aktivita == "2") {$nast = 2; $vyst = 2; $ignore = 0;}
+					if ($aktivita == "0") {$ignore = 1;}
+					
+					if ($radky==0 && $ignore==0) {
+//					  $miss = 1; 
+						$pomdbname = mysqli_fetch_row(mysqli_query($link, "SELECT NAZEVDB FROM kango.DB WHERE (ZELEZN='$ZELEZN' AND ZST='$ZST' AND OB='$OB');"));
+						$dbname = $pomdbname[0];
+						file_put_contents($file, "Missing stop $stop_id - $dbname [$aktivita] for trip $trip_id\n" , FILE_APPEND);
+					}
+				}
+					
+				if ($miss==0 && $ignore==0) {
+					if ($novamatice != '') {
+						$pomsfx=$suffix-1;
+						$pom_trip_id = $vlak.$lomeni.$pomsfx;
+						if ($pomsfx>0) {
+							$query60 = "INSERT INTO stoptime VALUES ('$pom_trip_id','$arrival','$arrival','$stop_id','$i','','$nast','$vyst','','');";
+//							echo "60: $query60<br/>";
+							$prikaz6O = mysqli_query($link, $query60);
+							$arrival = $depart;
+			
+							$pomendstop = mysqli_fetch_row(mysqli_query($link, "SELECT MAX(stop_sequence) FROM stoptime WHERE (trip_id = '$pom_trip_id' AND pickup_type != '2');"));
+							$endstopno = $pomendstop[0];
+							
+							$pomfinstop=mysqli_fetch_row(mysqli_query($link, "SELECT stop_id FROM stoptime WHERE (trip_id='$pom_trip_id' AND stop_sequence='$endstopno');"));
+							$finstop=$pomfinstop[0];
+							$pomfinstopparent=mysqli_fetch_row(mysqli_query($link, "SELECT parent_station FROM stop WHERE stop_id='$finstop';"));
+							$finstopparent=$pomfinstopparent[0];
+							
+							if ($finstopparent == '') {$finstopid = $finstop;} else {$finstopid = $finstopparent;}
+//							echo "stop $finstop - parent $finstopparent - id $finstopid<br/>";
 								
-								$pomfinstop=mysqli_fetch_row(mysqli_query($link, "SELECT stop_id FROM stoptime WHERE (trip_id='$pom_trip_id' AND stop_sequence='$endstopno');"));
-								$finstop=$pomfinstop[0];
-								$pomfinstopparent=mysqli_fetch_row(mysqli_query($link, "SELECT parent_station FROM stop WHERE stop_id='$finstop';"));
-								$finstopparent=$pomfinstopparent[0];
-								
-								if ($finstopparent == '') {$finstopid = $finstop;} else {$finstopid = $finstopparent;}
-//								echo "stop $finstop - parent $finstopparent - id $finstopid<br/>";
-								
-								$query180 = "SELECT stop_name FROM stop WHERE stop_id='$finstopid';";
-								$result180 = mysqli_query($link, $query180);
-								$pomhead = mysqli_fetch_row($result180);
-								$headsign = $pomhead[0];
-				
-								$pom163 = mysqli_fetch_row(mysqli_query($link, "SELECT max(stop_sequence) FROM stoptime WHERE (trip_id = '$pom_trip_id');"));
-								$max_trip = $pom163[0];
+							$query180 = "SELECT stop_name FROM stop WHERE stop_id='$finstopid';";
+							$result180 = mysqli_query($link, $query180);
+							$pomhead = mysqli_fetch_row($result180);
+							$headsign = $pomhead[0];
+			
+							$pom163 = mysqli_fetch_row(mysqli_query($link, "SELECT max(stop_sequence) FROM stoptime WHERE (trip_id = '$pom_trip_id');"));
+							$max_trip = $pom163[0];
+							$pom129 = mysqli_fetch_row(mysqli_query($link, "SELECT min(stop_sequence) FROM stoptime WHERE (trip_id = '$pom_trip_id');"));
+							$min_trip = $pom129[0];
 
-								$pom129 = mysqli_fetch_row(mysqli_query($link, "SELECT min(stop_sequence) FROM stoptime WHERE (trip_id = '$pom_trip_id');"));
-								$min_trip = $pom129[0];
-	
-								$tvartrasy = "";
-								$ii = 0;
+							$tvartrasy = "";
+							$ii = 0;
 
-								$query131 = "SELECT * FROM kango.DTV WHERE (CISLO7='$cislo7');";
-								if ($result131 = mysqli_query($link, $query131)) {
-									while ($row131 = mysqli_fetch_row($result131))  {
-										$stopstat = $row131[1];
-										$stopzst = $row131[2];
-										$stopob = $row131[3];
-										$ZST = substr($stopstat,-2).$stopzst.substr($stopob,-1);
-										$ii = $ii + 1;
+							$query131 = "SELECT * FROM kango.DTV WHERE (CISLO7='$cislo7');";
+							if ($result131 = mysqli_query($link, $query131)) {
+								while ($row131 = mysqli_fetch_row($result131))  {
+									$stopstat = $row131[1];
+									$stopzst = $row131[2];
+									$stopob = $row131[3];
+									$ZST = substr($stopstat,-2).$stopzst.substr($stopob,-1);
+									$ii = $ii + 1;
 
-										if ($ii <= $max_trip && $ii >= $min_trip) {
-			                                $tvartrasy .= $ZST."|";
-										}
+									if ($ii <= $max_trip && $ii >= $min_trip) {
+										$tvartrasy .= $ZST."|";
 									}
 								}
-
-								$query1701="UPDATE trip SET trip_headsign='$headsign', shape_id='$tvartrasy' WHERE trip_id='$pom_trip_id';";
-//								echo "$query1701<br/>";
-								$prikaz1701=mysqli_query($link, $query1701);
-				
 							}
-						}
-		
-						if ($ODJCASPRIJ == 1) {$depart = $arrival;}
 
-						$query3 = "INSERT INTO stoptime VALUES ('$trip_id','$arrival','$depart','$stop_id','$i','','$nast','$vyst','','');";
-//						echo "$prikaz3<br/>";
-						$command = mysqli_query($link, $query3) or die("Stop Error description: " . mysqli_error($link));
+							$query1701="UPDATE trip SET trip_headsign='$headsign', shape_id='$tvartrasy' WHERE trip_id='$pom_trip_id';";
+//							echo "301: $query1701<br/>";
+							$prikaz1701=mysqli_query($link, $query1701);
+				
+						}
 					}
-					
-					$miss = 0;
-					$ignore = 0;
-							
+		
+					if ($ODJCASPRIJ == 1) {$depart = $arrival;}
+
+					$query3 = "INSERT INTO stoptime VALUES ('$trip_id','$arrival','$depart','$stop_id','$i','','$nast','$vyst','','');";
+//					echo "3: $query3<br/>";
+					$command = mysqli_query($link, $query3) or die("Stop Error description: " . mysqli_error($link));
 				}
+					
+				$miss = 0;
+				$ignore = 0;
 			}
 		}
 
-		$pomendstop = mysqli_fetch_row(mysqli_query($link, "SELECT MAX(stop_sequence) FROM stoptime WHERE (trip_id = '$trip_id');"));
+		$pomendstop = mysqli_fetch_row(mysqli_query($link, "SELECT MAX(stop_sequence) FROM stoptime WHERE (trip_id = '$trip_id' AND pickup_type != '2');"));
         $endstopno = $pomendstop[0];
 
 		$pomfinstop=mysqli_fetch_row(mysqli_query($link, "SELECT stop_id FROM stoptime WHERE (trip_id='$trip_id' AND stop_sequence='$endstopno');"));
@@ -335,10 +345,10 @@ if ($result = mysqli_query($link, $query)) {
 		}
 
         $query1701="UPDATE trip SET trip_headsign='$headsign', shape_id='$tvartrasy' WHERE trip_id='$trip_id';";
-//		echo "$query1701<br/>";
+//		echo "362: $query1701<br/>";
 		$prikaz1701=mysqli_query($link, $query1701);
 
-		$query_min = mysqli_fetch_row(mysqli_query($link, "SELECT min(stop_sequence) FROM stoptime WHERE trip_id IN (SELECT trip_id FROM trip WHERE route_id='$route_id');"));
+		$query_min = mysqli_fetch_row(mysqli_query($link, "SELECT min(stop_sequence) FROM stoptime WHERE (pickup_type != '2' AND trip_id IN (SELECT trip_id FROM trip WHERE route_id='$route_id'));"));
 		$min = $query_min[0];
 				
 		$query_min_id = mysqli_fetch_row(mysqli_query($link, "SELECT stop_id FROM stoptime WHERE stop_sequence=$min AND trip_id IN (SELECT trip_id FROM trip WHERE route_id='$route_id');"));
@@ -349,7 +359,7 @@ if ($result = mysqli_query($link, $query)) {
 		$query_min_name = mysqli_fetch_row(mysqli_query($link, "SELECT stop_name FROM stop WHERE stop_id='$minstopid';"));
 		$min_name = $query_min_name[0];
 		
-		$query_max = mysqli_fetch_row(mysqli_query($link, "SELECT max(stop_sequence) FROM stoptime WHERE trip_id IN (SELECT trip_id FROM trip WHERE route_id='$route_id');"));
+		$query_max = mysqli_fetch_row(mysqli_query($link, "SELECT max(stop_sequence) FROM stoptime WHERE (pickup_type != '2' AND trip_id IN (SELECT trip_id FROM trip WHERE route_id='$route_id'));"));
 		$max = $query_max[0];
 		
 		$query_max_id = mysqli_fetch_row(mysqli_query($link, "SELECT stop_id FROM stoptime WHERE stop_sequence=$max AND trip_id IN (SELECT trip_id FROM trip WHERE route_id='$route_id');"));
@@ -364,6 +374,7 @@ if ($result = mysqli_query($link, $query)) {
 		else {$wholename = "$min_name – $max_name";}
 
 		$query364 = "UPDATE route SET route_long_name='$wholename' WHERE route_id='$route_id';";
+//		echo $query364;
 		$command364 = mysqli_query($link, $query364);
 
 		$query4 = "DELETE FROM routelist WHERE (cislo7 = '$cislo7');";
