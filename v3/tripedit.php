@@ -417,7 +417,7 @@ $prevstop = "";
 $vzdal = 0;
 $komplet = 1;
 
-$output = str_split($tvartrasy,9);
+$output = explode ("|", $tvartrasy);
 
 foreach ($output as $prujbod) {
 	$pom139 = mysqli_fetch_row(mysqli_query($link, "SELECT stop_name,stop_lat,stop_lon FROM stop WHERE (stop_id='$prujbod');"));
@@ -434,7 +434,7 @@ foreach ($output as $prujbod) {
 	$prevstop = $prujbod;
 						
 	if ($i == 1) {$vzdal = 0;} 
-	echo "$name,$lat,$lon,$i,$vzdal<br />";
+//	echo "$name,$lat,$lon,$i,$vzdal<br />";
 }									
 /*
 $i = 0;

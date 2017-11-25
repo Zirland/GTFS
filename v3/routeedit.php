@@ -103,7 +103,7 @@ if ($result37 = mysqli_query($link, $query37)) {
 		}
 		echo "</td><td>";
 		
-		$query96 = "SELECT * FROM trip WHERE ((route_id = $route_id) AND (direction_id = '1')) ORDER BY trip_id;";
+		$query96 = "SELECT * FROM trip WHERE ((route_id = '$route_id') AND (direction_id = '1')) ORDER BY trip_id;";
 		if ($result96 = mysqli_query($link, $query96)) {
 			while ($row96 = mysqli_fetch_row($result96)) {
 				$trip_id = $row96[2];
@@ -116,8 +116,14 @@ if ($result37 = mysqli_query($link, $query37)) {
 				echo "$vlak - $trip_headsign - <a href=\"tripedit.php?id=$trip_id\">Upravit</a>";
 				if ($trip_aktif == '1') {echo "</span>";}
 				$cislo7 = substr($trip_id, 0, -2)."/".substr($trip_id,-2,1);
-				echo " $cislo7<br/>";
 				$query114 = "SELECT POZNAM FROM kango.OBP WHERE CISLO7='$cislo7';";
+				if ($result114 = mysqli_query ($link, $query114)) {
+                                        while ($row114 = mysqli_fetch_row($result114)) {
+                                                $poznamka = $row114[0];
+                                                if (strpos($poznamka, "linka") !== false) {echo "$poznamka";}
+                                        }
+                                }
+                                echo "<br/>";
 			}
 		}	
 

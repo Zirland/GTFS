@@ -18,16 +18,21 @@ if ($result2 = mysqli_query ($link, $query2)) {
 		$trip_id = $row2[0];
 		
 		echo "<a href=\"tripedit.php?id=$trip_id\">$trip_id</a><br/>";
+		
+		$smazat = mysqli_query($link, "DELETE FROM trip WHERE trip_id='$trip_id';");
 	}
 }
 
 echo "ONE STOP<br/>";
-$query3 = "SELECT trip_id FROM (SELECT trip_id, count(*) AS pocet FROM stoptime) WHERE pocet=1;";
+$query3 = "SELECT trip_id FROM (SELECT trip_id, count(*) AS pocet FROM stoptime GROUP BY trip_id) AS pomoc WHERE pocet=1;";
 if ($result3 = mysqli_query ($link, $query3)) {
 	while ($row3 = mysqli_fetch_row ($result3)) {
 		$trip_id = $row3[0];
 		
 		echo "<a href=\"tripedit.php?id=$trip_id\">$trip_id</a><br/>";
+
+                $smazat1 = mysqli_query($link, "DELETE FROM trip WHERE trip_id='$trip_id';");
+		$smazat2 = mysqli_query($link, "DELETE FROM stoptime WHERE trip_id = '$trip_id';");
 	}
 }
 
