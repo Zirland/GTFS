@@ -1,7 +1,6 @@
 <?php
 include 'header.php';
 
-/*
 $query = "SELECT trip_id, min(stop_sequence) FROM stoptime GROUP BY trip_id ORDER BY trip_id;";
 if ($result = mysqli_query($link, $query)) {
 	while ($row = mysqli_fetch_row($result)) {
@@ -22,8 +21,6 @@ if ($result = mysqli_query($link, $query)) {
 		}
 	}
 }
-
-*/
 
 $query = "SELECT * from routelist;";
 if ($result = mysqli_query($link, $query)) {
@@ -53,8 +50,5 @@ if ($result = mysqli_query($link, $query)) {
 	}
 }
 		
-
-
-
 include 'footer.php';
 ?>

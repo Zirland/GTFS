@@ -226,7 +226,7 @@ if ($result = mysqli_query($link, $query)) {
 					$jmeno = $row88[0];	
 					$aktivita = $row88[1];
 					
-					if ($aktivita == "2") {$nast = 2; $vyst = 2; $ignore = 0;}
+					if ($aktivita == "2" && $arrival != "00:0:00") {$nast = 2; $vyst = 2; $ignore = 0;}
 					if ($aktivita == "0") {$ignore = 1;}
 					
 					if ($radky==0 && $ignore==0) {
