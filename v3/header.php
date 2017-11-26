@@ -24,7 +24,6 @@ if (!$link) {
 </td></tr>
 <tr><td style="width:100px; background-color:yellow; vertical-align:top;">
 <a href="opravy.php">Opravy</a><br />
-<a href="headsigns.php">Headsigns</a><br />
 <a href="tripedit.php">Tripedit</a><br />
 </td>
 <td>
