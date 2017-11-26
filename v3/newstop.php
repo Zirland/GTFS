@@ -11,6 +11,7 @@ $get_name = @$_GET['newname'];
 
 switch ($get_active) {
 	case "0" : $aktivuj = "0"; break;
+	case "2" : $aktivuj = "2"; break;
 	default : $aktivuj = "1"; break;
 }
 
@@ -26,7 +27,7 @@ switch ($action) {
 		$praha = ""; // ID parent
 		$aktivni = $_POST['aktivace'];
 		
-		$query14 = "INSERT INTO stop (stop_id, stop_code, stop_name, stop_desc, stop_lat, stop_lon, zone_id, stop_url, location_type, parent_station, stop_timezone, wheelchair_boarding, active)  VALUES ('$stopid','','$stopname','','$stoplat','$stoplon','','','$parent','$praha','','0','$aktivuj');";
+		$query14 = "INSERT INTO stop (stop_id, stop_code, stop_name, stop_desc, stop_lat, stop_lon, zone_id, stop_url, location_type, parent_station, stop_timezone, wheelchair_boarding, active)  VALUES ('$stopid','','$stopname','','$stoplat','$stoplon','','','$parent','$praha','','0','$aktivni');";
 		$prikaz4 = mysqli_query($link, $query14);
 		
 		$deaktivace = "UPDATE shapetvary SET complete = '0' WHERE (tvartrasy LIKE '%$stop_id%'));";
@@ -62,6 +63,8 @@ echo "></td><td>A0:<input type=\"radio\" name=\"aktivace\" value=\"0\"";
 if ($aktivuj == "0") {echo " CHECKED";}
 echo ">A1:<input type=\"radio\" name=\"aktivace\" value=\"1\"";
 if ($aktivuj == "1") {echo " CHECKED";}
+echo ">A2:<input type=\"radio\" name=\"aktivace\" value=\"2\"";
+if ($aktivuj == "2") {echo " CHECKED";}
 echo "></td><td colspan=\"2\"><input type=\"submit\" value=\"Insert\"></form></td></tr>";
 echo "</table>";
 
