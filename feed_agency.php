@@ -33,6 +33,7 @@ file_put_contents($file, $current);
 $calendar_trunc = mysqli_query($link, "TRUNCATE TABLE kango.cal_use;");
 $stop_trunc = mysqli_query($link, "TRUNCATE TABLE kango.stop_use;");
 $shapecheck_trunc = mysqli_query($link, "TRUNCATE TABLE kango.shapecheck;");
+$shapecheckN_trunc = mysqli_query($link, "TRUNCATE TABLE GTFS.shapecheck;");
 $parent_trunc = mysqli_query($link, "TRUNCATE TABLE kango.parent_use;");
 
 $agencynums = 0;

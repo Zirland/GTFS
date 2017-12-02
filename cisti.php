@@ -10,8 +10,8 @@ if ($result = mysqli_query($link, $query)) {
 		$matice_start = mktime(0,0,0,12,11,2016);
 		$matice_end = mktime(0,0,0,12,9,2017);
 		
-		$dnes_den = date("d", time());
-		$dnes_mesic = date("m", time());
+		$dnes_den = date("j", time());
+		$dnes_mesic = date("n", time());
 		$dnes_rok = date("Y", time());
 
 		$calendar_start = mktime(0,0,0,$dnes_mesic,$dnes_den,$dnes_rok);
@@ -44,20 +44,18 @@ if ($result = mysqli_query($link, $query)) {
 		if ($soucet == 0) {
 			echo "<a href=\"tripedit.php?id=$trip_id\">$trip_id</a> = $soucet<br/>";
 			
-			$prikaz = mysqli_query($link, "DELETE FROM trip WHERE trip_id = '$trip_id';");
-			$prikaz2 = mysqli_query($link, "DELETE FROM stoptime WHERE trip_id = '$trip_id';");
-			
+			$prikaz = mysqli_query($link, "UPDATE trip SET active=0 WHERE trip_id = '$trip_id';");
 		}
 	}
 }
 
-$query1 = "SELECT route_id FROM route WHERE route_id NOT IN (SELECT DISTINCT route_id FROM trip);";
+$query1 = "SELECT route_id FROM route WHERE route_id NOT IN (SELECT DISTINCT route_id FROM trip WHERE active=1);";
 if ($result1 = mysqli_query($link, $query1)) {
 	while ($row1 = mysqli_fetch_row($result1)) {
 		$route_id = $row1[0];
 
 		echo "$route_id<br/>";
-	//	$prikaz3 = mysqli_query($link, "DELETE FROM route WHERE route_id = '$route_id';");
+		$prikaz3 = mysqli_query($link, "UPDATE route SET active=0 WHERE route_id = '$route_id';");
 	}
 }
 

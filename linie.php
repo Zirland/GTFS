@@ -79,8 +79,8 @@ $prevnow = $now;
 				$bikes_allowed = $row85[7];
 
 				$matice_start = mktime(0,0,0,12,11,2016);
-				$dnes_den = date("d", time());
-				$dnes_mesic = date("m", time());
+				$dnes_den = date("j", time());
+				$dnes_mesic = date("n", time());
 				$dnes_rok = date("Y", time());
 
 				$calendar_start = mktime(0,0,0,$dnes_mesic,$dnes_den,$dnes_rok);
