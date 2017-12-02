@@ -9,6 +9,8 @@ if (!$link) {
 $routenums = 0;
 $tripnums = 0;
 
+$shapecheck_trunc = mysqli_query($link, "TRUNCATE TABLE shapecheck;");
+
 $now = microtime(true);
 $timestart = $now;
 echo "Start: $now\n";

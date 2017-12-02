@@ -9,6 +9,8 @@ if (!$link) {
 $routenums = 0;
 $tripnums = 0;
 
+$shapecheck_trunc = mysqli_query($link, "TRUNCATE TABLE shapecheck;");
+
 $now = microtime(true);
 $timestart = $now;
 echo "Start: $now\n";
@@ -125,7 +127,7 @@ $prevnow = $now;
 							$vzdal = 0;
 							$komplet = 1;
 
-							$output = explode("|", $tvartrasy);
+							$output = explode('|', $tvartrasy);
 
 							foreach ($output as $prujbod) {
 								$pom139 = mysqli_fetch_row(mysqli_query($link, "SELECT stop_name,stop_lat,stop_lon FROM stop WHERE (stop_id='$prujbod');"));
