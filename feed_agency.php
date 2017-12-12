@@ -1,5 +1,5 @@
 <?php
-$link = mysqli_connect('localhost', 'gtfs', 'gtfs', 'GTFS2');
+$link = mysqli_connect('localhost', 'gtfs', 'gtfs', 'GTFS');
 if (!$link) {
     echo "Error: Unable to connect to MySQL." . PHP_EOL;
     echo "Debugging errno: " . mysqli_connect_errno() . PHP_EOL;
@@ -32,8 +32,7 @@ file_put_contents($file, $current);
 
 $calendar_trunc = mysqli_query($link, "TRUNCATE TABLE kango.cal_use;");
 $stop_trunc = mysqli_query($link, "TRUNCATE TABLE kango.stop_use;");
-$shapecheck_trunc = mysqli_query($link, "TRUNCATE TABLE kango.shapecheck;");
-$shapecheckN_trunc = mysqli_query($link, "TRUNCATE TABLE GTFS.shapecheck;");
+$shapecheck_trunc = mysqli_query($link, "TRUNCATE TABLE shapecheck;");
 $parent_trunc = mysqli_query($link, "TRUNCATE TABLE kango.parent_use;");
 
 $agencynums = 0;

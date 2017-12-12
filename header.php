@@ -7,7 +7,7 @@
 <body>
 
 <?php
-$link = mysqli_connect('localhost', 'gtfs', 'gtfs', 'GTFS2');
+$link = mysqli_connect('localhost', 'gtfs', 'gtfs', 'GTFS');
 if (!$link) {
     echo "Error: Unable to connect to MySQL." . PHP_EOL;
     echo "Debugging errno: " . mysqli_connect_errno() . PHP_EOL;
@@ -24,8 +24,8 @@ if (!$link) {
 </td></tr>
 <tr><td style="width:100px; background-color:yellow; vertical-align:top;">
 <a href="opravy.php">Opravy</a><br />
-<a href="migracestop.php">Migrace Praha</a><br />
+<a href="lomeni.php">Lomení</a><br />
+<a href="station.php">Stanice</a><br />
 <a href="tripedit.php">Tripedit</a><br />
-<a href="newtrip.php">Newtrip</a><br />
 </td>
 <td>

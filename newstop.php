@@ -1,8 +1,20 @@
 <?php
 include 'header.php';
 
+$parent = 0;
 $parent_id = @$_GET['id'];
 $action = @$_POST['action'];
+
+$get_active = @$_GET['newact'];
+$get_id = @$_GET['newid'];
+$get_name = @$_GET['newname'];
+
+switch ($get_active) {
+	case "0" : $aktivuj = "0"; break;
+	case "2" : $aktivuj = "2"; break;
+	default : $aktivuj = "1"; break;
+}
+
 
 switch ($action) {
 	case 'nova' :
@@ -12,9 +24,10 @@ switch ($action) {
 		$stoplon = $_POST['stoplon'];
 		$parent = $_POST['parent'];
 		$parent_id = $stopid;
-		$praha = "545495680";
+		$praha = ""; // ID parent
+		$aktivni = $_POST['aktivace'];
 		
-		$query14 = "INSERT INTO stop (stop_id, stop_code, stop_name, stop_desc, stop_lat, stop_lon, zone_id, stop_url, location_type, parent_station, stop_timezone, wheelchair_boarding, active)  VALUES ('$stopid','','$stopname','','$stoplat','$stoplon','','','$parent','$praha','','0','1');";
+		$query14 = "INSERT INTO stop (stop_id, stop_code, stop_name, stop_desc, stop_lat, stop_lon, zone_id, stop_url, location_type, parent_station, stop_timezone, wheelchair_boarding, active)  VALUES ('$stopid','','$stopname','','$stoplat','$stoplon','','','$parent','$praha','','0','$aktivni');";
 		$prikaz4 = mysqli_query($link, $query14);
 		
 		$deaktivace = "UPDATE shapetvary SET complete = '0' WHERE (tvartrasy LIKE '%$stop_id%'));";
@@ -41,12 +54,18 @@ echo "<form method=\"post\" action=\"newstop.php\" name=\"nova\">
 		
 
 echo "<tr><td>Stop ID</td><td>Stop name</td><td>Latitude ~50.123456</td><td>Longitude ~16.987654</td></tr>";
-echo "<tr><td><input type=\"text\" name=\"stopid\"></td><td><input name=\"stopname\" value=\"\" type=\"text\"></td><td><input name=\"stoplat\" type=\"text\"></td><td><input name=\"stoplon\" type=\"text\"></td></tr>";
-echo "<tr><td>0:<input type=\"radio\" name=\"parent\" value=\"0\"";
+echo "<tr><td><input type=\"text\" name=\"stopid\" value=\"$get_id\"></td><td><input name=\"stopname\" value=\"$get_name\" type=\"text\"></td><td><input name=\"stoplat\" type=\"text\"></td><td><input name=\"stoplon\" type=\"text\"></td></tr>";
+echo "<tr><td>P0:<input type=\"radio\" name=\"parent\" value=\"0\"";
 if ($parent == "0") {echo " CHECKED";}
-echo ">1:<input type=\"radio\" name=\"parent\" value=\"1\"";
+echo ">P1:<input type=\"radio\" name=\"parent\" value=\"1\"";
 if ($parent == "1") {echo " CHECKED";}
-echo "></td><td colspan=\"3\"><input type=\"submit\" value=\"Insert\"></form></td></tr>";
+echo "></td><td>A0:<input type=\"radio\" name=\"aktivace\" value=\"0\"";
+if ($aktivuj == "0") {echo " CHECKED";}
+echo ">A1:<input type=\"radio\" name=\"aktivace\" value=\"1\"";
+if ($aktivuj == "1") {echo " CHECKED";}
+echo ">A2:<input type=\"radio\" name=\"aktivace\" value=\"2\"";
+if ($aktivuj == "2") {echo " CHECKED";}
+echo "></td><td colspan=\"2\"><input type=\"submit\" value=\"Insert\"></form></td></tr>";
 echo "</table>";
 
 echo "<table>";

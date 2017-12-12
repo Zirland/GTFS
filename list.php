@@ -49,7 +49,7 @@ switch ($t) {
 		<th>Typ</th>
 		<th></th>";
         echo "</tr>";
-        $query = "SELECT * FROM route WHERE active = 1 ORDER BY route_short_name;";
+        $query = "SELECT * FROM route WHERE (active = 1) ORDER BY route_short_name;"; // AND route_color = '008000'
         if ($result = mysqli_query($link, $query)) {
             while ($row = mysqli_fetch_row($result)) {
                 $route_id = $row[0];

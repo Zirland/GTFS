@@ -26,8 +26,9 @@ switch ($action) {
 	
 	case "zastavky" :
 	$trip = $_POST['trip_id'];
+	$pocet = $_POST['pocet'];
 	
-	for ($y = 0; $y < 40; $y++) {
+	for ($y = 0; $y < $pocet; $y++) {
 			$$ind = $y;
 			$arrindex = "arrive".${$ind};
 			$arrival_time = $_POST[$arrindex];
@@ -96,7 +97,7 @@ switch ($action) {
 			$i = $i + 1;
 	
 			if ($i <= $max_trip && $i >= $min_trip) {
-				$tvartrasy .= $ZST;
+				$tvartrasy .= $ZST."|";
 			}
 		}
 	}
@@ -114,7 +115,7 @@ switch ($action) {
 	
    		switch ($invert) {
 	   	case 1 :
-	   		for ($v = 0; $v < 553; $v++) {
+	   		for ($v = 0; $v < 365; $v++) {
 			$$ind = $v;
 			$index = "grafikon".${$ind};
 			$mtrx = $_POST[$index];
@@ -127,7 +128,7 @@ switch ($action) {
 	   		break;
 	   		
 	    default :
-	    	for ($v = 0; $v < 553; $v++) {
+	    	for ($v = 0; $v < 365; $v++) {
 			$$ind = $v;
 			$index = "grafikon".${$ind};
 			$mtrx = $_POST[$index];
@@ -136,7 +137,11 @@ switch ($action) {
 		}
 		
 		$denne = $_POST['denne'];
-		if ($denne == 1) {$grafi = "1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111";}
+		if ($denne == 1) {
+			for ($i = 0; $i < 365; $i++) {
+				$grafi.="1";
+			}
+		}
 
 		if ($altern == "1") {
 			$pom84 = mysqli_fetch_row(mysqli_query($link, "SELECT matice FROM trip WHERE (trip_id = '$proti');"));
@@ -145,7 +150,7 @@ switch ($action) {
 			$grafi = "";
 
 			$grafikon = str_split($matice);
-			for ($w = 0; $w < 553; $w++) {
+			for ($w = 0; $w < 365; $w++) {
 				switch ($grafikon[$w]) {
 				case 0 : $grafi.="1"; break;
 				case 1 : $grafi.="0"; break;
@@ -153,7 +158,7 @@ switch ($action) {
 			}
 		}
 		
-		$maticestart = mktime(0,0,0,12,11,2016);
+		$maticestart = mktime(0,0,0,12,10,2017);
 		$typkodu = @$_POST['typkodu'];
 		$datumod = @$_POST['datumod'];
 		$datumdo = @$_POST['datumdo'];
@@ -166,7 +171,7 @@ switch ($action) {
 				$Ddo = substr($datumdo,0,2); $Mdo = substr($datumdo,2,2); $Ydo = substr($datumdo,-4); $timedo = mktime(0,0,0,$Mdo, $Ddo, $Ydo); 
 				$kondnu = round(($timedo - $maticestart) / 86400); 
 				
-				for ($g=1; $g<=553; $g++) {
+				for ($g=1; $g<=365; $g++) {
 					if ($g>=$zacdnu && $g <=$kondnu) {$grafi[$g] = 1;}
 				}
 			break;
@@ -177,7 +182,7 @@ switch ($action) {
 				$Ddo = substr($datumdo,0,2); $Mdo = substr($datumdo,2,2); $Ydo = substr($datumdo,-4); $timedo = mktime(0,0,0,$Mdo, $Ddo, $Ydo); 
 				$kondnu = round(($timedo - $maticestart) / 86400); 
 				
-				for ($g=1; $g<=553; $g++) {
+				for ($g=1; $g<=365; $g++) {
 					if ($g>=$zacdnu && $g <=$kondnu) {$grafi[$g] = 0;}
 				}
 			break;
@@ -206,10 +211,9 @@ $hlavicka = mysqli_fetch_row(mysqli_query($link, "SELECT * FROM trip WHERE (trip
 
 echo "<td><a href = \"routeedit.php?id=$linka\">Zpět na linku</a><td>";
 echo "<td><form method=\"get\" action=\"tripedit.php\" name=\"id\"><input type=\"text\" name=\"id\" value=\"\"><input type=\"submit\"></form><td>";
+echo "<td><a href=\"routecopy.php?id=$trip_id\" target=\"_blank\">Nový trip</a></td>";
 echo "<td><a href=\"zajebal.php?err=$trip_id\" target=\"_blank\">Zajebal</a></td>";
-echo "<td><a href=\"routecopy.php?id=$trip_id\" target=\"_blank\">Duplicate</a></td>";
 echo "<td><a href=\"tripdelete.php?trip=$trip_id\" target=\"_blank\">Smazat trip</a></td>";
-echo "<td><td>";
 echo "</tr><tr>";
 
 
@@ -320,6 +324,9 @@ if ($result108 = mysqli_query($link, $query108)) {
 	echo "<option value=\"10\"";
 	if ($pickup_type == 1) {echo " SELECTED";}
 	echo ">Pouze výstup</option>";
+	echo "<option value=\"22\"";
+	if ($drop_off_type == 2) {echo " SELECTED";}
+	echo ">Vlak nezastavuje</option>";
 	echo "<option value=\"33\"";
 	if ($drop_off_type == 3) {echo " SELECTED";}
 	echo ">Zastavuje na znamení</option>";
@@ -328,6 +335,7 @@ if ($result108 = mysqli_query($link, $query108)) {
 	$z = $z+1;
     }
 }
+echo "<input type=\"hidden\" name=\"pocet\" value=\"$z-1\">";
 echo "<input type=\"submit\"></form>";
 echo "</table></td><td>";
 
@@ -393,7 +401,9 @@ if ($result262 = mysqli_query($link, $query262)) {
 
 echo "TRASA <a href=\"tripedit.php?id=$trip&trasa=1\">VYNUŤ</a><br />";
 echo "$shape <br />";
-//$query131 = "SELECT * FROM kango.DTV WHERE (CISLO7='$cislo7');";
+$i = 0;
+$tvartrasy = "";
+$query131 = "SELECT * FROM kango.DTV WHERE (CISLO7='$cislo7');";
 		if ($result131 = mysqli_query($link, $query131)) {
 			while ($row131 = mysqli_fetch_row($result131))  {
 				$stopstat = $row131[1];
@@ -403,7 +413,7 @@ echo "$shape <br />";
 				$i = $i + 1;
 	
 				if ($i <= $max_trip && $i >= $min_trip) {
-					$tvartrasy .= $ZST;
+					$tvartrasy .= $ZST."|";
 				}
 			}
 		}
@@ -414,7 +424,7 @@ $prevstop = "";
 $vzdal = 0;
 $komplet = 1;
 
-$output = str_split($tvartrasy,9);
+$output = explode ("|", $tvartrasy);
 
 foreach ($output as $prujbod) {
 	$pom139 = mysqli_fetch_row(mysqli_query($link, "SELECT stop_name,stop_lat,stop_lon FROM stop WHERE (stop_id='$prujbod');"));
@@ -431,7 +441,7 @@ foreach ($output as $prujbod) {
 	$prevstop = $prujbod;
 						
 	if ($i == 1) {$vzdal = 0;} 
-	echo "$name,$lat,$lon,$i,$vzdal<br />";
+//	echo "$name,$lat,$lon,$i,$vzdal<br />";
 }									
 /*
 $i = 0;
@@ -487,12 +497,12 @@ echo "<input type=\"checkbox\" name=\"invert\" value=\"1\"> Invertuj";
 echo "<input type=\"checkbox\" name=\"altern\" value=\"1\"> Alternace <input type=\"text\" name=\"proti\" value=\"\">";
 echo "<select name=\"typkodu\"><option value=\"1\">Jede</option><option value=\"4\">Nejede</option></select> od <input type=\"text\" name=\"datumod\" value=\"\"> do <input type=\"text\" name=\"datumdo\" value=\"\">";
 
-// Matice začíná 11.12.2016 
-$matice_start = mktime(0,0,0,12,11,2016);
+// Matice začíná 10.12.2017 
+$matice_start = mktime(0,0,0,12,10,2017);
 $grafikon = str_split($matice);
 echo "<table border=\"1\"><tr><td>";
-// 11.12.2016 je 0;
-for ($u = 0; $u < 553; $u++) {
+// 10.12.2017 je 0;
+for ($u = 0; $u < 365; $u++) {
     
     $datum=$matice_start+($u*86400);
     $datum_format = date("d.m.", $datum);

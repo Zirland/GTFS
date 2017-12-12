@@ -1,5 +1,5 @@
 <?php
-$link = mysqli_connect('localhost', 'gtfs', 'gtfs', 'GTFS2');
+$link = mysqli_connect('localhost', 'gtfs', 'gtfs', 'GTFS');
 if (!$link) {
     echo "Error: Unable to connect to MySQL." . PHP_EOL;
     echo "Debugging errno: " . mysqli_connect_errno() . PHP_EOL;
@@ -22,6 +22,8 @@ $now = microtime(true);
 $timestart = $now;
 echo "Start: $now<br />";
 $prevnow = $now;
+
+$stopnums = 0;
 
 $current = "";
 
@@ -57,52 +59,6 @@ $now = microtime(true);
 $dlouho = $now-$prevnow;
 echo "Calendar flush: $dlouho<br />";
 $prevnow = $now;
-
-$current = "";
-
-$shps = "SELECT DISTINCT shapecheck.shape_id FROM kango.shapecheck;";
-if ($result349 = mysqli_query($link, $shps)) {
-	while ($row349 = mysqli_fetch_row($result349)) {
-		$shape_id = $row349[0];
-
-		$query260 = "SELECT shape_id,shape_pt_lat,shape_pt_lon,shape_pt_sequence,shape_dist_traveled FROM shape WHERE (shape_id = '$shape_id');";
-		if ($result260 = mysqli_query($link, $query260)) {
-			while ($row260 = mysqli_fetch_row($result260)) {
-				$shape_id = $row260[0];
-				$shape_pt_lat = $row260[1];
-				$shape_pt_lon = $row260[2];
-				$shape_pt_sequence = $row260[3];
-				$shape_dist_traveled = $row260[4];
-        
-				$current .= "$shape_id,$shape_pt_lat,$shape_pt_lon,$shape_pt_sequence,$shape_dist_traveled\n";
-			}
-		}
-	}
-}
-
-$file = 'shapes.txt';
-file_put_contents($file, $current, FILE_APPEND);
-//zapsány použité tvary tras
-
-$now = microtime(true);
-$dlouho = $now-$prevnow;
-echo "Shape flush: $dlouho<br />";
-
-mysqli_close($link);
-
-$link = mysqli_connect('localhost', 'gtfs', 'gtfs', 'GTFS');
-if (!$link) {
-    echo "Error: Unable to connect to MySQL." . PHP_EOL;
-    echo "Debugging errno: " . mysqli_connect_errno() . PHP_EOL;
-    exit;
-}
-
-$now = microtime(true);
-$timestart = $now;
-echo "Start: $now<br />";
-$prevnow = $now;
-
-$stopnums = 0;
 
 $current = "";
 
@@ -169,7 +125,7 @@ if ($result349 = mysqli_query($link, $shps)) {
 				$shape_pt_sequence = $row260[3];
 				$shape_dist_traveled = $row260[4];
         
-				$current .= "N$shape_id,$shape_pt_lat,$shape_pt_lon,$shape_pt_sequence,$shape_dist_traveled\n";
+				$current .= "$shape_id,$shape_pt_lat,$shape_pt_lon,$shape_pt_sequence,$shape_dist_traveled\n";
 			}
 		}
 	}

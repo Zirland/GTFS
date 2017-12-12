@@ -24,12 +24,19 @@ echo "<form method=\"post\" action=\"station.php\" name=\"filtr\">
 
 switch ($action) {
 	case "update" :
-		$numtrip = @$_POST['spoj'];
-		$newline = @$_POST['line'];
+		$pocet = $_POST['pocet'];
 	
-		$query30 = "UPDATE trip SET route_id = '$newline' WHERE trip_id = '$numtrip';";
-//		echo "$query30<br/>";
-		$prikaz30 = mysqli_query($link, $query30);
+		for ($y = 0; $y < $pocet; $y++) {
+			$$ind = $y;
+			$numtripindex = "spoj".${$ind};
+			$numtrip = $_POST[$numtripindex];		
+			$newlineindex = "line".${$ind};
+			$newline = $_POST[$newlineindex];		
+			
+			$query30 = "UPDATE trip SET route_id = '$newline' WHERE trip_id = '$numtrip';";
+//			echo "$query30<br/>";
+			$prikaz30 = mysqli_query($link, $query30);
+		}
 		$action="filtr";	
 //	break;
 
@@ -50,7 +57,6 @@ switch ($action) {
 
  		$now = "00:00:00";
 		$end = "24:00:00";
-
 
 		$query = "SELECT trip_id FROM stoptime WHERE (stop_id='$filtr' AND departure_time>='$now' AND departure_time<='$end') ORDER BY departure_time;";
 		echo $query;
@@ -75,7 +81,7 @@ switch ($action) {
 				echo "<form method=\"post\" action=\"station.php\" name=\"update\">
 				<input name=\"action\" value=\"update\" type=\"hidden\">
 				<input name=\"filtr\" value=\"$filtr\" type=\"hidden\">
-				<input name=\"spoj\" value=\"$trip_id\" type=\"hidden\">";
+				<input name=\"spoj$x\" value=\"$trip_id\" type=\"hidden\">";
 				echo "<tr>";
 				echo "<td>$cislo</td>";
 				echo "<td>$zkratka</td>";
@@ -84,8 +90,8 @@ switch ($action) {
 				$route_color = $row8[1];
 				$route_text_color = $row8[2];
 				echo "<td style=\"background-color: #$route_color; text-align: center;\"><span style=\"color: #$route_text_color;\">";
-				echo "<select name=\"line\">";
-				$query84 = "SELECT route_id, route_short_name FROM route WHERE route_id NOT LIKE 'L%' ORDER BY route_short_name;";
+				echo "<select name=\"line$x\">";
+				$query84 = "SELECT route_id, route_short_name FROM route ORDER BY route_short_name;"; //WHERE route_id NOT LIKE 'L%' 
 				if ($result84 = mysqli_query ($link, $query84)) {
 					while ($row84 = mysqli_fetch_row($result84)) {
 						$route_id = $row84[0];
@@ -111,16 +117,19 @@ switch ($action) {
 			        $kam = $pom93[0];
 
 				echo "<td>$kam</td>";
-				echo"<td><input type=\"submit\"></td>";
+				echo"<td></td>";
 				$x = $x+1;
 				echo "</tr>";
-				echo "</form>";
 			}
 		}				
-		}
-		mysqli_free_result($result);
 	}
-	echo "<table>";
+	mysqli_free_result($result);
+}
+echo "<table>";
+
+echo "<input type=\"hidden\" name=\"pocet\" value=\"$x-1\">";
+echo "<input type=\"submit\">";
+echo "</form>";	
 
 include 'footer.php';
 ?>

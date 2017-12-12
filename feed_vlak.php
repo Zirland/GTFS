@@ -1,7 +1,7 @@
 <?php
 $barva=@$_GET["color"];
 
-$link = mysqli_connect('localhost', 'gtfs', 'gtfs', 'GTFS2');
+$link = mysqli_connect('localhost', 'gtfs', 'gtfs', 'GTFS');
 if (!$link) {
     echo "Error: Unable to connect to MySQL." . PHP_EOL;
     echo "Debugging errno: " . mysqli_connect_errno() . PHP_EOL;
@@ -52,9 +52,9 @@ $prevnow = $now;
 				$shape_tvar = $row85[5];
 				$wheelchair_accessible = $row85[6];
 				$bikes_allowed = $row85[7];
-
-				$matice = "0".$matice."000000000000000";
-				$matice_start = mktime(0,0,0,12,11,2016);
+				
+				$matice = "0000000000".$matice."000000000000000"; // jedna nula na začátku musí navíc
+				$matice_start = mktime(0,0,0,12,1,2017);
 				$dnes_den = date("j", time());
 				$dnes_mesic = date("n", time());
 				$dnes_rok = date("Y", time());
@@ -63,7 +63,7 @@ $prevnow = $now;
 				$calendar_start_format = date("Ymd", $calendar_start);
 				$calendar_stop_format = date("Ymd", $calendar_start+6*86400);
 				$vtydnu = date('w',$calendar_start);
-		
+
 				$sek=$calendar_start-$matice_start;
 				$min=floor($sek/60);
 				$sek=$sek%60;
@@ -106,7 +106,7 @@ $prevnow = $now;
 					$tripnums = $tripnums + 1;
 // zapsán aktivní spoj
 
-					$query171 = "INSERT INTO kango.shapecheck (trip_id, shape_id) VALUES ('$trip_id', '$shape_id');";
+					$query171 = "INSERT INTO shapecheck (trip_id, shape_id) VALUES ('$trip_id', '$shape_id');";
 					$zapistrasy = mysqli_query($link, $query171);
 
 $now = microtime(true);
@@ -128,7 +128,7 @@ $prevnow = $now;
 							$vzdal = 0;
 							$komplet = 1;
 
-							$output = str_split($tvartrasy,9);
+							$output = explode("|", $tvartrasy);
 
 							foreach ($output as $prujbod) {
 								$pom139 = mysqli_fetch_row(mysqli_query($link, "SELECT stop_name,stop_lat,stop_lon FROM stop WHERE (stop_id='$prujbod');"));

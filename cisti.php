@@ -6,10 +6,11 @@ if ($result = mysqli_query($link, $query)) {
 	while ($row = mysqli_fetch_row($result)) {
 		$matice = $row[0];
 		$trip_id = $row[1];
-		
-		$matice_start = mktime(0,0,0,12,11,2016);
-		$matice_end = mktime(0,0,0,12,9,2017);
-		
+
+		$matice = "0000000000".$matice."000000000000000"; // jedna nula na začátku musí navíc
+		$matice_start = mktime(0,0,0,12,1,2017);
+		$matice_end = mktime(0,0,0,12,8,2018);
+
 		$dnes_den = date("j", time());
 		$dnes_mesic = date("n", time());
 		$dnes_rok = date("Y", time());

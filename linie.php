@@ -79,8 +79,8 @@ $prevnow = $now;
 				$bikes_allowed = $row85[7];
 
 				$matice_start = mktime(0,0,0,12,11,2016);
-				$dnes_den = date("j", time());
-				$dnes_mesic = date("n", time());
+				$dnes_den = date("d", time());
+				$dnes_mesic = date("m", time());
 				$dnes_rok = date("Y", time());
 
 				$calendar_start = mktime(0,0,0,$dnes_mesic,$dnes_den,$dnes_rok);
@@ -152,7 +152,7 @@ $prevnow = $now;
 							$vzdal = 0;
 							$komplet = 1;
 
-							$output = str_split($tvartrasy,9);
+							$output = explode("|",$tvartrasy);
 
 							foreach ($output as $prujbod) {
 								$pom139 = mysqli_fetch_row(mysqli_query($link, "SELECT stop_name,stop_lat,stop_lon FROM stop WHERE (stop_id='$prujbod');"));

@@ -14,7 +14,7 @@ switch ($action) {
 		$invalida = $_POST['invalida'];
 		$cyklo = $_POST['cyklo'];
 		$aktif = $_POST['aktif'];
-		for ($w = 0; $w < 553; $w++) {
+		for ($w = 0; $w < 365; $w++) {
 			$grafi.="0";
 		}
 
@@ -85,7 +85,7 @@ $path = array_reverse($path);
 
 foreach ($path as $prujezd) {
 	$z = $z + 1;
-	$prubeh .= $prujezd;
+	$prubeh .= $prujezd."|";
 }
 
 		$ready1 = "INSERT INTO stoptime (stop_id, trip_id, arrival_time, departure_time, pickup_type, drop_off_type, stop_sequence) VALUES ('$stop_id','$trip','$arrival','$departure','$pickup_type','$drop_off_type','$z');";
@@ -110,7 +110,7 @@ foreach ($path as $prujezd) {
 	
    		switch ($invert) {
 	   	case 1 :
-	   		for ($v = 0; $v < 553; $v++) {
+	   		for ($v = 0; $v < 365; $v++) {
 			$$ind = $v;
 			$index = "grafikon".${$ind};
 			$mtrx = $_POST[$index];
@@ -123,7 +123,7 @@ foreach ($path as $prujezd) {
 	   		break;
 	   		
 	    default :
-	    	for ($v = 0; $v < 553; $v++) {
+	    	for ($v = 0; $v < 365; $v++) {
 			$$ind = $v;
 			$index = "grafikon".${$ind};
 			$mtrx = $_POST[$index];
@@ -132,7 +132,11 @@ foreach ($path as $prujezd) {
 		}
 		
 		$denne = $_POST['denne'];
-		if ($denne == 1) {$grafi = "1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111";}
+		if ($denne == 1) {
+			for ($i = 0; $i < 365; $i++) {
+				$grafi.="1";
+			}
+		}
 
 		if ($altern == "1") {
 			$pom84 = mysqli_fetch_row(mysqli_query($link, "SELECT matice FROM trip WHERE (trip_id = '$proti');"));
@@ -141,7 +145,7 @@ foreach ($path as $prujezd) {
 			$grafi = "";
 
 			$grafikon = str_split($matice);
-			for ($w = 0; $w < 553; $w++) {
+			for ($w = 0; $w < 365; $w++) {
 				switch ($grafikon[$w]) {
 				case 0 : $grafi.="1"; break;
 				case 1 : $grafi.="0"; break;
@@ -149,7 +153,7 @@ foreach ($path as $prujezd) {
 			}
 		}
 
-		$maticestart = mktime(0,0,0,12,11,2016);
+		$maticestart = mktime(0,0,0,12,10,2017);
 		$typkodu = @$_POST['typkodu'];
 		$datumod = @$_POST['datumod'];
 		$datumdo = @$_POST['datumdo'];
@@ -162,7 +166,7 @@ foreach ($path as $prujezd) {
 				$Ddo = substr($datumdo,0,2); $Mdo = substr($datumdo,2,2); $Ydo = substr($datumdo,-4); $timedo = mktime(0,0,0,$Mdo, $Ddo, $Ydo); 
 				$kondnu = round(($timedo - $maticestart) / 86400); 
 				
-				for ($g=1; $g<=553; $g++) {
+				for ($g=1; $g<=365; $g++) {
 					if ($g>=$zacdnu && $g <=$kondnu) {$grafi[$g] = 1;}
 				}
 			break;
@@ -173,7 +177,7 @@ foreach ($path as $prujezd) {
 				$Ddo = substr($datumdo,0,2); $Mdo = substr($datumdo,2,2); $Ydo = substr($datumdo,-4); $timedo = mktime(0,0,0,$Mdo, $Ddo, $Ydo); 
 				$kondnu = round(($timedo - $maticestart) / 86400); 
 				
-				for ($g=1; $g<=553; $g++) {
+				for ($g=1; $g<=365; $g++) {
 					if ($g>=$zacdnu && $g <=$kondnu) {$grafi[$g] = 0;}
 				}
 			break;
@@ -332,12 +336,12 @@ echo "<select name=\"typkodu\"><option value=\"1\">Jede</option><option value=\"
 
 
 
-// Matice začíná 11.12.2016 
-$matice_start = mktime(0,0,0,12,11,2016);
+// Matice začíná 10.12.2017 
+$matice_start = mktime(0,0,0,12,10,2017);
 $grafikon = str_split($matice);
 echo "<table border=\"1\"><tr><td>";
-// 11.12.2016 je 0;
-for ($u = 0; $u < 553; $u++) {
+// 10.12.2017 je 0;
+for ($u = 0; $u < 365; $u++) {
     
     $datum=$matice_start+($u*86400);
     $datum_format = date("d.m.", $datum);
