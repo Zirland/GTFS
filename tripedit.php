@@ -302,8 +302,8 @@ if ($result108 = mysqli_query($link, $query108)) {
 	$stop_sequence = $row108[5];
 	$nazev_stanice = $row108[6];
 
-	echo "<tr><td><input name=\"stop_id$z\" value=\"$stop_id\" type=\"hidden\">
-	<input type=\"checkbox\" name=\"reroute$z\" value=\"1\">
+	echo "<tr><td><input name=\"stop_id$z\" value=\"$stop_id\" type=\"hidden\">";
+/*	<input type=\"checkbox\" name=\"reroute$z\" value=\"1\">
 	<select name=\"stop2_id$z\">";
 	$query194 = "SELECT stop_id, stop_name FROM stop WHERE active=1 ORDER BY stop_name;";
 	if ($result194 = mysqli_query($link, $query194)) {
@@ -316,7 +316,7 @@ if ($result108 = mysqli_query($link, $query108)) {
 			echo ">$stopname</option>";
 		}
 	}
-	echo "</select>";
+	echo "</select>";*/
 	echo "<input type=\"text\" name=\"stopname$z\" value=\"$nazev_stanice\"></td>";
 	echo "<td><input type=\"text\" name=\"arrive$z\" value=\"$arrival_time\"></td>";
 	echo "<td><input type=\"text\" name=\"leave$z\" value=\"$departure_time\"></td>";
@@ -402,7 +402,7 @@ if ($result262 = mysqli_query($link, $query262)) {
 	}
 }
 
-echo "TRASA <a href=\"tripedit.php?id=$trip&trasa=1\">VYNUŤ</a><br />";
+// echo "TRASA <a href=\"tripedit.php?id=$trip&trasa=1\">VYNUŤ</a><br />";
 echo "$shape <br />";
 $i = 0;
 $tvartrasy = "";

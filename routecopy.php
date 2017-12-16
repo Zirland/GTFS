@@ -173,7 +173,7 @@ if ($result2 = mysqli_query($link, $query2)) {
                         $aktivita = $row88[1];
 
                         if ($aktivita == "2" && $arrival != "00:0:00") {$nast = 2; $vyst = 2; $ignore = 0;}
-                        if ($aktivita == "0") {$ignore = 1;}
+                        if ($aktivita == "0" || $radky == 0) {$ignore = 1;}
 
                         if ($miss==0 && $ignore==0) {
                                 if ($ODJCASPRIJ == 1) {$depart = $arrival;}
