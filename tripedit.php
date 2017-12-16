@@ -29,48 +29,48 @@ switch ($action) {
 	$pocet = $_POST['pocet'];
 	
 	for ($y = 0; $y < $pocet; $y++) {
-			$$ind = $y;
-			$arrindex = "arrive".${$ind};
-			$arrival_time = $_POST[$arrindex];
-			$depindex = "leave".${$ind};
-			$departure_time = $_POST[$depindex];
-			$rzmindex = "rezim".${$ind};
-			$rzm = $_POST[$rzmindex];
-			$pickup_type = substr($rzm,0,1);
-			$drop_off_type = substr($rzm,1,1);
-			$seqindex = "poradi".${$ind};
-			$stop_sequence = $_POST[$seqindex];
-			$nameindex = "stopname".${$ind};
-			$stop_name = $_POST[$nameindex];
-			$stpidindex = "stop_id".${$ind};
-			$stop_id = $_POST[$stpidindex];
-			$stp2idindex = "stop2_id".${$ind};
-			$stop2_id = $_POST[$stp2idindex];
-			$rertindex = "reroute".${$ind};
-			$reroute = $_POST[$rertindex];
+		$$ind = $y;
+		$arrindex = "arrive".${$ind};
+		$arrival_time = $_POST[$arrindex];
+		$depindex = "leave".${$ind};
+		$departure_time = $_POST[$depindex];
+		$rzmindex = "rezim".${$ind};
+		$rzm = $_POST[$rzmindex];
+		$pickup_type = substr($rzm,0,1);
+		$drop_off_type = substr($rzm,1,1);
+		$seqindex = "poradi".${$ind};
+		$stop_sequence = $_POST[$seqindex];
+		$nameindex = "stopname".${$ind};
+		$stop_name = $_POST[$nameindex];
+		$stpidindex = "stop_id".${$ind};
+		$stop_id = $_POST[$stpidindex];
+		$stp2idindex = "stop2_id".${$ind};
+		$stop2_id = $_POST[$stp2idindex];
+		$rertindex = "reroute".${$ind};
+		$reroute = $_POST[$rertindex];
 			
-			$delindex = "delete".${$ind};
-			$delete = $_POST[$delindex];
+		$delindex = "delete".${$ind};
+		$delete = $_POST[$delindex];
 			
-			if ($reroute == 1) {
-					$query54 = "UPDATE stoptime SET stop_id = '$stop2_id' WHERE ((trip_id = '$trip') AND (stop_sequence = '$stop_sequence'));";
-					$prikaz54 = mysqli_query($link, $query54);
-			}
+		if ($reroute == 1) {
+			$query54 = "UPDATE stoptime SET stop_id = '$stop2_id' WHERE ((trip_id = '$trip') AND (stop_sequence = '$stop_sequence'));";
+			$prikaz54 = mysqli_query($link, $query54);
+		}
 			
-			switch ($delete) {
-				case 1 : 
-					$query58 = "DELETE FROM stoptime WHERE ((trip_id = '$trip') AND (stop_sequence = '$stop_sequence'));";
-					$prikaz58 = mysqli_query($link, $query58);
-				break;
+		switch ($delete) {
+			case 1 : 
+				$query58 = "DELETE FROM stoptime WHERE ((trip_id = '$trip') AND (stop_sequence = '$stop_sequence'));";
+				$prikaz58 = mysqli_query($link, $query58);
+			break;
 				
-				default : 
-					$ready1 = "UPDATE stoptime SET arrival_time='$arrival_time', departure_time='$departure_time', pickup_type='$pickup_type', drop_off_type='$drop_off_type' WHERE ((trip_id ='$trip') AND (stop_sequence = '$stop_sequence'));";
-					$aktualz1 = mysqli_query($link, $ready1);
+			default : 
+				$ready1 = "UPDATE stoptime SET arrival_time='$arrival_time', departure_time='$departure_time', pickup_type='$pickup_type', drop_off_type='$drop_off_type' WHERE ((trip_id ='$trip') AND (stop_sequence = '$stop_sequence'));";
+				$aktualz1 = mysqli_query($link, $ready1);
 
-					$ready2 = "UPDATE stop SET stop_name='$stop_name' WHERE (stop_id ='$stop_id');";
-					$aktualz2 = mysqli_query($link, $ready2);
-				break;
-    		}
+				$ready2 = "UPDATE stop SET stop_name='$stop_name' WHERE (stop_id ='$stop_id');";
+				$aktualz2 = mysqli_query($link, $ready2);
+			break;
+    	}
    	}
 	
 	$vlak = substr($trip,0,-2);
@@ -113,31 +113,33 @@ switch ($action) {
 	    $altern = $_POST['altern'];
 	    $proti = @$_POST['proti'];
 	
-   		switch ($invert) {
-	   	case 1 :
-	   		for ($v = 0; $v < 365; $v++) {
-			$$ind = $v;
-			$index = "grafikon".${$ind};
-			$mtrx = $_POST[$index];
+		switch ($invert) {
+	   		case 1 :
+	   			for ($v = 0; $v < 365; $v++) {
+					$$ind = $v;
+					$index = "grafikon".${$ind};
+					$mtrx = $_POST[$index];
 			
-			switch ($mtrx) {
-				case 1 : $grafi.="0";break;
-				case 0 : $grafi.="1";break;			
-	    		}
-	   	}
-	   		break;
-	   		
-	    default :
-	    	for ($v = 0; $v < 365; $v++) {
-			$$ind = $v;
-			$index = "grafikon".${$ind};
-			$mtrx = $_POST[$index];
-			$grafi.=$mtrx;
-		}
+					switch ($mtrx) {
+						case 1 : $grafi.="0";break;
+						case 0 : $grafi.="1";break;			
+	    			}
+			   	}
+			break;
+
+	   		default :
+			   	for ($v = 0; $v < 365; $v++) {
+					$$ind = $v;
+					$index = "grafikon".${$ind};
+					$mtrx = $_POST[$index];
+					$grafi.=$mtrx;
+				}
 		}
 		
+
 		$denne = $_POST['denne'];
 		if ($denne == 1) {
+			$grafi = "";
 			for ($i = 0; $i < 365; $i++) {
 				$grafi.="1";
 			}
@@ -165,13 +167,14 @@ switch ($action) {
 		if ($datumdo == "") {$datumdo = $datumod;}
 
 		switch ($typkodu) {
+			case "0" : break;
 			case "1" : // echo "jede od ".$datumod." do ".$datumdo."<br/>"; 
 				$Dod = substr($datumod,0,2); $Mod = substr($datumod,2,2); $Yod = substr($datumod,-4); $timeod = mktime(0,0,0,$Mod, $Dod, $Yod); 
 				$zacdnu = round(($timeod - $maticestart) / 86400); 
 				$Ddo = substr($datumdo,0,2); $Mdo = substr($datumdo,2,2); $Ydo = substr($datumdo,-4); $timedo = mktime(0,0,0,$Mdo, $Ddo, $Ydo); 
 				$kondnu = round(($timedo - $maticestart) / 86400); 
 				
-				for ($g=1; $g<=365; $g++) {
+				for ($g=0; $g<365; $g++) {
 					if ($g>=$zacdnu && $g <=$kondnu) {$grafi[$g] = 1;}
 				}
 			break;
@@ -182,7 +185,7 @@ switch ($action) {
 				$Ddo = substr($datumdo,0,2); $Mdo = substr($datumdo,2,2); $Ydo = substr($datumdo,-4); $timedo = mktime(0,0,0,$Mdo, $Ddo, $Ydo); 
 				$kondnu = round(($timedo - $maticestart) / 86400); 
 				
-				for ($g=1; $g<=365; $g++) {
+				for ($g=0; $g<365; $g++) {
 					if ($g>=$zacdnu && $g <=$kondnu) {$grafi[$g] = 0;}
 				}
 			break;
@@ -495,7 +498,7 @@ echo "<form method=\"post\" action=\"tripedit.php\" name=\"grafikon\">
 echo "<input type=\"checkbox\" name=\"denne\" value=\"1\"> Jede denně";
 echo "<input type=\"checkbox\" name=\"invert\" value=\"1\"> Invertuj";
 echo "<input type=\"checkbox\" name=\"altern\" value=\"1\"> Alternace <input type=\"text\" name=\"proti\" value=\"\">";
-echo "<select name=\"typkodu\"><option value=\"1\">Jede</option><option value=\"4\">Nejede</option></select> od <input type=\"text\" name=\"datumod\" value=\"\"> do <input type=\"text\" name=\"datumdo\" value=\"\">";
+echo "<select name=\"typkodu\"><option value=\"0\">--</option><option value=\"1\">Jede</option><option value=\"4\">Nejede</option></select> od <input type=\"text\" name=\"datumod\" value=\"10122017\"> do <input type=\"text\" name=\"datumdo\" value=\"08122018\">";
 
 // Matice začíná 10.12.2017 
 $matice_start = mktime(0,0,0,12,10,2017);

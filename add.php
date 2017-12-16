@@ -105,5 +105,18 @@ echo "<td><input name=\"route_text_color\" value=\"FFFFFF\" type=\"text\"></td>"
 echo "<td><input type=\"submit\"></td>";
 echo "</tr></table></form>";
 
+$query100 = "SELECT route_id, route_short_name, route_long_name FROM route WHERE route_id NOT LIKE 'L%' ORDER BY route_id DESC;";
+if ($result100 = mysqli_query($link, $query100)) {
+	while ($row100 = mysqli_fetch_row($result100)) {
+		$kod = $row100[0];
+		$krnazev = $row100[1];
+		$dlnazev = $row100[2];
+
+		echo "$kod - $krnazev : $dlnazev <br />";
+	}
+	mysqli_free_result($result0);
+} else echo("Error description: " . mysqli_error($link));
+
+
 include 'footer.php';
 ?>

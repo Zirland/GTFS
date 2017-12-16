@@ -15,21 +15,8 @@ $new_trip_id = $vlak.$lomeni.$nexttrip;
 $hlavicka = mysqli_fetch_row(mysqli_query($link, "SELECT JMENVL FROM kango.HLV WHERE (CISLO7='$cislo7');"));
 $jmeno = $hlavicka[0];
 
-$pom5 = mysqli_fetch_row(mysqli_query($link, "SELECT KALENDAR FROM kango.DTV WHERE (CISLO7='$cislo7');"));
-$calpom = $pom5[0];
-
-switch ($calpom) {
-    case '1': 
-	for ($j = 0; $j < 365; $j++) {
-		$matice.="1";
-        }
-    break;
-    
-    default : 
-	$pom6 = mysqli_fetch_row(mysqli_query($link, "SELECT * FROM kango.KVL WHERE (KALENDAR ='$calpom');"));
-	$matice = $pom6[7];
-    break;
-}
+$pom5 = mysqli_fetch_row(mysqli_query($link, "SELECT * FROM trip WHERE trip_id = '$trip_id';"));
+$matice = $pom5[1];
 
 $cyklo = 0;
 $invalida= 0;
