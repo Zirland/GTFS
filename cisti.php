@@ -1,7 +1,7 @@
 <?php
 include 'header.php';
 
-$query = "SELECT matice,trip_id FROM trip;";
+$query = "SELECT matice,trip_id FROM trip WHERE active=1;";
 if ($result = mysqli_query($link, $query)) {
 	while ($row = mysqli_fetch_row($result)) {
 		$matice = $row[0];
@@ -43,7 +43,7 @@ if ($result = mysqli_query($link, $query)) {
 		}
 		
 		if ($soucet == 0) {
-			echo "<a href=\"tripedit.php?id=$trip_id\">$trip_id</a> = $soucet<br/>";
+			// echo "<a href=\"tripedit.php?id=$trip_id\">$trip_id</a> = $soucet<br/>";
 			
 			$prikaz = mysqli_query($link, "UPDATE trip SET active=0 WHERE trip_id = '$trip_id';");
 		}
@@ -55,7 +55,7 @@ if ($result1 = mysqli_query($link, $query1)) {
 	while ($row1 = mysqli_fetch_row($result1)) {
 		$route_id = $row1[0];
 
-		echo "$route_id<br/>";
+		// echo "$route_id<br/>";
 		$prikaz3 = mysqli_query($link, "UPDATE route SET active=0 WHERE route_id = '$route_id';");
 	}
 }

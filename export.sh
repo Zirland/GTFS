@@ -2,6 +2,8 @@
 
 cd /home/zirland/git/gtfs/
 
+curl http://localhost/JDF/cisti.php
+curl http://localhost/gtfs/cisti.php
 curl http://localhost/gtfs/opravy.php
 
 curl http://localhost/gtfs/feed_agency.php

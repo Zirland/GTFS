@@ -11,7 +11,7 @@ $current = "service_id,monday,tuesday,wednesday,thursday,friday,saturday,sunday,
 file_put_contents($file, $current);
 
 $file = 'stops.txt';
-$current = "stop_id,stop_name,stop_lat,stop_lon,location_type,parent_station,wheelchair_boarding\n";
+$current = "stop_id,stop_code,stop_name,stop_lat,stop_lon,location_type,parent_station,wheelchair_boarding\n";
 file_put_contents($file, $current);
 
 $file = 'shapes.txt';
@@ -62,7 +62,7 @@ $prevnow = $now;
 
 $current = "";
 
-$query233 = "SELECT stop_id,stop_name,stop_lat,stop_lon,location_type,parent_station,wheelchair_boarding FROM stop WHERE (stop_id IN (SELECT stop_id FROM kango.stop_use));";
+$query233 = "SELECT stop_id,stop_name,stop_lat,stop_lon,location_type,parent_station,wheelchair_boarding,stop_code FROM stop WHERE (stop_id IN (SELECT stop_id FROM kango.stop_use));";
         if ($result233 = mysqli_query($link, $query233)) {
             while ($row233 = mysqli_fetch_row($result233)) {
                 $stop_id = $row233[0];
@@ -72,16 +72,17 @@ $query233 = "SELECT stop_id,stop_name,stop_lat,stop_lon,location_type,parent_sta
                 $location_type = $row233[4];
                 $parent_station = $row233[5];
                 $wheelchair_boarding = $row233[6];
+                $stop_code = $row233[7];
                 $stopnums = mysqli_num_rows($result233);
 
-				$current .= "$stop_id,\"$stop_name\",$stop_lat,$stop_lon,$location_type,$parent_station,$wheelchair_boarding\n";
+				$current .= "$stop_id,\"$stop_code\",\"$stop_name\",$stop_lat,$stop_lon,$location_type,$parent_station,$wheelchair_boarding\n";
 				if ($parent_station != '') {
 					$mark_parent = mysqli_query($link, "INSERT INTO kango.parent_use (stop_id) VALUES ('$parent_station');");
 				}
 			}
 		}
 
-$query313 = "SELECT stop_id,stop_name,stop_lat,stop_lon,location_type,parent_station,wheelchair_boarding FROM stop WHERE (stop_id IN (SELECT stop_id FROM kango.parent_use));";
+$query313 = "SELECT stop_id,stop_name,stop_lat,stop_lon,location_type,parent_station,wheelchair_boarding,stop_code FROM stop WHERE (stop_id IN (SELECT stop_id FROM kango.parent_use));";
         if ($result313 = mysqli_query($link, $query313)) {
             while ($row313 = mysqli_fetch_row($result313)) {
                 $stop_id = $row313[0];
@@ -91,9 +92,10 @@ $query313 = "SELECT stop_id,stop_name,stop_lat,stop_lon,location_type,parent_sta
                 $location_type = $row313[4];
                 $parent_station = $row313[5];
                 $wheelchair_boarding = $row313[6];
+                $stop_code = $row313[7];
                 $stopnums = $stopnums + mysqli_num_rows($result313);
 
-				$current .= "$stop_id,\"$stop_name\",$stop_lat,$stop_lon,$location_type,$parent_station,$wheelchair_boarding\n";
+				$current .= "$stop_id,\"$stop_code\",\"$stop_name\",$stop_lat,$stop_lon,$location_type,$parent_station,$wheelchair_boarding\n";
 			}
 		}
 
@@ -157,7 +159,7 @@ $stopnums = 0;
 
 $current = "";
 
-$query233 = "SELECT stop_id,stop_name,stop_lat,stop_lon,location_type,parent_station,wheelchair_boarding FROM stop WHERE (stop_id IN (SELECT stop_id FROM stop_use));";
+$query233 = "SELECT stop_id,stop_name,stop_lat,stop_lon,location_type,parent_station,wheelchair_boarding,stop_code FROM stop WHERE (stop_id IN (SELECT stop_id FROM stop_use));";
         if ($result233 = mysqli_query($link, $query233)) {
             while ($row233 = mysqli_fetch_row($result233)) {
                 $stop_id = $row233[0];
@@ -167,16 +169,17 @@ $query233 = "SELECT stop_id,stop_name,stop_lat,stop_lon,location_type,parent_sta
                 $location_type = $row233[4];
                 $parent_station = $row233[5];
                 $wheelchair_boarding = $row233[6];
+                $stop_code = $row233[7];
                 $stopnums = mysqli_num_rows($result233);
 
-				$current .= "$stop_id,\"$stop_name\",$stop_lat,$stop_lon,$location_type,$parent_station,$wheelchair_boarding\n";
+				$current .= "$stop_id,\"$stop_code\",\"$stop_name\",$stop_lat,$stop_lon,$location_type,$parent_station,$wheelchair_boarding\n";
 				if ($parent_station != '') {
 					$mark_parent = mysqli_query($link, "INSERT INTO parent_use (stop_id) VALUES ('$parent_station');");
 				}
 			}
 		}
 
-$query313 = "SELECT stop_id,stop_name,stop_lat,stop_lon,location_type,parent_station,wheelchair_boarding FROM stop WHERE (stop_id IN (SELECT stop_id FROM parent_use));";
+$query313 = "SELECT stop_id,stop_name,stop_lat,stop_lon,location_type,parent_station,wheelchair_boarding,stop_code FROM stop WHERE (stop_id IN (SELECT stop_id FROM parent_use));";
         if ($result313 = mysqli_query($link, $query313)) {
             while ($row313 = mysqli_fetch_row($result313)) {
                 $stop_id = $row313[0];
@@ -186,9 +189,10 @@ $query313 = "SELECT stop_id,stop_name,stop_lat,stop_lon,location_type,parent_sta
                 $location_type = $row313[4];
                 $parent_station = $row313[5];
                 $wheelchair_boarding = $row313[6];
+                $stop_code = $row313[7];
                 $stopnums = $stopnums + mysqli_num_rows($result313);
 
-				$current .= "$stop_id,\"$stop_name\",$stop_lat,$stop_lon,$location_type,$parent_station,$wheelchair_boarding\n";
+				$current .= "$stop_id,\"$stop_code\",\"$stop_name\",$stop_lat,$stop_lon,$location_type,$parent_station,$wheelchair_boarding\n";
 			}
 		}
 

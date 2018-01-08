@@ -15,6 +15,7 @@ switch ($action) {
 		$route_url = $_POST['route_url'];
 		$route_color = $_POST['route_color'];
 		$route_text_color = $_POST['route_text_color'];
+		$route_kraj = $_POST['route_kraj'];
 
 		$query = "INSERT INTO route VALUES (
 			'$route_id',
@@ -26,8 +27,10 @@ switch ($action) {
 			'$route_url',
 			'$route_color',
 			'$route_text_color',
-			'0'
+			'0',
+			'$route_kraj'
 		);";
+		echo "$query<br/>";
 		$command = mysqli_query($link, $query);
 	break;
 }
@@ -47,7 +50,8 @@ echo "<th>ID</th>
 <th>Trasa</th></tr>
 <tr><th>Popis</th>
 <th>Typ</th>
-<th>URL trasy</th></tr>
+<th>URL trasy</th>
+<th>Kraj</th></tr>
 <tr><th>Pozadí linky</th>
 <th>Barva textu</th>
 <th></th>";
@@ -85,7 +89,8 @@ echo "<td><select name=\"route_type\">
 </select>
 </td>";
 
-echo "<td><input name=\"route_url\" value=\"\" type=\"text\"></td></tr>";
+echo "<td><input name=\"route_url\" value=\"\" type=\"text\"></td>";
+echo "<td><input name=\"route_kraj\" value=\"\" type=\"text\"></td></tr>";
 		
 echo "<tr><td><select name=\"route_color\">";
 $query157 = "SELECT color, popis FROM kango.colors;";
