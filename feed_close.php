@@ -75,7 +75,7 @@ $query233 = "SELECT stop_id,stop_name,stop_lat,stop_lon,location_type,parent_sta
                 $stop_code = $row233[7];
                 $stopnums = mysqli_num_rows($result233);
 
-				$current .= "$stop_id,\"$stop_code\",\"$stop_name\",$stop_lat,$stop_lon,$location_type,$parent_station,$wheelchair_boarding\n";
+				$current .= "$stop_id,$stop_code,\"$stop_name\",$stop_lat,$stop_lon,$location_type,$parent_station,$wheelchair_boarding\n";
 				if ($parent_station != '') {
 					$mark_parent = mysqli_query($link, "INSERT INTO kango.parent_use (stop_id) VALUES ('$parent_station');");
 				}
@@ -95,7 +95,7 @@ $query313 = "SELECT stop_id,stop_name,stop_lat,stop_lon,location_type,parent_sta
                 $stop_code = $row313[7];
                 $stopnums = $stopnums + mysqli_num_rows($result313);
 
-				$current .= "$stop_id,\"$stop_code\",\"$stop_name\",$stop_lat,$stop_lon,$location_type,$parent_station,$wheelchair_boarding\n";
+				$current .= "$stop_id,$stop_code,\"$stop_name\",$stop_lat,$stop_lon,$location_type,$parent_station,$wheelchair_boarding\n";
 			}
 		}
 
@@ -172,7 +172,7 @@ $query233 = "SELECT stop_id,stop_name,stop_lat,stop_lon,location_type,parent_sta
                 $stop_code = $row233[7];
                 $stopnums = mysqli_num_rows($result233);
 
-				$current .= "$stop_id,\"$stop_code\",\"$stop_name\",$stop_lat,$stop_lon,$location_type,$parent_station,$wheelchair_boarding\n";
+				$current .= "$stop_id,$stop_code,\"$stop_name\",$stop_lat,$stop_lon,$location_type,$parent_station,$wheelchair_boarding\n";
 				if ($parent_station != '') {
 					$mark_parent = mysqli_query($link, "INSERT INTO parent_use (stop_id) VALUES ('$parent_station');");
 				}
@@ -192,7 +192,7 @@ $query313 = "SELECT stop_id,stop_name,stop_lat,stop_lon,location_type,parent_sta
                 $stop_code = $row313[7];
                 $stopnums = $stopnums + mysqli_num_rows($result313);
 
-				$current .= "$stop_id,\"$stop_code\",\"$stop_name\",$stop_lat,$stop_lon,$location_type,$parent_station,$wheelchair_boarding\n";
+				$current .= "$stop_id,$stop_code,\"$stop_name\",$stop_lat,$stop_lon,$location_type,$parent_station,$wheelchair_boarding\n";
 			}
 		}
 

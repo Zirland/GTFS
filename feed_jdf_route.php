@@ -1,4 +1,7 @@
 <?php
+$oblast = @$_GET["oblast"];
+$typ = @_GET["typ"];
+
 $link = mysqli_connect('localhost', 'gtfs', 'gtfs', 'JDF');
 if (!$link) {
     echo "Error: Unable to connect to MySQL." . PHP_EOL;
@@ -9,14 +12,13 @@ if (!$link) {
 $routenums = 0;
 $tripnums = 0;
 
-$shapecheck_trunc = mysqli_query($link, "TRUNCATE TABLE shapecheck;");
-
 $now = microtime(true);
 $timestart = $now;
 echo "Start: $now\n";
 $prevnow = $now;
 
-$akt_route = "SELECT route_id,agency_id,route_short_name,route_long_name,route_type,route_color,route_text_color FROM route WHERE (active='1');";
+if ($typ != '') {$akt_route = "SELECT route_id,agency_id,route_short_name,route_long_name,route_type,route_color,route_text_color FROM route WHERE (active='1' AND route_id LIKE '$oblast%');";}
+else {$akt_route = "SELECT route_id,agency_id,route_short_name,route_long_name,route_type,route_color,route_text_color FROM route WHERE (active='1' AND route_id LIKE '$oblast%' AND route_type = '$typ');";}
 
 if ($result69 = mysqli_query($link, $akt_route)) {
     while ($row69 = mysqli_fetch_row($result69)) {
