@@ -49,7 +49,7 @@ if ($result4 = mysqli_query ($link, $query4)) {
 }	
 
 echo "INACTIVE<br/>";
-$query5 = "SELECT route_id FROM route WHERE active=0 AND route_id IN (SELECT DISTINCT route_id FROM trip);";
+$query5 = "SELECT route_id FROM route WHERE active=0 AND route_id IN (SELECT DISTINCT route_id FROM trip WHERE active=1);";
 if ($result5 = mysqli_query ($link, $query5)) {
 	while ($row5 = mysqli_fetch_row ($result5)) {
 		$route_id = $row5[0];

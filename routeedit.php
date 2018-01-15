@@ -13,9 +13,10 @@ switch ($action) {
 	$longname = $_POST['longname'];
 	$pozadi = $_POST['route_pozadi'];
 	$foreground = $_POST['foreground'];
+	$kraj = $_POST['kraj'];
 	$aktif = $_POST['aktif'];
 
-	$ready0 = "UPDATE route SET agency_id='$dopravce', route_short_name='$shortname', route_long_name='$longname', route_color='$pozadi', route_text_color='$foreground', active='$aktif' WHERE (route_id = '$route');";
+	$ready0 = "UPDATE route SET agency_id='$dopravce', route_short_name='$shortname', route_long_name='$longname', route_color='$pozadi', route_text_color='$foreground', kraj = '$kraj', active='$aktif' WHERE (route_id = '$route');";
 	$aktualz0 = mysqli_query($link, $ready0);
 	
 }
@@ -31,6 +32,7 @@ $route_short_name = $hlavicka[2];
 $route_long_name = $hlavicka[3];
 $route_color = $hlavicka[7];
 $route_text_color = $hlavicka[8];
+$route_kraj = $hlavicka[10];
 $route_active = $hlavicka[9];
 
 echo "<form method=\"post\" action=\"routeedit.php\" name=\"oprav\">
@@ -49,8 +51,9 @@ if ($result24 = mysqli_query($link, $query24)) {
 		echo ">$agname</option>";
 	}
 }
-echo "</select></td><td style=\"background-color : #$route_color;\">Linka: <input type=\"text\" name=\"shortname\" value=\"$route_short_name\"><br />";
+echo "</select></td><td style=\"background-color : #$route_color;\">Linka: <input type=\"text\" name=\"shortname\" size=\"10\" value=\"$route_short_name\">";
 
+echo "<input type=\"text\" name=\"kraj\" size=\"1\" value=\"$route_kraj\"><br />";
 echo "<input type=\"text\" name=\"longname\" value=\"$route_long_name\"></td>";
 
 echo "<td>Pozadí: <select name=\"route_pozadi\">";

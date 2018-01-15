@@ -12,14 +12,13 @@ switch ($action) {
 	
 	$trip = $_POST['trip_id'];
 	$linka = $_POST['route_id'];
-	$trip_headsign = $_POST['headsign'];
 	$smer = $_POST['smer'];
 	$blok = $_POST['block_id'];
 	$invalida = $_POST['invalida'];
 	$cyklo = $_POST['cyklo'];
 	$aktif = $_POST['aktif'];
 
-	$ready0 = "UPDATE trip SET route_id='$linka', trip_headsign='$trip_headsign', direction_id='$smer', block_id='$blok', wheelchair_accessible='$invalida', bikes_allowed='$cyklo', active='$aktif' WHERE (trip_id = '$trip');";
+	$ready0 = "UPDATE trip SET route_id='$linka', direction_id='$smer', block_id='$blok', wheelchair_accessible='$invalida', bikes_allowed='$cyklo', active='$aktif' WHERE (trip_id = '$trip');";
 
 	$aktualz0 = mysqli_query($link, $ready0);
 	break;
@@ -84,6 +83,17 @@ switch ($action) {
 	$min_trip = $pom129[0];
 //vymezení výchozího a konečného bodu
 
+	$pomfinstop=mysqli_fetch_row(mysqli_query($link, "SELECT stop_id FROM stoptime WHERE (trip_id='$trip' AND stop_sequence='$max_trip');"));
+	$finstop=$pomfinstop[0];
+	$pomfinstopparent=mysqli_fetch_row(mysqli_query($link, "SELECT parent_station FROM stop WHERE stop_id='$finstop';"));
+	$finstopparent=$pomfinstopparent[0];
+	if ($finstopparent == '') {$finstopid = $finstop;} else {$finstopid = $finstopparent;}
+
+	$query180 = "SELECT stop_name FROM stop WHERE stop_id='$finstopid';";
+	$result180 = mysqli_query($link, $query180);
+	$pomhead = mysqli_fetch_row($result180);
+	$headsign = $pomhead[0];
+
 	$tvartrasy = "";
 	$i = 0;
 	
@@ -102,7 +112,7 @@ switch ($action) {
 		}
 	}
 	
-	$dotaz86 = "UPDATE trip SET shape_id = '$tvartrasy' WHERE trip_id = '$trip';";
+	$dotaz86 = "UPDATE trip SET trip_headsign = '$headsign', shape_id = '$tvartrasy' WHERE trip_id = '$trip';";
 	$prikaz86 = mysqli_query($link, $dotaz86);
 	break;
     
@@ -237,7 +247,7 @@ if ($result45 = mysqli_query($link, $query45)) {
 		echo ">$roshname - $rolgname</option>";
 	}
 }
-echo "</select></td><td>Směr: <input type=\"text\" name=\"headsign\" value=\"$trip_headsign\"><br />";
+echo "</select></td><td>Směr: $trip_headsign<br />";
 echo "<select name=\"smer\"><option value=\"0\"";
 if ($smer=='0') {echo " SELECTED";}
 echo ">Odchozí</option><option value=\"1\"";

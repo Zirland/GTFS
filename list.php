@@ -62,6 +62,7 @@ switch ($t) {
                 $route_color = $row[7];
                 $route_text_color = $row[8];
 		$route_active = $row[9];
+		$route_kraj = $row[10];
 
                 echo "<tr>";
 
@@ -69,7 +70,7 @@ switch ($t) {
 		$ro_ag = $ro_ag_pom['0'];
 		echo "<td>$ro_ag</td>";
 
-		echo "<td style=\"background-color: #$route_color; text-align: center;\"><span style=\"color: #$route_text_color;\">$route_short</td>";
+		echo "<td style=\"background-color: #$route_color; text-align: center;\"><span style=\"color: #$route_text_color;\">$route_short$route_kraj</td>";
 		echo "<td";
 		if ($route_active == "1") {echo " style=\"background-color: #54FF00;\"";}
 		echo ">$route_long</td>";

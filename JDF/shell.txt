@@ -1,6 +1,5 @@
 sed -i 's/|/;/g' *
 
-sed -i -n -e 'H;${x;s/2018\r\n/2018;/g;s/^;//;p;}' 
+sed -i -n -e 'H;${x;s/2018\r\n/2018;/g;s/^;//;p;}' *.kvl
 
-iconv -f cp1250 -t utf-8 < 
-
+for f in *.csv; do iconv -f CP1250 -t utf-8 $f > $f.csv; done

@@ -91,15 +91,16 @@ switch ($action) {
 				$route_text_color = $row8[2];
 				echo "<td style=\"background-color: #$route_color; text-align: center;\"><span style=\"color: #$route_text_color;\">";
 				echo "<select name=\"line$x\">";
-				$query84 = "SELECT route_id, route_short_name FROM route ORDER BY route_short_name;"; //WHERE route_id NOT LIKE 'L%' 
+				$query84 = "SELECT route_id, route_short_name, kraj FROM route ORDER BY route_short_name;"; //WHERE route_id NOT LIKE 'L%' 
 				if ($result84 = mysqli_query ($link, $query84)) {
 					while ($row84 = mysqli_fetch_row($result84)) {
 						$route_id = $row84[0];
 						$route_short_name = $row84[1];
+						$kraj = $row84[2];
 
 						echo "<option value=\"$route_id\"";
 						if ($route_id == $routedata) {echo " SELECTED";}
-						echo ">$route_short_name</option>";
+						echo ">$route_short_name$kraj</option>";
 					}
 				}
 				echo "</select></td><td>";
