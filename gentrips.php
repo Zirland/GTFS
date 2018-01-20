@@ -26,6 +26,7 @@ if ($result = mysqli_query ($link, $query)) {
 				$agency_id = $row9[2];
 				$cislo7 = $row9[0];
 				$route_short_name = substr ($cislo7, 0, -2);
+				$route_long_name = $row9[1];
 				$route_id = "L".$route_short_name;
 				$route_type = 2;
 
@@ -79,6 +80,7 @@ if ($result = mysqli_query ($link, $query)) {
 
 				$route_text_color = getContrastYIQ ($route_color);
 
+				$reoutedel = mysqli_query ($link, "DELETE FROM route WHERE route_id = 'route_id';");
 				$query26 = "INSERT INTO route (route_id, agency_id, route_short_name, route_long_name, route_type, route_color, route_text_color,active) VALUES ('$route_id' ,'$agency_id','$route_short_name','','$route_type','$route_color','$route_text_color','1');";
 				$prikaz26 = mysqli_query ($link, $query26);
 			}
@@ -104,9 +106,15 @@ if ($result = mysqli_query ($link, $query)) {
 				$pomz = substr ($ZELEZNZ,-2).$ZSTZ.substr ($OBZ,-1);
 				$pomdo = substr ($ZELEZNDO,-2).$ZSTDO.substr ($OBDO,-1);
 
-				if ($zststrt == 0) {$zststrt = $pomz;}
-				if ($zststp == 0) {$zststp = $pomdo;}
-				if ($zststp == $pomz) {$zststp = $pomdo;}
+				if ($zststrt == 0) {
+					$zststrt = $pomz;
+				}
+				if ($zststp == 0) {
+					$zststp = $pomdo;
+				}
+				if ($zststp == $pomz) {
+					$zststp = $pomdo;
+				}
 			}
 		}
 
@@ -159,8 +167,9 @@ if ($result = mysqli_query ($link, $query)) {
 						$novamatice='';
 					break;
 					case '1':
+						$novamatice = '';
 						for ($j = 0; $j < 365; $j++) {
-							$novamatice.="1";
+							$novamatice .= "1";
 						}
 						$suffix = $suffix + 1;
 					break;
@@ -172,7 +181,7 @@ if ($result = mysqli_query ($link, $query)) {
 				}
 
 				if ($novamatice != '') {
-					$trip_id = $vlak.$lomeni.$suffix;
+					$trip_id = "F".$vlak.$lomeni.$suffix;
 					$poradi = substr($trip_id, -3, 1);
 
 					switch ($poradi % 2) {
@@ -182,6 +191,20 @@ if ($result = mysqli_query ($link, $query)) {
 						case "1" :
 							$odd = "0";
 						break;
+					}
+
+					$maticestart = mktime (0,0,0,12,10,2017);
+					$datumod = "10122017";
+					$datumdo = "04022018";
+
+					$Dod = substr ($datumod,0,2); $Mod = substr ($datumod,2,2); $Yod = substr ($datumod,-4); $timeod = mktime (0,0,0,$Mod, $Dod, $Yod);
+					$zacdnu = round(($timeod - $maticestart) / 86400); 
+					$Ddo = substr ($datumdo,0,2); $Mdo = substr ($datumdo,2,2); $Ydo = substr ($datumdo,-4); $timedo = mktime (0,0,0,$Mdo, $Ddo, $Ydo);
+
+					$kondnu = round(($timedo - $maticestart) / 86400); 
+
+					for ($g = 0; $g < 365; $g++) {
+						if ($g>=$zacdnu && $g <=$kondnu) {$novamatice[$g] = 0;}
 					}
 
 					$query60 = "INSERT INTO trip VALUES ('$route_id','$novamatice','$trip_id','','','$odd','','','$invalida','$cyklo','1');";
@@ -346,7 +369,7 @@ if ($result = mysqli_query ($link, $query)) {
 				if ($miss==0 && $ignore==0) {
 					if ($novamatice != '') {
 						$pomsfx=$suffix - 1;
-						$pom_trip_id = $vlak.$lomeni.$pomsfx;
+						$pom_trip_id = "F".$vlak.$lomeni.$pomsfx;
 						if ($pomsfx > 0) {
 							$query60 = "INSERT INTO stoptime VALUES ('$pom_trip_id','$arrival','$arrival','$stop_id','$i','','$nast','$vyst','','');";
 							$prikaz6O = mysqli_query ($link, $query60);
@@ -394,8 +417,12 @@ if ($result = mysqli_query ($link, $query)) {
 								}
 							}
 
-							$query1701="UPDATE trip SET trip_headsign='$headsign', shape_id='$tvartrasy' WHERE trip_id='$pom_trip_id';";
+							$oldtrip = substr($pom_trip_id,1);
+							$query465 = "SELECT route_id FROM trip WHERE trip_id = '$oldtrip';";
+							$pomroute = mysqli_fetch_row (mysqli_query ($link, $query465));
+							$newroute = $pomroute[0];
 
+							$query1701="UPDATE trip SET route_id = '$newroute', trip_headsign='$headsign', shape_id='$tvartrasy' WHERE trip_id='$pom_trip_id';";
 							$prikaz1701=mysqli_query ($link, $query1701);
 
 						}
@@ -455,7 +482,12 @@ if ($result = mysqli_query ($link, $query)) {
 			}
 		}
 
-		$query1701="UPDATE trip SET trip_headsign='$headsign', shape_id='$tvartrasy' WHERE trip_id='$trip_id';";
+		$oldtrip = substr($trip_id,1);
+		$query465 = "SELECT route_id FROM trip WHERE trip_id = '$oldtrip';";
+		$pomroute = mysqli_fetch_row (mysqli_query ($link, $query465));
+		$newroute = $pomroute[0];
+
+		$query1701="UPDATE trip SET route_id = '$newroute', trip_headsign='$headsign', shape_id='$tvartrasy' WHERE trip_id='$trip_id';";
 		$prikaz1701=mysqli_query ($link, $query1701);
 
 		$query_min = mysqli_fetch_row (mysqli_query ($link, "SELECT min(stop_sequence) FROM stoptime WHERE (pickup_type != '2' AND trip_id IN (SELECT trip_id FROM trip WHERE route_id='$route_id'));"));
@@ -502,5 +534,5 @@ if ($result = mysqli_query ($link, $query)) {
 	}
 }
 
-include 'footerphp';
+include 'footer.php';
 ?>
