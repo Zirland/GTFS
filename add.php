@@ -2,7 +2,6 @@
 include 'header.php';
 
 $action = @$_POST['action'];
-$t2 = @$_POST['table'];
 
 switch ($action) {
 	case 'generuj' :
@@ -17,63 +16,41 @@ switch ($action) {
 		$route_text_color = $_POST['route_text_color'];
 		$route_kraj = $_POST['route_kraj'];
 
-		$query = "INSERT INTO route VALUES (
-			'$route_id',
-			'$agency_id',
-			'$route_short',
-			'$route_long',
-			'$route_desc',
-			'$route_type',
-			'$route_url',
-			'$route_color',
-			'$route_text_color',
-			'0',
-			'$route_kraj'
-		);";
-		echo "$query<br/>";
-		$command = mysqli_query($link, $query);
+		$query = "INSERT INTO route VALUES ('$route_id','$agency_id','$route_short','$route_long','$route_desc','$route_type','$route_url','$route_color','$route_text_color','0','$route_kraj');";
+		$command = mysqli_query ($link, $query);
 	break;
 }
 
 echo "<form method=\"post\" action=\"add.php\" name=\"generuj\">
-<input name=\"action\" value=\"generuj\" type=\"hidden\">
-<input name=\"table\" value=\"route\" type=\"hidden\">";
-		
-$ro_max_pom = mysqli_fetch_row(mysqli_query($link, "SELECT MAX(route_id) FROM route;"));
+<input name=\"action\" value=\"generuj\" type=\"hidden\">";
+
+$ro_max_pom = mysqli_fetch_row (mysqli_query ($link, "SELECT MAX(CAST(route_id AS signed)) FROM route WHERE route_id NOT LIKE 'L%';"));
 $ro_max = $ro_max_pom['0'] + 1;
-        
+
 echo "<table>";
 echo "<tr>";
-echo "<th>ID</th>
-<th>Přepravce</th>
-<th>Linka</th>
-<th>Trasa</th></tr>
-<tr><th>Popis</th>
-<th>Typ</th>
-<th>URL trasy</th>
-<th>Kraj</th></tr>
-<tr><th>Pozadí linky</th>
-<th>Barva textu</th>
-<th></th>";
+echo "<th>ID</th><th>Přepravce</th><th>Linka</th><th>Trasa</th></tr><tr><th>Popis</th><th>Typ</th><th>URL trasy</th><th>Kraj</th></tr><tr><th>Pozadí linky</th><th>Barva textu</th><th></th>";
 echo "</tr>";
 echo "<tr>";
 echo "<td><input name=\"route_id\" type=\"text\" value=\"$ro_max\"></td>";
 echo "<td><select name=\"agency_id\">";
 
 $query0 = "SELECT agency_id, agency_name FROM agency ORDER BY agency_id;";
-if ($result0 = mysqli_query($link, $query0)) {
-	while ($row0 = mysqli_fetch_row($result0)) {
+if ($result0 = mysqli_query ($link, $query0)) {
+	while ($row0 = mysqli_fetch_row ($result0)) {
 		$kod = $row0[0];
 		$nazev = $row0[1];
 
 		echo "<option value=\"$kod\"";
-		if ($kod == 1) {echo " SELECTED";}
+		if ($kod == 1) {
+			echo " SELECTED";
+		}
 		echo ">$nazev</option>";
 	}
-	mysqli_free_result($result0);
-} else echo("Error description: " . mysqli_error($link));
+	mysqli_free_result ($result0);
+} else echo("Error description: ".mysqli_error ($link));
 echo "</select>";
-		
+
 echo "<td><input name=\"route_short\" value=\"\" type=\"text\"></td>";
 echo "<td><input name=\"route_long\" value=\"\" type=\"text\"></td></tr>";
 echo "<tr><td><input name=\"route_desc\" value=\"\" type=\"text\"></td>";
@@ -91,16 +68,18 @@ echo "<td><select name=\"route_type\">
 
 echo "<td><input name=\"route_url\" value=\"\" type=\"text\"></td>";
 echo "<td><input name=\"route_kraj\" value=\"\" type=\"text\"></td></tr>";
-		
+
 echo "<tr><td><select name=\"route_color\">";
 $query157 = "SELECT color, popis FROM kango.colors;";
-if ($result157 = mysqli_query($link, $query157)) {
-	while ($row157 = mysqli_fetch_row($result157)) {
+if ($result157 = mysqli_query ($link, $query157)) {
+	while ($row157 = mysqli_fetch_row ($result157)) {
 		$rtclr = $row157[0];
 		$clrnm = $row157[1];
-		
+
 		echo "<option value=\"$rtclr\"";
-		if ($rtclr == $route_color) {echo " SELECTED";}
+		if ($rtclr == $route_color) {
+			echo " SELECTED";
+		}
 		echo ">$clrnm</option>";
 	}
 }
@@ -109,19 +88,6 @@ echo "</select></td>";
 echo "<td><input name=\"route_text_color\" value=\"FFFFFF\" type=\"text\"></td>";
 echo "<td><input type=\"submit\"></td>";
 echo "</tr></table></form>";
-
-$query100 = "SELECT route_id, route_short_name, route_long_name FROM route WHERE route_id NOT LIKE 'L%' ORDER BY route_id DESC;";
-if ($result100 = mysqli_query($link, $query100)) {
-	while ($row100 = mysqli_fetch_row($result100)) {
-		$kod = $row100[0];
-		$krnazev = $row100[1];
-		$dlnazev = $row100[2];
-
-		echo "$kod - $krnazev : $dlnazev <br />";
-	}
-	mysqli_free_result($result0);
-} else echo("Error description: " . mysqli_error($link));
-
 
 include 'footer.php';
 ?>

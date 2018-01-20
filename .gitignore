@@ -4,3 +4,5 @@
 *.zip
 
 validation-results\.html
+
+*.csv

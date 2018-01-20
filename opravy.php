@@ -6,7 +6,7 @@ $query1 = "SELECT trip_id FROM trip WHERE trip_headsign='';";
 if ($result1 = mysqli_query ($link, $query1)) {
 	while ($row1 = mysqli_fetch_row ($result1)) {
 		$trip_id = $row1[0];
-		
+
 		echo "<a href=\"tripedit.php?id=$trip_id\">$trip_id</a><br/>";
 	}
 }
@@ -16,10 +16,10 @@ $query2 = "SELECT trip_id FROM trip WHERE trip_id NOT IN (SELECT DISTINCT trip_i
 if ($result2 = mysqli_query ($link, $query2)) {
 	while ($row2 = mysqli_fetch_row ($result2)) {
 		$trip_id = $row2[0];
-		
+
 		echo "<a href=\"tripedit.php?id=$trip_id\">$trip_id</a><br/>";
-		
-		$smazat = mysqli_query($link, "DELETE FROM trip WHERE trip_id='$trip_id';");
+
+		$smazat = mysqli_query ($link, "DELETE FROM trip WHERE trip_id='$trip_id';");
 	}
 }
 
@@ -31,8 +31,8 @@ if ($result3 = mysqli_query ($link, $query3)) {
 		
 		echo "<a href=\"tripedit.php?id=$trip_id\">$trip_id</a><br/>";
 
-                $smazat1 = mysqli_query($link, "DELETE FROM trip WHERE trip_id='$trip_id';");
-		$smazat2 = mysqli_query($link, "DELETE FROM stoptime WHERE trip_id = '$trip_id';");
+		$smazat1 = mysqli_query ($link, "DELETE FROM trip WHERE trip_id='$trip_id';");
+		$smazat2 = mysqli_query ($link, "DELETE FROM stoptime WHERE trip_id = '$trip_id';");
 	}
 }
 
@@ -44,9 +44,9 @@ if ($result4 = mysqli_query ($link, $query4)) {
 		
 		echo "<a href=\"routeedit.php?id=$route_id\">$route_id</a><br/>";
 
-		$deaktivace = mysqli_query($link, "UPDATE route SET active=0 WHERE route_id='$route_id';");
-	}	
-}	
+		$deaktivace = mysqli_query ($link, "UPDATE route SET active=0 WHERE route_id='$route_id';");
+	}
+}
 
 echo "INACTIVE<br/>";
 $query5 = "SELECT route_id FROM route WHERE active=0 AND route_id IN (SELECT DISTINCT route_id FROM trip WHERE active=1);";
@@ -56,11 +56,9 @@ if ($result5 = mysqli_query ($link, $query5)) {
 		
 		echo "<a href=\"routeedit.php?id=$route_id\">$route_id</a><br/>";
 
-		$aktivace = mysqli_query($link, "UPDATE route SET active=1 WHERE route_id='$route_id';");
-	}	
-}	
-
-
+		$aktivace = mysqli_query ($link, "UPDATE route SET active=1 WHERE route_id='$route_id';");
+	}
+}
 
 include 'footer.php';
 ?>
