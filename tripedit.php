@@ -7,7 +7,7 @@ $nucenatrasa = @$_GET['trasa'];
 
 if ($nucenatrasa) {
 	$vynucena = mysqli_query ($link, "UPDATE trip SET shape_id = (SELECT shape_id FROM kango.forceshape WHERE trip_id = '$trip') WHERE trip_id = '$trip';"); 
-}	
+}
 
 switch ($action) {
 	case "hlava" :
@@ -73,7 +73,12 @@ switch ($action) {
 			}
 		}
 
-		$vlak = substr ($trip,0,-2);
+		if (strpos ($trip, 'F') !== false) {
+			$vlak = substr ($trip,1,-2);
+		} else {
+			$vlak = substr ($trip,0,-2);
+		}
+
 		$lomeni = substr ($vlak,-1);
 		$cislo7 = $vlak."/".$lomeni;
 
@@ -306,7 +311,12 @@ if ($aktif == '1') {
 echo "></td><td><input type=\"submit\"></td></tr></form>";
 echo "<tr><td colspan=\"5\">";
 
-$vlak = substr ($trip_id,0,-2);
+if (strpos($trip_id, 'F') !== false) {
+	$vlak=substr ($trip_id,1,-2);
+} else {
+	$vlak=substr ($trip_id,0,-2);
+}
+
 $lomeni = substr ($vlak,-1);
 $cislo7 = $vlak."/".$lomeni;
 
@@ -398,10 +408,6 @@ $max_trip = $pom163[0];
 
 $pom129 = mysqli_fetch_row (mysqli_query ($link, "SELECT min(stop_sequence) FROM stoptime WHERE (trip_id = '$trip_id');"));
 $min_trip = $pom129[0];
-
-$lomeni = substr ($trip_id,-2,1);
-$vlak = substr ($trip_id, 0, -2);
-$cislo7 = $vlak."/".$lomeni;
 
 echo "KALENDÁŘ<br />";
 

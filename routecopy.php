@@ -4,13 +4,18 @@ include 'header.php';
 $trip_id = $_GET['id'];
 
 $lasttrip = substr ($trip_id,-1);
-$vlak = substr ($trip_id,0,-2);
+
+if (strpos ($trip_id, 'F') !== false) {
+	$vlak = substr ($trip_id,1,-2);
+} else {
+	$vlak = substr ($trip_id,0,-2);
+}
 $lomeni = substr ($vlak,-1);
 $cislo7 = $vlak."/".$lomeni;
 
-$nexttrip=$lasttrip+1;
+$nexttrip = $lasttrip + 1;
 
-$new_trip_id = $vlak.$lomeni.$nexttrip;
+$new_trip_id = substr ($trip_id,0,-2).$lomeni.$nexttrip;
 
 $hlavicka = mysqli_fetch_row (mysqli_query ($link, "SELECT JMENVL FROM kango.HLV WHERE (CISLO7='$cislo7');"));
 $jmeno = $hlavicka[0];

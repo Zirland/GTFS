@@ -1,4 +1,11 @@
 <?php
+$link = mysqli_connect ('localhost', 'gtfs', 'gtfs', 'GTFS');
+if (!$link) {
+	echo "Error: Unable to connect to MySQL.".PHP_EOL;
+	echo "Debugging errno: ".mysqli_connect_errno ().PHP_EOL;
+	exit;
+}
+
 $query = "SELECT matice,trip_id FROM trip WHERE active=1;";
 if ($result = mysqli_query ($link, $query)) {
 	while ($row = mysqli_fetch_row ($result)) {
@@ -54,4 +61,6 @@ if ($result1 = mysqli_query ($link, $query1)) {
 		$prikaz3 = mysqli_query ($link, "UPDATE route SET active=0 WHERE route_id = '$route_id';");
 	}
 }
+
+mysqli_close ($link);
 ?>

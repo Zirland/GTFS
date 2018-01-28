@@ -1,5 +1,6 @@
 <?php
 $barva=@$_GET["color"];
+$vyhled=@$_GET["vyhled"];
 
 $link = mysqli_connect ('localhost', 'gtfs', 'gtfs', 'GTFS');
 if (!$link) {
@@ -8,15 +9,13 @@ if (!$link) {
 	exit;
 }
 
-$routenums = 0;
-$tripnums = 0;
-
-$now = microtime (true);
-$timestart = $now;
-echo "Start: $now\n";
-$prevnow = $now;
-
-$akt_route = "SELECT route_id,agency_id,route_short_name,route_long_name,route_type,route_color,route_text_color FROM route WHERE (active='1' AND route_color='$barva');";
+if ($vyhled == "1") {
+	$akt_route = "SELECT route_id,agency_id,route_short_name,route_long_name,route_type,route_color,route_text_color FROM route WHERE (active='1' AND route_color='0094DE' AND route_id LIKE 'L%');";
+} else if ($barva == "0094DE") {
+	$akt_route = "SELECT route_id,agency_id,route_short_name,route_long_name,route_type,route_color,route_text_color FROM route WHERE (active='1' AND route_color='0094DE' AND route_id NOT LIKE 'L%');";
+} else {
+	$akt_route = "SELECT route_id,agency_id,route_short_name,route_long_name,route_type,route_color,route_text_color FROM route WHERE (active='1' AND route_color='$barva');";
+}
 
 if ($result69 = mysqli_query ($link, $akt_route)) {
 	while ($row69 = mysqli_fetch_row ($result69)) {
@@ -33,6 +32,8 @@ if ($result69 = mysqli_query ($link, $akt_route)) {
 
 		$file = 'routes.txt';
 		file_put_contents ($file, $current, FILE_APPEND);
+
+		$zapisag = mysqli_query ($link, "INSERT INTO ag_use VALUES ('$route_id','$agency_id');");
 
 		$akt_trip = "SELECT route_id,matice,trip_id,trip_headsign,direction_id,shape_id,wheelchair_accessible,bikes_allowed FROM trip WHERE ((route_id = '$route_id') AND (active='1'));";
 		if ($result85 = mysqli_query ($link, $akt_trip)) {
@@ -131,10 +132,10 @@ if ($result69 = mysqli_query ($link, $akt_route)) {
 			    							$query144 = "INSERT INTO shape VALUES ('$shape_id','$lat','$lon','$i','$vzdal');";
 										$command = mysqli_query($link, $query144);
 									} 
+								}
 							}
-						}
-						$query217 = "UPDATE shapetvary SET complete = '$komplet' WHERE shape_id = '$shape_id';";
-						$command217 = mysqli_query ($link, $query217);
+							$query217 = "UPDATE shapetvary SET complete = '$komplet' WHERE shape_id = '$shape_id';";
+							$command217 = mysqli_query ($link, $query217);
 						}
 					}
 
@@ -161,12 +162,6 @@ if ($result69 = mysqli_query ($link, $akt_route)) {
 		}
 	}
 }
-
-echo "Exported lines: $routenums\n";
-echo "Exported trips: $tripnums\n";
-
-$timecelkem = $now - $timestart;
-echo "Celkem zpracování: $timecelkem";
 
 mysqli_close ($link);
 ?>

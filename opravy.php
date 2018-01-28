@@ -48,6 +48,16 @@ if ($result4 = mysqli_query ($link, $query4)) {
 	}
 }
 
+echo "NO SHAPE<br/>";
+$query = "SELECT trip_id FROM GTFS.trip WHERE shape_id='';";
+if ($result = mysqli_query ($link, $query)) {
+	while ($row = mysqli_fetch_row ($result)) {
+		$trip_id = $row[0];
+
+		echo "$trip_id : <a href=\"tripedit.php?id=$trip_id\">Editace</a><br/>";
+	}
+}
+
 echo "INACTIVE<br/>";
 $query5 = "SELECT route_id FROM route WHERE active=0 AND route_id IN (SELECT DISTINCT route_id FROM trip WHERE active=1);";
 if ($result5 = mysqli_query ($link, $query5)) {

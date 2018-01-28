@@ -33,7 +33,7 @@ switch ($t) {
 		echo "<tr>";
 		echo "<th>Přepravce</th><th>Linka</th><th>Trasa</th><th>Typ</th><th></th>";
 		echo "</tr>";
-		$query = "SELECT * FROM route WHERE (active = 1) ORDER BY route_short_name;"; // AND route_color = '008000'
+		$query = "SELECT * FROM route WHERE (active = 1) AND route_color = '0094DE' AND route_id NOT LIKE 'L%' ORDER BY route_short_name;";
 		if ($result = mysqli_query ($link, $query)) {
 			while ($row = mysqli_fetch_row ($result)) {
 				$route_id = $row[0];

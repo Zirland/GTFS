@@ -152,7 +152,7 @@ if ($result1 = mysqli_query ($link, $query1)) {
 
 		$hdp = ($DP * 24) + $HP;
 		if ($hdp < 10) {
-			$hdp = "0".$hdp
+			$hdp = "0".$hdp;
 		};
 
 		$mnp = $MP;

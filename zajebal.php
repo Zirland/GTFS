@@ -6,9 +6,14 @@ $chybna = $_GET['err'];
 $delstring = "DELETE FROM stoptime WHERE (trip_id = '$chybna');";
 $smaztrip = mysqli_query ($link, $delstring);
 
-$vlak=substr ($chybna,0,-2);
-$lomeni=substr ($chybna,-2,1);
-$cislo7=$vlak."/".$lomeni;
+if (strpos($chybna, 'F') !== false) {
+	$vlak = substr ($chybna,1,-2);
+} else {
+	$vlak = substr ($chybna,0,-2);
+}
+
+$lomeni = substr ($chybna,-2,1);
+$cislo7 = $vlak."/".$lomeni;
 
 $i = 0;
 $miss = 0;
@@ -47,9 +52,6 @@ $end = 0;
 $query7 = "SELECT * FROM kango.DTV WHERE (CISLO7 = '$cislo7');";
 if ($result7 = mysqli_query ($link, $query7)) {
 	while ($row7 = mysqli_fetch_row ($result7)) {
-		$lomeni = substr ($cislo7,-1);
-		$vlak = substr ($cislo7, 0, -2);
-
 		$ZELEZN = $row7[1];
 		$ZST = $row7[2];
 		$OB = $row7[3];

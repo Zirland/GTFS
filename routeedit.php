@@ -89,22 +89,40 @@ if ($result80 = mysqli_query ($link, $query80)) {
 	while ($row80 = mysqli_fetch_row ($result80)) {
 		$trip_id = $row80[2];
 		$trip_headsign = $row80[3];
-		$trip_aktif = $row80[10];
 		$vlak = $trip_id;
+		$trip_aktif = $row80[10];
+
+		$pomstartstop = mysqli_fetch_row (mysqli_query ($link, "SELECT MIN(stop_sequence) FROM stoptime WHERE (trip_id = '$trip_id');"));
+		$startstopno = $pomstartstop[0];
+
+		$pomfinstop = mysqli_fetch_row (mysqli_query ($link, "SELECT stop_id FROM stoptime WHERE (trip_id='$trip_id' AND stop_sequence='$startstopno');"));
+		$finstopid = $pomfinstop[0];
+
+		$query15 = "SELECT stop_name FROM stop WHERE stop_id='$finstopid';";
+		$result15 = mysqli_query ($link, $query15);
+		$pomhead = mysqli_fetch_row ($result15);
+		$from = $pomhead[0];
+
 		if ($trip_aktif == '1') {
 			echo "<span style=\"background-color:#54FF00;\">";
 		}
-		echo "$vlak - $trip_headsign - <a href=\"tripedit.php?id=$trip_id\">Upravit</a>";
+		echo "$from - $vlak - $trip_headsign - <a href=\"tripedit.php?id=$trip_id\">Upravit</a>";
 		if ($trip_aktif == '1') {
 			echo "</span>";
 		}
-		$cislo7 = substr ($trip_id, 0, -2)."/".substr ($trip_id,-2,1);
+
+		if (strpos ($trip_id, 'F') !== false) {
+			$cislo7 = substr ($trip_id,1,-2)."/".substr ($trip_id,-2,1);
+		} else {
+			$cislo7 = substr ($trip_id,0,-2)."/".substr ($trip_id,-2,1);
+		}
+
 		$query114 = "SELECT POZNAM FROM kango.OBP WHERE CISLO7='$cislo7';";
 		if ($result114 = mysqli_query ($link, $query114)) {
 			while ($row114 = mysqli_fetch_row ($result114)) {
 				$poznamka = $row114[0];
 				if (strpos ($poznamka, "linka") !== false) {
-					echo "$poznamka";
+//					echo "$poznamka";
 				}
 			}
 		}
@@ -117,22 +135,39 @@ if ($result96 = mysqli_query ($link, $query96)) {
 	while ($row96 = mysqli_fetch_row ($result96)) {
 		$trip_id = $row96[2];
 		$trip_headsign = $row96[3];
-		$trip_aktif = $row96[10];
 		$vlak = $trip_id;
+		$trip_aktif = $row96[10];
+
+		$pomstartstop = mysqli_fetch_row (mysqli_query ($link, "SELECT MIN(stop_sequence) FROM stoptime WHERE (trip_id = '$trip_id');"));
+		$startstopno = $pomstartstop[0];
+
+		$pomfinstop = mysqli_fetch_row (mysqli_query ($link, "SELECT stop_id FROM stoptime WHERE (trip_id='$trip_id' AND stop_sequence='$startstopno');"));
+		$finstopid = $pomfinstop[0];
+
+		$query15 = "SELECT stop_name FROM stop WHERE stop_id='$finstopid';";
+		$result15 = mysqli_query ($link, $query15);
+		$pomhead = mysqli_fetch_row ($result15);
+		$from = $pomhead[0];
+
 		if ($trip_aktif == '1') {
 			echo "<span style=\"background-color:#54FF00;\">";
 		}
-		echo "$vlak - $trip_headsign - <a href=\"tripedit.php?id=$trip_id\">Upravit</a>";
+		echo "$from - $vlak - $trip_headsign - <a href=\"tripedit.php?id=$trip_id\">Upravit</a>";
 		if ($trip_aktif == '1') {
 			echo "</span>";
 		}
-		$cislo7 = substr ($trip_id, 0, -2)."/".substr ($trip_id,-2,1);
+		if (strpos ($trip_id, 'F') !== false) {
+			$cislo7 = substr ($trip_id,1,-2)."/".substr ($trip_id,-2,1);
+		} else {
+			$cislo7 = substr ($trip_id,0,-2)."/".substr ($trip_id,-2,1);
+		}
+
 		$query114 = "SELECT POZNAM FROM kango.OBP WHERE CISLO7='$cislo7';";
 		if ($result114 = mysqli_query ($link, $query114)) {
 			while ($row114 = mysqli_fetch_row ($result114)) {
 				$poznamka = $row114[0];
 				if (strpos ($poznamka, "linka") !== false) {
-					echo "$poznamka";
+//					echo "$poznamka";
 				}
 			}
 		}
