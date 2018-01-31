@@ -26,6 +26,9 @@ curl http://localhost/gtfs/feed_jdf_route.php?oblast=91508
 curl http://localhost/gtfs/feed_jdf_route.php?oblast=91509
 curl http://localhost/gtfs/feed_jdf_route.php?oblast=91510
 curl http://localhost/gtfs/feed_jdf_route.php?oblast=91511
+curl http://localhost/gtfs/feed_jdf_route.php?oblast=505
+curl http://localhost/gtfs/feed_jdf_route.php?oblast=103
+
 
 curl http://localhost/gtfs/feed_vlak.php?color=008000
 curl http://localhost/gtfs/feed_vlak.php?color=008983
