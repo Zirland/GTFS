@@ -97,8 +97,8 @@ switch ($action) {
 			$ob = "0".substr ($pos,-1);
 			$query44 = "SELECT NAZEVDB FROM kango.DB WHERE ((ZELEZN = '$zelezn') AND (ZST = '$zst') AND (OB = '$ob'));";
 
-			if ($result44 = mysqli_query($link, $query44)) {
-				while ($pom = mysqli_fetch_row($result44)) {
+			if ($result44 = mysqli_query ($link, $query44)) {
+				while ($pom = mysqli_fetch_row ($result44)) {
 					$stan = $pom[0];
 					$item = "$stan";
 				} 
