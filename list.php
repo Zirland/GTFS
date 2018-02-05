@@ -31,7 +31,7 @@ switch ($t) {
 	case 'ro' :
 		echo "<table>";
 		echo "<tr>";
-		echo "<th>Přepravce</th><th>Linka</th><th>Trasa</th><th>Typ</th><th></th>";
+		echo "<th>Přepravce</th><th>Linka</th><th>Trasa</th><th>Typ</th><th></th><th></th>";
 		echo "</tr>";
 		$query = "SELECT * FROM route WHERE (active = 1) AND route_color = '0094DE' AND route_id NOT LIKE 'L%' ORDER BY route_short_name;";
 		if ($result = mysqli_query ($link, $query)) {
@@ -90,7 +90,8 @@ switch ($t) {
 						echo "<td></td>";
 					break;
 				}
-				echo "<td><a href=\"routeedit.php?id=$route_id\">Detaily</a></td></tr>";
+				echo "<td><a href=\"routeedit.php?id=$route_id\">Detaily</a></td>"
+				echo "<td><a href=\"match.php?route=$route_id\">Srovnání</a></td></tr>";
 			}
 			mysqli_free_result ($result);
 		}
