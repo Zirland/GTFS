@@ -90,7 +90,7 @@ switch ($t) {
 						echo "<td></td>";
 					break;
 				}
-				echo "<td><a href=\"routeedit.php?id=$route_id\">Detaily</a></td>"
+				echo "<td><a href=\"routeedit.php?id=$route_id\">Detaily</a></td>";
 				echo "<td><a href=\"match.php?route=$route_id\">Srovnání</a></td></tr>";
 			}
 			mysqli_free_result ($result);
