@@ -11,7 +11,7 @@ if ($result = mysqli_query ($link, $query)) {
 		$pom11 = mysqli_fetch_row (mysqli_query ($link, "SELECT NAZEVDB FROM kango.DB WHERE (ZELEZN='$ZELEZN' AND ZST='$ZST' AND OB='$OB');"));
 		$nazev = $pom11[0];
 
-		echo "<a href=\"newstop.php?newid=$stop_id&newname=$nazev&newact=0\" target=\"_blank\">Vytvořit bod</a><br/>";
+		echo "$stop_id - $nazev <a href=\"newstop.php?newid=$stop_id&newname=$nazev&newact=0\" target=\"_blank\">Vytvořit bod</a><br/>";
 
 	}
 }
