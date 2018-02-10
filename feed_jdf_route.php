@@ -119,7 +119,7 @@ if ($result69 = mysqli_query ($link, $akt_route)) {
 
 									if ($lat != '' && $lon != '') {
 										if ($i == 1) {
-											$vzdal = 0;
+											$vzdal = "";
 										}
 										$query144 = "INSERT INTO shape VALUES ('$shape_id','$lat','$lon','$i','$vzdal');";
 										$command = mysqli_query ($link, $query144);
