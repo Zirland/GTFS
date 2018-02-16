@@ -15,12 +15,10 @@ if ($result10 = mysqli_query ($link, $query10)) {
 		$newtrip = substr ($trip_id, 1);
 
 		$query17 = "UPDATE trip SET trip_id = '$newtrip' WHERE trip_id = '$trip_id';";
-echo "$query17<br/>";
-//		$prikaz17 = mysqli_query ($link, $query17);
+		$prikaz17 = mysqli_query ($link, $query17);
 
 		$query20 = "UPDATE stoptime SET trip_id = '$newtrip' WHERE trip_id = '$trip_id';";
-echo "$query20<br/>";
-//		$prikaz20 = mysqli_query ($link, $query20);
+		$prikaz20 = mysqli_query ($link, $query20);
 	}
 }
 
