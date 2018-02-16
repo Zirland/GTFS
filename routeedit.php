@@ -92,7 +92,7 @@ if ($result80 = mysqli_query ($link, $query80)) {
 		$vlak = $trip_id;
 		$trip_aktif = $row80[10];
 
-		$pomstartstop = mysqli_fetch_row (mysqli_query ($link, "SELECT MIN(stop_sequence) FROM stoptime WHERE (trip_id = '$trip_id');"));
+/*		$pomstartstop = mysqli_fetch_row (mysqli_query ($link, "SELECT MIN(stop_sequence) FROM stoptime WHERE (trip_id = '$trip_id');"));
 		$startstopno = $pomstartstop[0];
 
 		$pomfinstop = mysqli_fetch_row (mysqli_query ($link, "SELECT stop_id FROM stoptime WHERE (trip_id='$trip_id' AND stop_sequence='$startstopno');"));
@@ -102,11 +102,12 @@ if ($result80 = mysqli_query ($link, $query80)) {
 		$result15 = mysqli_query ($link, $query15);
 		$pomhead = mysqli_fetch_row ($result15);
 		$from = $pomhead[0];
-
+*/
 		if ($trip_aktif == '1') {
 			echo "<span style=\"background-color:#54FF00;\">";
 		}
-		echo "$from - $vlak - $trip_headsign - <a href=\"tripedit.php?id=$trip_id\">Upravit</a>";
+//		echo "$from - ";
+		echo "$vlak - $trip_headsign - <a href=\"tripedit.php?id=$trip_id\">Upravit</a>";
 		if ($trip_aktif == '1') {
 			echo "</span>";
 		}
