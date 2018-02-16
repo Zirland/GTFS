@@ -1,13 +1,13 @@
 <?php
 include 'header.php';
-
+/*
 $query4 = "DELETE FROM stoptime WHERE trip_id NOT LIKE 'F%';";
 $command4 = mysqli_query ($link, $query4);
 
 $query7 = "DELETE FROM trip WHERE trip_id NOT LIKE 'F%';";
 $command7 = mysqli_query ($link, $query7);
-
-$query10 = "SELECT trip_id FROM trip LIMIT 2;";
+*/
+$query10 = "SELECT SKIP 2 trip_id FROM trip;";
 if ($result10 = mysqli_query ($link, $query10)) {
 	while ($row10 = mysqli_fetch_row ($result10)) {
 		$trip_id = $row10[0];
