@@ -59,7 +59,6 @@ switch ($action) {
 		$query = "SELECT trip_id FROM stoptime WHERE stop_id='$filtr' ORDER BY departure_time;";
 		echo $query;
 		if ($result = mysqli_query ($link, $query)) {
-echo mysqli_num_rows ($result)."<br/>";
 			while ($row = mysqli_fetch_row ($result)) {
 				$trip_id = $row[0];
 
