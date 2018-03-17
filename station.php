@@ -56,7 +56,10 @@ switch ($action) {
 		$now = date ("H:i:s", time ());
 		$end = date ("H:i:s", time ()+3600);
 
-		$query = "SELECT trip_id FROM stoptime WHERE stop_id='$filtr' ORDER BY departure_time;";
+		$now = "00:00:00";
+		$end = "24:00:00";
+
+		$query = "SELECT trip_id FROM stoptime WHERE (stop_id='$filtr' AND departure_time>='$now' AND departure_time<='$end') ORDER BY departure_time;";
 		echo $query;
 		if ($result = mysqli_query ($link, $query)) {
 			while ($row = mysqli_fetch_row ($result)) {
