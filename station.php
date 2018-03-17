@@ -76,6 +76,7 @@ echo mysqli_num_rows ($result)."<br/>";
 
 				$pom2 = mysqli_fetch_row (mysqli_query ($link, "SELECT ZKRATKA FROM kango.DOP WHERE IDDOP IN (SELECT IDDOP FROM kango.HLV WHERE CISLO7='$cislo7');"));
 				$zkratka = $pom2[0];
+				if (strpos ($routedata, 'L') !== false) {
 					echo "<form method=\"post\" action=\"station.php\" name=\"update\"><input name=\"action\" value=\"update\" type=\"hidden\"><input name=\"filtr\" value=\"$filtr\" type=\"hidden\"><input name=\"spoj$x\" value=\"$trip_id\" type=\"hidden\">";
 					echo "<tr>";
 					echo "<td>$cislo</td>";
@@ -119,6 +120,7 @@ echo mysqli_num_rows ($result)."<br/>";
 					echo "</tr>";
 				}
 			}
+		}
 		echo "</table>";
 		mysqli_free_result($result);
 
