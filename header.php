@@ -28,5 +28,6 @@ if (!$link) {
 <a href="station.php">Stanice</a><br />
 <a href="tripedit.php">Tripedit</a><br />
 <a href="add.php">Nová linka</a><br />
+<a href="newtrip.php">Nový spoj</a><br />
 </td>
 <td>
